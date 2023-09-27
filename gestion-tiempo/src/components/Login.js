@@ -10,8 +10,6 @@ import Col from 'react-bootstrap/Col';
 
 function Login() {
 
-
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -34,9 +32,9 @@ function Login() {
                 } else if (data === "Usuario incorrecto"){
                     alert(data);
                 } else if (data.length !== 0) {
-                    console.log(data[0]);
                     sessionStorage.setItem("user", data[0].id);
-                    navigate("/usuario");
+                    sessionStorage.setItem("nivel", data[0].nivel);
+                    navigate("/datos", {state: { email: email }});
                 }
             });
     }

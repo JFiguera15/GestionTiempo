@@ -62,7 +62,7 @@ app.get('/fechas', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT id, password FROM colaboradores WHERE id = ?";
+    const sql = "SELECT id, password, nivel FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
         if (err) return res.json("Error al logear");
         if (data.length === 0) return res.json("Usuario incorrecto")

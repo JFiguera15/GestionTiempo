@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import Calendar from 'react-calendar';
 import toast, { Toaster } from 'react-hot-toast';
+import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 
 function Admin() {
@@ -12,13 +20,6 @@ function Admin() {
   const [calendarValues, setCalendarValues] = useState();
   const [nivel, setNivel] = useState();
   const [reviewedUser, setReviewedUser] = useState();
-
-
-  function setUser(user) {
-    const parts = user.split(",");
-    sessionStorage.setItem("user", parts[0]);
-    setNivel(parts[1]);
-  }
 
   function writeClass(date) {
     let text = '';
@@ -94,10 +95,10 @@ function Admin() {
   }
 
   useEffect(() => {
+    setNivel(sessionStorage.getItem("nivel"));
     fetch("http://localhost:8000/colaboradores")
       .then((res) => res.json())
       .then((data) => setColaboradores(data));
-    setUser("jfiguera@integra-ws.com,Administrativo");
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         setDates();
@@ -106,30 +107,46 @@ function Admin() {
     });
   }, []);
 
+  if (nivel !== "Administrativo") return <h1>No es admin</h1>;
+
   return (
     <div className="App">
       <Toaster />
-      {nivel === "Administrativo" && colaboradores && (
+      {colaboradores ? (
         <div id="admin_only">
-          <h1>Admin</h1>
-          <label>Ver registros de: </label>
-          <select onChange={(e) => setReviewedUser(e.target.value)} defaultValue="">
-            <option value={""} disabled hidden></option>{
-              colaboradores.filter((e) => e.nivel !== "Administrativo")
-                .map((item) =>
-                  <option value={item.id} key={item.id}>{item.nombre} - {item.id}</option>
-                )
-            }
-          </select>
-          <button onClick={() => getFechas(reviewedUser)}>Ver</button>
+          <Container>
+            <Row>
+              <Col>
+                <FloatingLabel label="Usuario a ver">
+                  <Form.Select
+                    aria-label="Default select example"
+                    defaultValue=""
+                    onChange={(e) => setReviewedUser(e.target.value)}>
+                    <option value={""} disabled hidden></option>{
+                      colaboradores.filter((e) => e.id !== sessionStorage.getItem("user"))
+                        .map((item) =>
+                          <option value={item.id} key={item.id}>{item.nombre} - {item.id}</option>
+                        )
+                    }
+                  </Form.Select>
+                </FloatingLabel>
+              </Col>
+              <Col>
+                <Button onClick={() => getFechas(reviewedUser)}>Ver</Button>
+              </Col>
+            </Row>
+          </Container>
+
           <br />
           {reviewedUser && (
-            <table id="data_colaborador">
+            <Table id="data_colaborador">
               <thead>
                 <tr>
                   <th>Correo</th>
                   <th>Nombre</th>
                   <th>Empresa</th>
+                  <th>Departamento</th>
+                  <th>Cargo</th>
                   <th>Nivel</th>
                   <th>Horario</th>
                 </tr>
@@ -137,41 +154,47 @@ function Admin() {
               <tbody>
                 {colaboradores.filter(e => e.id === reviewedUser).map(e =>
                   <tr>
-                    <td key={e.id}>{e.id}</td>
-                    <td key={e.nombre}>{e.nombre}</td>
-                    <td key={e.empresa}>{e.empresa}</td>
-                    <td key={e.nivel}>{e.nivel}</td>
-                    <td key={e.tipo_horario}>{e.tipo_horario}</td>
+                    <td>{e.id}</td>
+                    <td>{e.nombre}</td>
+                    <td>{e.empresa}</td>
+                    <td>{e.departamento}</td>
+                    <td>{e.cargo}</td>
+                    <td>{e.nivel}</td>
+                    <td>{e.tipo_horario}</td>
                   </tr>
                 )}
               </tbody>
 
-            </table>
+            </Table>
           )}
           {dates && (
-            <div>
-              <button onClick={() => aprobarReposo()}>Aprobar</button>
-              <button onClick={() => noAprobarReposo()}>No aprobar</button>
-            </div>
+            <ButtonGroup>
+              <Button onClick={() => aprobarReposo()}>Aprobar</Button>
+              <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
+            </ButtonGroup>
           )}
+          <br />
+          <Calendar value={calendarValues}
+            onChange={(e) => {
+              setDates(getDaysArray(e[0], e[1]))
+              setCalendarValues(e)
+            }}
+            selectRange={true}
+            tileDisabled={({ date, view }) => view === 'month'
+              && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Reposo"))}
+            locale="es-VE"
+            tileClassName={({ date, view }) => view === 'month'
+              && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
+              ? writeClass(date)
+              : null}
+          />
+          <br />
         </div>
+      ) : (
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
       )}
-      <br />
-      <Calendar value={calendarValues}
-        onChange={(e) => {
-          setDates(getDaysArray(e[0], e[1]))
-          setCalendarValues(e)
-        }}
-        selectRange={true}
-        tileDisabled={({ date, view }) => view === 'month' 
-        && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Reposo"))}
-        locale="es-VE"
-        tileClassName={({ date, view }) => view === 'month'
-          && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
-          ? writeClass(date)
-          : null}
-      />
-      <br />
     </div>
   );
 }
