@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs')
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
+
 app.get('/message', (req, res) => {
     res.json({ message: "Hello from server!" });
 });
@@ -45,11 +47,29 @@ app.get('/colaboradores_no_administrativos', (req, res) => {
     });
 });
 
+app.get('/datos_usuario', (req, res) => {
+    connection.query("SELECT * FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/fechas', (req, res) => {
     connection.query("SELECT fecha, tipo, aprobada FROM FECHAS WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
+});
+
+app.post('/login', (req, res) => {
+    const sql = "SELECT id, password FROM colaboradores WHERE id = ?";
+    connection.query(sql, req.body.id, (err, data) => {
+        if (err) return res.json("Error al logear");
+        if (data.length === 0) return res.json("Usuario incorrecto")
+        else if(bcrypt.compareSync(req.body.password, data[0].password)) return res.json(data);
+        return res.json("Contraseña incorrecta");
+
+    })
 });
 
 app.post('/enviar', (req, res) => {
@@ -66,7 +86,7 @@ app.post('/aprobar', (req, res) => {
     let data = req.body;
     for (let i = 0; i < data.fechas.length; i++) {
         connection.query("UPDATE FECHAS SET aprobada = \'" + data.tipo + 
-        "\' WHERE fecha =\'" + data.fechas[i] +"\' AND id =\'" + data.id + "\' AND tipo =\'Vacaciones\'", function (err, result) {
+        "\' WHERE fecha =\'" + data.fechas[i] +"\' AND id =\'" + data.id + "\' AND tipo =\'Reposo\'", function (err, result) {
             if (err) throw err;
         });
     }

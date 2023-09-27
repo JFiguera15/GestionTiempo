@@ -190,17 +190,17 @@ a:hover {
   color: #ffffff;
 }
 
-.vacaciones-pendiente {
+.reposo-pendiente {
   background: #5776ff !important;
   color: #000000;
 }
 
-.vacaciones-sí {
+.reposo-sí {
   background: #0f3bff !important;
   color: #000000;
 }
 
-.vacaciones-no {
+.reposo-no {
   background: #001057 !important;
   color: #ffffff;
 }

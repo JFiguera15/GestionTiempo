@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import Calendar from 'react-calendar';
 import toast, { Toaster } from 'react-hot-toast';
+import Form from 'react-bootstrap/Form';
 
 function Usuario() {
   const [colaboradores, setColaboradores] = useState();
@@ -13,19 +14,19 @@ function Usuario() {
 
   function setUser(user) {
     const parts = user.split(",");
-    sessionStorage.setItem("user", parts[0]);
+    //sessionStorage.setItem("user", parts[0]);
   }
 
   function verificar(negate) {
     if (dates) {
       let compartidos = fechasUsadas.filter((e) => dates.includes(e[0]));
       compartidos = compartidos.map(e => e[0]);
-      if(compartidos.length === 0){
+      if (compartidos.length === 0) {
         return false;
       } else if (compartidos.length === dates.length && compartidos.length > 0) {
         return compartidos.every((e) => dates.includes(e));
-      } else if (dates.length > compartidos.length && compartidos.length > 0){
-        if(negate){
+      } else if (dates.length > compartidos.length && compartidos.length > 0) {
+        if (negate) {
           return false;
         } else {
           return true;
@@ -63,7 +64,7 @@ function Usuario() {
       id: sessionStorage.getItem("user"),
       fechas: dates,
       tipo: select,
-      estado: (select === "Vacaciones") ? "Pendiente" : "",
+      estado: (select === "Reposo") ? "Pendiente" : "",
     }
     fetch("http://localhost:8000/enviar",
       {
@@ -73,12 +74,14 @@ function Usuario() {
       }).then((res) => res.json());
     setCalendarValues([]);
     setDates();
-    getFechas(sessionStorage.getItem("user"));
+    window.location.reload();
+    //getFechas(sessionStorage.getItem("user"));
   }
 
   function getFechas() {
     const msj = toast.loading("Enviando...");
     let fechasFormateadas = [];
+
     setCalendarValues([]);
     setDates();
     fetch("http://localhost:8000/fechas?id=" + sessionStorage.getItem("user"))
@@ -115,7 +118,7 @@ function Usuario() {
       id: sessionStorage.getItem("user"),
       fechas: dates,
       tipo: select,
-      estado: (select === "Vacaciones") ? "Pendiente" : "",
+      estado: (select === "Reposo") ? "Pendiente" : "",
     }
     fetch("http://localhost:8000/cambiar",
       {
@@ -129,12 +132,9 @@ function Usuario() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8000/colaboradores")
-      .then((res) => res.json())
-      .then((data) => setColaboradores(data));
-    setUser("jfiguera@sinoenergycorp.com,Táctico");
+    getFechas();
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape"){
+      if (event.key === "Escape") {
         setDates();
         setCalendarValues([]);
       }
@@ -145,18 +145,6 @@ function Usuario() {
     <div className="App">
       <Toaster />
       <h1>Usuario</h1>
-      {colaboradores && (
-        <div id="table">
-          <label>Viendo como: </label>
-          <select onChange={(e) => setUser(e.target.value)} defaultValue={""}>
-          <option value={""} disabled hidden></option>{
-            colaboradores.map((item) =>
-              <option value={[item.id, item.nivel]} key={item.id}>{item.id} - {item.nivel}</option>
-            )
-          }
-          </select>
-        </div>
-      )}
       <br />
       <Calendar value={calendarValues}
         onChange={(e) => {
@@ -175,13 +163,20 @@ function Usuario() {
         onChange={e => setSelect(e.target.value)}>
         <option value="Trabajado">Trabajado</option>
         <option value="Libre">Libre</option>
-        <option value="Vacaciones">Vacaciones</option>
+        <option value="Reposo">Reposo</option>
       </select>
+      {select === "Reposo" && (
+        <Form.Select aria-label="Default select example">
+          <option>Open this select menu</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </Form.Select>
+      )}
       <br />
       <button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</button>
       <button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</button>
       <button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</button>
-      <button onClick={() => getFechas()}>Conseguir</button>
     </div>
   );
 }

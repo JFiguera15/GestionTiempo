@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../App.css";
 import Calendar from 'react-calendar';
 import toast, { Toaster } from 'react-hot-toast';
+import Form from 'react-bootstrap/Form';
 
 
 function Admin() {
@@ -40,7 +41,7 @@ function Admin() {
     return arr;
   };
 
-  function aprobarVacaciones() {
+  function aprobarReposo() {
     const body = {
       id: reviewedUser,
       fechas: dates,
@@ -57,7 +58,7 @@ function Admin() {
     getFechas(reviewedUser);
   }
 
-  function noAprobarVacaciones() {
+  function noAprobarReposo() {
     const body = {
       id: reviewedUser,
       fechas: dates,
@@ -149,8 +150,8 @@ function Admin() {
           )}
           {dates && (
             <div>
-              <button onClick={() => aprobarVacaciones()}>Aprobar</button>
-              <button onClick={() => noAprobarVacaciones()}>No aprobar</button>
+              <button onClick={() => aprobarReposo()}>Aprobar</button>
+              <button onClick={() => noAprobarReposo()}>No aprobar</button>
             </div>
           )}
         </div>
@@ -163,7 +164,7 @@ function Admin() {
         }}
         selectRange={true}
         tileDisabled={({ date, view }) => view === 'month' 
-        && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Vacaciones"))}
+        && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Reposo"))}
         locale="es-VE"
         tileClassName={({ date, view }) => view === 'month'
           && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))

@@ -1,25 +1,39 @@
-import React  from "react";
+import React from "react";
 import Usuario from "./components/Usuario";
 import Admin from "./components/Admin";
+import Login from "./components/Login";
+import DatosUsuario from "./components/DatosUsuario";
+import ProtectedRoutes from "./ProtectedRoutes";
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-      <ul className="navbar">
-        <li>
-        <nav><NavLink to="/usuario">Usuario</NavLink></nav>
-        </li>
-        <li>
-        <nav><NavLink to="/admin">Admin</NavLink></nav>
-        </li>
-      </ul>
+        <ul className="navbar">
+          <li>
+            <nav><NavLink to="/usuario">Usuario</NavLink></nav>
+          </li>
+          <li>
+            <nav><NavLink to="/admin">Admin</NavLink></nav>
+          </li>
+          <li>
+            <nav><NavLink to="/login">Login</NavLink></nav>
+          </li>
+
+        </ul>
         <Routes>
-          <Route index element={<Usuario />} />
-          <Route path="/usuario" element={<Usuario />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route index element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/usuario" element={<Usuario />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/datos" element={<DatosUsuario />} />
+          </Route>
+
+
         </Routes>
       </BrowserRouter>
     </div>
