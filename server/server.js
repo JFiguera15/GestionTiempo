@@ -61,6 +61,20 @@ app.get('/fechas', (req, res) => {
     });
 });
 
+app.get('/correos', (req, res) => {
+    connection.query("SELECT id FROM colaboradores", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/departamentos', (req, res) => {
+    connection.query("SELECT * FROM departamentos", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.post('/login', (req, res) => {
     const sql = "SELECT id, password, nivel FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
@@ -70,6 +84,17 @@ app.post('/login', (req, res) => {
         return res.json("Contraseña incorrecta");
 
     })
+});
+
+app.post('/agregar_colaborador', (req, res) => {
+    let data = req.body;
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?)";
+    for (let i = 0; i < data.fechas.length; i++) {
+        connection.query("INSERT INTO FECHAS VALUES (\"" 
+        + data.fechas[i]+ "\", \"" + data.id + "\", \"" + data.tipo + "\", \'" + data.estado + "\');" , function (err, result) {
+            if (err) throw err;
+        });
+    }
 });
 
 app.post('/enviar', (req, res) => {

@@ -3,6 +3,10 @@ import "../App.css";
 import Calendar from 'react-calendar';
 import toast, { Toaster } from 'react-hot-toast';
 import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Sidebar from './Sidebar';
+import ListaColaboradores from "./ListaColaboradores";
 
 function Usuario() {
   const [colaboradores, setColaboradores] = useState();
@@ -144,39 +148,48 @@ function Usuario() {
   return (
     <div className="App">
       <Toaster />
-      <h1>Usuario</h1>
-      <br />
-      <Calendar value={calendarValues}
-        onChange={(e) => {
-          setDates(getDaysArray(e[0], e[1]))
-          setCalendarValues(e)
-        }}
-        selectRange={true}
-        locale="es-VE"
-        tileClassName={({ date, view }) => view === 'month'
-          && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
-          ? writeClass(date)
-          : null}
-      />
-      <select
-        value={select}
-        onChange={e => setSelect(e.target.value)}>
-        <option value="Trabajado">Trabajado</option>
-        <option value="Libre">Libre</option>
-        <option value="Reposo">Reposo</option>
-      </select>
-      {select === "Reposo" && (
-        <Form.Select aria-label="Default select example">
-          <option>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </Form.Select>
-      )}
-      <br />
-      <button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</button>
-      <button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</button>
-      <button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</button>
+      <Row>
+        <Col>
+          <Sidebar />
+        </Col>
+        <Col xs={10}>
+          <h1>Usuario</h1>
+          <br />
+          <Calendar value={calendarValues}
+            onChange={(e) => {
+              setDates(getDaysArray(e[0], e[1]))
+              setCalendarValues(e)
+            }}
+            selectRange={true}
+            locale="es-VE"
+            tileClassName={({ date, view }) => view === 'month'
+              && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
+              ? writeClass(date)
+              : null}
+          />
+          <select
+            value={select}
+            onChange={e => setSelect(e.target.value)}>
+            <option value="Trabajado">Trabajado</option>
+            <option value="Libre">Libre</option>
+            <option value="Reposo">Reposo</option>
+          </select>
+          {select === "Reposo" && (
+            <Form.Select aria-label="Default select example">
+              <option>Open this select menu</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </Form.Select>
+          )}
+          <br />
+          <button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</button>
+          <button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</button>
+          <button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</button>
+        </Col>
+      </Row>
+
+
     </div>
   );
 }

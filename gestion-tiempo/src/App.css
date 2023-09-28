@@ -204,15 +204,3 @@ a:hover {
   background: #001057 !important;
   color: #ffffff;
 }
-
-#data_colaborador {
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid black;
-}
-
-#data_colaborador td, th{
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid black;
-}

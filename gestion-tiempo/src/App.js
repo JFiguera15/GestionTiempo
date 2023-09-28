@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import DatosUsuario from "./components/DatosUsuario";
 import ListaColaboradores from "./components/ListaColaboradores";
 import ProtectedRoutes from "./ProtectedRoutes";
+import AgregarUsuario from "./components/AgregarUsuario";
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -25,6 +26,9 @@ function App() {
             <nav><NavLink to="/datos">Datos</NavLink></nav>
           </li>
           <li>
+            <nav><NavLink to="/lista">Lista</NavLink></nav>
+          </li>
+          <li>
             <nav><NavLink to="/login">Login</NavLink></nav>
           </li>
 
@@ -37,6 +41,7 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/datos" element={<DatosUsuario />} />
             <Route path="/lista" element={<ListaColaboradores />} />
+            <Route path="/agregar_usuario" element={<AgregarUsuario />} />
           </Route>
 
 
