@@ -29,9 +29,11 @@ function App() {
             <nav><NavLink to="/lista">Lista</NavLink></nav>
           </li>
           <li>
-            <nav><NavLink to="/login">Login</NavLink></nav>
+            <nav><NavLink to="/agregar_usuario">Agregar</NavLink></nav>
           </li>
-
+          <li>
+            <nav><NavLink to="/login">Salir</NavLink></nav>
+          </li>
         </ul>
         <Routes>
           <Route index element={<Login />} />

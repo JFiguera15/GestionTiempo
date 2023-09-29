@@ -7,12 +7,10 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { useLocation } from 'react-router-dom';
-
 
 function AgregarUsuario() {
 
-    const [datos, setDatos] = useState({});
+    const [datos, setDatos] = useState([]);
     const [departamentos, setDepartamentos] = useState([]);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -32,30 +30,25 @@ function AgregarUsuario() {
             .then((data) => {
                 setDepartamentos(data);
             });
-    }, []);
-
-    function check() {
-        setLoading(true);
         fetch("http://localhost:8000/correos")
             .then((res) => res.json())
             .then((data) => {
                 setDatos(data);
-                setLoading(false);
-            }).then(() => {
-                if (datos?.some((e) => e.id === email)) {
-                    alert("Ya existe usuario con este correo.");
-                    return;
-                }
             });
-        if (password === confirmPass) {
+    }, []);
+
+    function check() {
+        if (datos?.some((e) => e.id === email)) {
+            alert("Ya existe usuario con este correo.");
+            return;
+        }
+        else if (password === confirmPass) {
             setConfirmar(true);
             return;
         } else {
             alert("Las contraseñas no son iguales");
             return;
         }
-
-
     }
 
     function handleSubmit(e) {
@@ -65,14 +58,22 @@ function AgregarUsuario() {
         formData.append("id", email);
         formData.append("password", password);
         const formJson = Object.fromEntries(formData.entries());
+        fetch("http://localhost:8000/agregar_colaborador",
+            {
+                method: "POST",
+                body: JSON.stringify(formJson),
+                headers: { "Content-Type": "application/json" }
+            }).then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+            });
         console.log(formJson);
     }
 
 
-
     return (
         <Container>
-            {!confirmar && (
+            {!confirmar && datos && (
                 <Col>
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
                         <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
@@ -106,13 +107,25 @@ function AgregarUsuario() {
                         <InputGroup className="mb-3" as={Col} controlId="formGridNombre">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Nombre">
-                                <Form.Control name="nombre" />
+                                <Form.Control name="nombre" required />
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridCedula">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-person-vcard-fill"></i></InputGroup.Text>
+                            <FloatingLabel label="Cedula de identidad">
+                                <Form.Control name="cedula" required />
                             </FloatingLabel>
                         </InputGroup>
                         <InputGroup className="mb-3" as={Col} controlId="formGridNacionalidad">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-flag-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Nacionalidad">
-                                <Form.Control name="nacionalidad" />
+                                <Form.Control name="nacionalidad" required />
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridGenero">
+                            <InputGroup.Text id="basic-addon1"><i className="bi bi-gender-ambiguous"></i></InputGroup.Text>
+                            <FloatingLabel label="Genero">
+                                <Form.Control name="genero" required />
                             </FloatingLabel>
                         </InputGroup>
                     </Row>
@@ -120,7 +133,7 @@ function AgregarUsuario() {
                         <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoP">
                             <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Teléfono principal">
-                                <Form.Control name="telefonoP" />
+                                <Form.Control name="telefonoP" required />
                             </FloatingLabel>
                         </InputGroup>
                         <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoS">
@@ -135,13 +148,13 @@ function AgregarUsuario() {
                         <InputGroup className="mb-3" as={Col} controlId="formGridFechaN">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Fecha de Nacimiento">
-                                <Form.Control name="fechaN" />
+                                <Form.Control name="fechaN" type="date" required />
                             </FloatingLabel>
                         </InputGroup>
                         <InputGroup className="mb-3" as={Col} controlId="formGridFechaI">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Fecha de Ingreso">
-                                <Form.Control name="fechaI" />
+                            <FloatingLabel label="Fecha de Ingreso" >
+                                <Form.Control name="fechaI" type="date" required />
                             </FloatingLabel>
                         </InputGroup>
                     </Row>
@@ -156,21 +169,21 @@ function AgregarUsuario() {
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmpresa">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-building-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Empresa">
-                            <Form.Select name="empresa" defaultValue="">
+                            <Form.Select name="empresa" defaultValue="" required>
                                 <option value={""} disabled hidden></option>
-                                <option value="COOSERPOZ">Cooserpoz</option>
-                                <option value="DYNAXTREAM">Dynaxtream</option>
-                                <option value="ENTERGIX">Entergix Facilities</option>
-                                <option value="ESSENTIAL-OFS">Essential OFS, C.A.</option>
-                                <option value="INTEGRA-WS">Integra Well Services, C.A.</option>
-                                <option value="KYBALIONTECH">Kybaliontech</option>
-                                <option value="NEOCONEX">Neoconex Pro</option>
-                                <option value="PETROALIANZA">Petroalianza, C.A.</option>
-                                <option value="PROILIFT">Proilift Artificial Lift System</option>
-                                <option value="SINOENERGYCORP">Sinoenergy Corporation</option>
-                                <option value="TECNOCONSULTORES">TecnoConsultores</option>
-                                <option value="XENIXSERVICES">Xenix Services</option>
-                                <option value="XPERTSENERGY">Xperts Energy</option>
+                                <option>Cooserpoz</option>
+                                <option>Dynaxtream</option>
+                                <option>Entergix Facilities</option>
+                                <option>Essential OFS, C.A.</option>
+                                <option>Integra Well Services, C.A.</option>
+                                <option>Kybaliontech</option>
+                                <option>Neoconex Pro</option>
+                                <option>Petroalianza, C.A.</option>
+                                <option>Proilift Artificial Lift System</option>
+                                <option>Sinoenergy Corporation</option>
+                                <option>TecnoConsultores</option>
+                                <option>Xenix Services</option>
+                                <option>Xperts Energy</option>
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>
@@ -179,26 +192,39 @@ function AgregarUsuario() {
                         <InputGroup className="mb-3" as={Col} controlId="formGridDepartamento">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-building"></i></InputGroup.Text>
                             <FloatingLabel label="Departamento">
-                                <Form.Select name="departamento">
-                                    <option value="" disabled hidden></option>
+                                <Form.Select name="departamento" defaultValue="" required>
+                                    <option value={""} disabled hidden></option>
                                     {departamentos.map((item) =>
-                                        <option value={item.nombre}>{item.nombre}</option>)}
+                                        <option>{item.nombre}</option>)}
                                 </Form.Select>
-
                             </FloatingLabel>
                         </InputGroup>
 
                         <InputGroup className="mb-3" as={Col} controlId="formGridCargo">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-person-badge-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Cargo">
+                            <FloatingLabel label="Cargo" required>
                                 <Form.Control name="cargo" />
                             </FloatingLabel>
                         </InputGroup>
-
-                        <InputGroup className="mb-3" as={Col} controlId="formGridGenero">
-                            <InputGroup.Text id="basic-addon1"><i className="bi bi-gender-ambiguous"></i></InputGroup.Text>
-                            <FloatingLabel label="Genero">
-                                <Form.Control name="genero" />
+                        <InputGroup className="mb-3" as={Col} controlId="formGridNivel">
+                            <InputGroup.Text id="basic-addon1"><i className="bi bi-person-badge-fill"></i></InputGroup.Text>
+                            <FloatingLabel label="Nivel">
+                                <Form.Select name="nivel" defaultValue="" required>
+                                    <option value={""} disabled hidden></option>
+                                    <option>Administrativo</option>
+                                    <option>Estratégico</option>
+                                    <option>Táctico</option>
+                                </Form.Select>
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridHorario">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-calendar-check"></i></InputGroup.Text>
+                            <FloatingLabel label="Tipo de horario">
+                                <Form.Select name="horario" defaultValue="" required>
+                                    <option value={""} disabled hidden></option>
+                                    <option>5x2</option>
+                                    <option>7x1</option>
+                                </Form.Select>
                             </FloatingLabel>
                         </InputGroup>
                     </Row>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
@@ -14,6 +14,10 @@ function Login() {
     const [password, setPassword] = useState('');
     const [view, setView] = useState(true);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        sessionStorage.clear();
+    }, []);
 
     function handleSubmit(e) {
         e.preventDefault();

@@ -69,6 +69,7 @@ function Usuario() {
       fechas: dates,
       tipo: select,
       estado: (select === "Reposo") ? "Pendiente" : "",
+      razon: "",
     }
     fetch("http://localhost:8000/enviar",
       {
