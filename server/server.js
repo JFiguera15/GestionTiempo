@@ -23,6 +23,7 @@ connection.connect(function (err) {
 
 app.use(cors());
 app.use(express.json());
+app.use(express.text());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -110,6 +111,15 @@ app.post('/actualizar_colaborador', (req, res) => {
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
         data.genero, data.fechaN, data.fechaI, data.id], function (err, result) {
+            if (err) throw err;
+        });
+    
+});
+
+app.post('/eliminar_colaborador', (req, res) => {
+    let data = req.body;
+    const sql = "DELETE FROM colaboradores where id = ?";
+    connection.query(sql, data, function (err, result) {
             if (err) throw err;
         });
 });

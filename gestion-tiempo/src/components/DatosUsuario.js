@@ -7,7 +7,8 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
 
 
 function DatosUsuario() {
@@ -16,7 +17,24 @@ function DatosUsuario() {
     const [departamentos, setDepartamentos] = useState([]);
     const [modificar, setModificar] = useState(true);
     const [reload, setReload] = useState(true);
+    const [show, setShow] = useState(false);
+    const [borrado, setBorrado] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    function borrar() {
+        console.log(JSON.stringify(datos.id));
+        fetch("http://localhost:8000/eliminar_colaborador",
+            {
+                method: "POST",
+                body: datos.id,
+                headers: { "Content-Type": "text/plain" }
+            });
+        handleClose();
+        setBorrado(true);
+    }
 
     function getUser() {
         if (location.state?.email) return location.state?.email;
@@ -46,13 +64,14 @@ function DatosUsuario() {
         const formData = new FormData(form);
         formData.append("id", datos.id)
         const formJson = Object.fromEntries(formData.entries());
-        fetch("http://localhost:8000/actualizar_colaborador",
-            {
-                method: "POST",
-                body: JSON.stringify(formJson),
-                headers: { "Content-Type": "application/json" }
-            }).then((res) => res.json());
-        setReload(!reload);
+        console.log(formJson);
+        // fetch("http://localhost:8000/actualizar_colaborador",
+        //   {
+        //     method: "POST",
+        //   body: JSON.stringify(formJson),
+        // headers: { "Content-Type": "application/json" }
+        //   }).then((res) => res.json());
+        //setReload(!reload);
         setModificar(!modificar);
     }
 
@@ -149,7 +168,7 @@ function DatosUsuario() {
                             <Form.Select defaultValue={datos.departamento} name="departamento" disabled={modificar}>
                                 <option hidden>{datos.departamento}</option>
                                 {departamentos.map((item) =>
-                                        <option>{item.nombre}</option>)}
+                                    <option>{item.nombre}</option>)}
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>
@@ -172,11 +191,17 @@ function DatosUsuario() {
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>
-                    <InputGroup className="mb-3" as={Col} controlId="formGridHorario">
+
+                </Row>
+                <Row>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridResponsables">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-calendar-check"></i></InputGroup.Text>
                         <FloatingLabel label="Tipo de horario">
-                            <Form.Select name="horario" required disabled={modificar}>
+                            <Form.Select name="responsables" required disabled={modificar}
+                                onChange={(e) => console.log(e.target.value)}>
                                 <option hidden>{datos.tipo_horario}</option>
+                                <option>5x2</option>
+                                <option>7x1</option>
                                 <option>5x2</option>
                                 <option>7x1</option>
                             </Form.Select>
@@ -188,13 +213,46 @@ function DatosUsuario() {
                         Enviar
                     </Button>
                 )}
-                {sessionStorage.getItem("user") === datos?.id && (
+                {((sessionStorage.getItem("user") === datos?.id) || (sessionStorage.getItem("nivel") === "Administrativo")) && (
                     <Button variant="primary" onClick={() => estaModificando()}>
                         Modificar datos
                     </Button>
                 )}
+                {(sessionStorage.getItem("nivel") === "Administrativo") && (
+                    <Button onClick={() => setShow(true)}>Eliminar</Button>
+                )}
 
             </Form>
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Eliminar usuario?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    El usuario {datos.id} sera borrado de la base de datos.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => borrar()}>Eliminar</Button>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancelar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={borrado} onHide={() => setBorrado(false)}>
+                <Modal.Body>
+                    <h2>Borrado con éxito</h2>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => navigate("/lista")}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 }

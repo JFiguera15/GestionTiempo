@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import Row from 'react-bootstrap/Row';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +16,6 @@ function ListaColaboradores() {
             .then((res) => res.json())
             .then((data) => setColaboradores(data));
     }, []);
-
 
 
     return (
@@ -33,16 +33,16 @@ function ListaColaboradores() {
                     </thead>
                     <tbody>
                         {colaboradores.map((e, index) =>
-                            <tr onClick={() => navigate("/datos", {state: { email: e.id }})}>
+                            <tr>
                                 <td>{index + 1}</td>
                                 <td>{e.nombre}</td>
                                 <td>{e.id}</td>
                                 <td>{e.empresa}</td>
                                 <td>{e.cargo}</td>
+                                <td><Button onClick={() => navigate("/datos", { state: { email: e.id } })}>Ver</Button></td>
                             </tr>
                         )}
                     </tbody>
-
                 </Table>
             )}
         </div>
