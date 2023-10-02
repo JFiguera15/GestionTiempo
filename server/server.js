@@ -55,6 +55,13 @@ app.get('/datos_usuario', (req, res) => {
     });
 });
 
+app.get('/usuarios_alto_nivel', (req, res) => {
+    connection.query("SELECT id, nombre FROM colaboradores WHERE NOT nivel = ?", "Táctico", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/fechas', (req, res) => {
     connection.query("SELECT fecha, tipo, aprobada FROM FECHAS WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
@@ -91,12 +98,12 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.responsable], function (err, result) {
             if (err) throw err;
         });
 });
@@ -104,13 +111,13 @@ app.post('/agregar_colaborador', (req, res) => {
 app.post('/actualizar_colaborador', (req, res) => {
     let data = req.body;
     const sql = "UPDATE colaboradores SET " 
-    + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?" 
+    + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?, responsable = ?" 
     +  " WHERE id = ?";
     connection.query(sql,
         [data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.id], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.responsable, data.id], function (err, result) {
             if (err) throw err;
         });
     

@@ -19,6 +19,7 @@ function DatosUsuario() {
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
     const [borrado, setBorrado] = useState(false);
+    const [highUsers, setHighUsers] = useState([]);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const location = useLocation();
@@ -56,6 +57,11 @@ function DatosUsuario() {
             .then((data) => {
                 setDepartamentos(data);
             });
+        fetch("http://localhost:8000/usuarios_alto_nivel")
+            .then((res) => res.json())
+            .then((data) => {
+                setHighUsers(data);
+            });
     }, [reload]);
 
     function handleSubmit(e) {
@@ -65,13 +71,13 @@ function DatosUsuario() {
         formData.append("id", datos.id)
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
-        // fetch("http://localhost:8000/actualizar_colaborador",
-        //   {
-        //     method: "POST",
-        //   body: JSON.stringify(formJson),
-        // headers: { "Content-Type": "application/json" }
-        //   }).then((res) => res.json());
-        //setReload(!reload);
+        fetch("http://localhost:8000/actualizar_colaborador",
+            {
+                method: "POST",
+                body: JSON.stringify(formJson),
+                headers: { "Content-Type": "application/json" }
+            }).then((res) => res.json());
+        setReload(!reload);
         setModificar(!modificar);
     }
 
@@ -191,19 +197,26 @@ function DatosUsuario() {
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>
-
-                </Row>
-                <Row>
-                    <InputGroup className="mb-3" as={Col} controlId="formGridResponsables">
+                    <InputGroup className="mb-3" as={Col} controlId="formGridHorario">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-calendar-check"></i></InputGroup.Text>
                         <FloatingLabel label="Tipo de horario">
-                            <Form.Select name="responsables" required disabled={modificar}
-                                onChange={(e) => console.log(e.target.value)}>
+                            <Form.Select name="horario" defaultValue="" required disabled={modificar}>
                                 <option hidden>{datos.tipo_horario}</option>
                                 <option>5x2</option>
                                 <option>7x1</option>
-                                <option>5x2</option>
-                                <option>7x1</option>
+                            </Form.Select>
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
+                <Row>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridResponsable">
+                        <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                        <FloatingLabel label="Responsable">
+                            <Form.Select name="responsable" required disabled={modificar}
+                                onChange={(e) => console.log(e.target.value)}>
+                                <option hidden>{datos.responsable}</option>
+                                {highUsers.map((item) =>
+                                    <option value={item.id}>{item.nombre}</option>)}
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>

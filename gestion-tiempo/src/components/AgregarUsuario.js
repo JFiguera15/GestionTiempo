@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import { useNavigate } from 'react-router-dom';
 
 function AgregarUsuario() {
 
@@ -18,7 +19,9 @@ function AgregarUsuario() {
     const [modificar, setModificar] = useState(true);
     const [view, setView] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [highUsers, setHighUsers] = useState([]);
     const [confirmar, setConfirmar] = useState(false);
+    const navigate = useNavigate();
 
     function estaModificando() {
         setModificar(!modificar);
@@ -34,6 +37,11 @@ function AgregarUsuario() {
             .then((res) => res.json())
             .then((data) => {
                 setDatos(data);
+            });
+        fetch("http://localhost:8000/usuarios_alto_nivel")
+            .then((res) => res.json())
+            .then((data) => {
+                setHighUsers(data);
             });
     }, []);
 
@@ -63,13 +71,9 @@ function AgregarUsuario() {
                 method: "POST",
                 body: JSON.stringify(formJson),
                 headers: { "Content-Type": "application/json" }
-            }).then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-            });
-        console.log(formJson);
+            }).then((res) => res.json());
+            navigate("/datos", { state: { email: email } });
     }
-
 
     return (
         <Container>
@@ -224,6 +228,18 @@ function AgregarUsuario() {
                                     <option value={""} disabled hidden></option>
                                     <option>5x2</option>
                                     <option>7x1</option>
+                                </Form.Select>
+                            </FloatingLabel>
+                        </InputGroup>
+                    </Row>
+                    <Row>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridResponsable">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <FloatingLabel label="Responsable">
+                                <Form.Select name="responsable" defaultValue="" required>
+                                    <option value={""} disabled hidden></option>
+                                    {highUsers.map((item) =>
+                                        <option value={item.id}>{item.nombre}</option>)}
                                 </Form.Select>
                             </FloatingLabel>
                         </InputGroup>
