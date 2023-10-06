@@ -6,35 +6,32 @@ import DatosUsuario from "./components/DatosUsuario";
 import ListaColaboradores from "./components/ListaColaboradores";
 import ProtectedRoutes from "./ProtectedRoutes";
 import AgregarUsuario from "./components/AgregarUsuario";
+import Evaluacion from "./components/Evaluacion";
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+        
 
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <ul className="navbar">
-          <li>
-            <nav><NavLink to="/usuario">Usuario</NavLink></nav>
-          </li>
-          <li>
-            <nav><NavLink to="/admin">Admin</NavLink></nav>
-          </li>
-          <li>
-            <nav><NavLink to="/datos">Datos</NavLink></nav>
-          </li>
-          <li>
-            <nav><NavLink to="/lista">Lista</NavLink></nav>
-          </li>
-          <li>
-            <nav><NavLink to="/agregar_usuario">Agregar</NavLink></nav>
-          </li>
-          <li>
-            <nav><NavLink to="/login">Salir</NavLink></nav>
-          </li>
-        </ul>
+      <Navbar>
+        <Nav>
+          <Nav.Link href="/usuario">Usuario</Nav.Link>
+          <Nav.Link href="/admin">Admin</Nav.Link>
+          <Nav.Link href="/datos">Datos</Nav.Link>
+          <Nav.Link href="/lista">Lista</Nav.Link>
+          <Nav.Link href="/agregar_usuario">Agregar</Nav.Link>
+          <Nav.Link href="/evaluacion">Evaluacion</Nav.Link>
+          <Nav.Link href="/login">Salir</Nav.Link>
+        </Nav>
+      </Navbar>
         <Routes>
           <Route index element={<Login />} />
           <Route path="/login" element={<Login />} />
@@ -44,6 +41,7 @@ function App() {
             <Route path="/datos" element={<DatosUsuario />} />
             <Route path="/lista" element={<ListaColaboradores />} />
             <Route path="/agregar_usuario" element={<AgregarUsuario />} />
+            <Route path="/evaluacion" element={<Evaluacion />}/>
           </Route>
 
 

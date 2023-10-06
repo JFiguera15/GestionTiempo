@@ -62,8 +62,15 @@ app.get('/usuarios_alto_nivel', (req, res) => {
     });
 });
 
+app.get('/colaboradores_que_reportan', (req, res) => {
+    connection.query("SELECT * FROM colaboradores WHERE jefe_directo = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/fechas', (req, res) => {
-    connection.query("SELECT fecha, tipo, aprobada FROM FECHAS WHERE id = \'" + req.query.id + "\'", function (err, result) {
+    connection.query("SELECT fecha, tipo, aprobada, razon FROM FECHAS WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -84,7 +91,7 @@ app.get('/departamentos', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT id, password, nivel FROM colaboradores WHERE id = ?";
+    const sql = "SELECT id, password, rol FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
         if (err) return res.json("Error al logear");
         if (data.length === 0) return res.json("Usuario incorrecto")
@@ -98,12 +105,12 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.responsable], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol], function (err, result) {
             if (err) throw err;
         });
 });
@@ -111,13 +118,25 @@ app.post('/agregar_colaborador', (req, res) => {
 app.post('/actualizar_colaborador', (req, res) => {
     let data = req.body;
     const sql = "UPDATE colaboradores SET " 
-    + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?, responsable = ?" 
+    + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?, jefe_directo = ?, sup_funcional = ?, rol = ?" 
     +  " WHERE id = ?";
     connection.query(sql,
         [data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.responsable, data.id], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, data.id], function (err, result) {
+            if (err) throw err;
+        });
+    
+});
+
+app.post('/cambiar_password', (req, res) => {
+    let data = req.body;
+    let salt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync(data.password, salt);
+    const sql = "UPDATE colaboradores SET password = ? WHERE id = ?";
+    connection.query(sql,
+        [data.password, data.id], function (err, result) {
             if (err) throw err;
         });
     
@@ -167,7 +186,7 @@ app.post('/cambiar', (req, res) => {
     let data = req.body;
     for (let i = 0; i < data.fechas.length; i++) {
         connection.query("UPDATE fechas SET tipo = \'" + data.tipo + "\', aprobada = \'" + data.estado +
-            "\' WHERE id = \'" + data.id + "\' AND fecha = \'" + data.fechas[i] + "\'", function (err, result) {
+            "\', razon = \'" + data.razon + "\' WHERE id = \'" + data.id + "\' AND fecha = \'" + data.fechas[i] + "\'", function (err, result) {
                 if (err) throw err;
             });
     }

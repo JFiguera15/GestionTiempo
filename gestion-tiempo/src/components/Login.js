@@ -38,7 +38,7 @@ function Login() {
                     alert(data);
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
-                    sessionStorage.setItem("nivel", data[0].nivel);
+                    sessionStorage.setItem("rol", data[0].rol);
                     navigate("/datos", { state: { email: email } });
                 }
             });

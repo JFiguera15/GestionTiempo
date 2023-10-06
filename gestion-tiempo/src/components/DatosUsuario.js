@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
@@ -19,7 +20,12 @@ function DatosUsuario() {
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
     const [borrado, setBorrado] = useState(false);
+    const [cambiarCon, setCambiarCon] = useState(false);
     const [highUsers, setHighUsers] = useState([]);
+    const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPass, setConfirmPass] = useState("");
+    const [view, setView] = useState(true);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const location = useLocation();
@@ -81,10 +87,23 @@ function DatosUsuario() {
         setModificar(!modificar);
     }
 
+    function cambiarContrasena() {
+        if (newPassword !== password) {
+            if (newPassword === confirmPass) {
+                fetch("http://localhost:8000/cambiar_password",
+                    {
+                        method: "POST",
+                        body: JSON.stringify({ password: newPassword, id: datos.id }),
+                        headers: { "Content-Type": "application/json" }
+                    }).then(setCambiarCon(false));
+            } else alert("Las contraseñas no coinciden");
+        } else alert("La contraseña nueva no puede ser la misma que la contraseña vieja");
+    }
+
     return (
         <Container fluid>
             <Form onSubmit={handleSubmit}>
-                <Row>
+                <Row fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
                         <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                         <FloatingLabel label="Correo">
@@ -118,7 +137,20 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-
+                <Row>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoP">
+                        <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                        <FloatingLabel label="Teléfono principal">
+                            <Form.Control defaultValue={datos.telefono_p} name="telefonoP" disabled={modificar} required />
+                        </FloatingLabel>
+                    </InputGroup>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoS">
+                        <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                        <FloatingLabel label="Teléfono Secundario">
+                            <Form.Control defaultValue={datos.telefono_s} name="telefonoS" disabled={modificar} />
+                        </FloatingLabel>
+                    </InputGroup>
+                </Row>
                 <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridFechaN">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
@@ -209,32 +241,59 @@ function DatosUsuario() {
                     </InputGroup>
                 </Row>
                 <Row>
-                    <InputGroup className="mb-3" as={Col} controlId="formGridResponsable">
+                    <InputGroup className="mb-3" as={Col} controlId="formGridJefeD">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
-                        <FloatingLabel label="Responsable">
-                            <Form.Select name="responsable" required disabled={modificar}
-                                onChange={(e) => console.log(e.target.value)}>
-                                <option hidden>{datos.responsable}</option>
+                        <FloatingLabel label="Jefe Directo">
+                            <Form.Select name="jefeD" required disabled={modificar}>
+                                <option hidden>{datos.jefe_directo}</option>
                                 {highUsers.map((item) =>
                                     <option value={item.id}>{item.nombre}</option>)}
                             </Form.Select>
                         </FloatingLabel>
                     </InputGroup>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridSupervisor">
+                        <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                        <FloatingLabel label="Supervisor Funcional">
+                            <Form.Select name="supervisor" required disabled={modificar}>
+                                <option hidden>{datos.sup_funcional}</option>
+                                {highUsers.map((item) =>
+                                    <option value={item.id}>{item.nombre}</option>)}
+                            </Form.Select>
+                        </FloatingLabel>
+                    </InputGroup>
+                    {sessionStorage.getItem("rol") === "Administrador" && (
+                        <InputGroup className="mb-3" as={Col} controlId="formGridRol">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <FloatingLabel label="Rol">
+                                <Form.Select name="rol" required disabled={modificar}>
+                                    <option hidden>{datos.rol}</option>
+                                    <option>Administrador</option>
+                                    <option>Usuario</option>
+                                </Form.Select>
+                            </FloatingLabel>
+                        </InputGroup>
+                    )}
                 </Row>
-                {!modificar && (
-                    <Button variant="primary" type="submit">
-                        Enviar
-                    </Button>
-                )}
-                {((sessionStorage.getItem("user") === datos?.id) || (sessionStorage.getItem("nivel") === "Administrativo")) && (
-                    <Button variant="primary" onClick={() => estaModificando()}>
-                        Modificar datos
-                    </Button>
-                )}
-                {(sessionStorage.getItem("nivel") === "Administrativo") && (
-                    <Button onClick={() => setShow(true)}>Eliminar</Button>
-                )}
-
+                <ButtonGroup>
+                    {!modificar && (
+                        <Button variant="primary" type="submit">
+                            Enviar
+                        </Button>
+                    )}
+                    {((sessionStorage.getItem("rol") === "Administrador")) && (
+                        <>
+                            <Button variant="primary" onClick={() => estaModificando()}>
+                                {modificar ? "Modificar datos" : "Cancelar"}
+                            </Button>
+                            <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
+                        </>
+                    )}
+                    {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
+                        <Button variant="secondary" onClick={() => setCambiarCon(true)}>
+                            Cambiar Contraseña
+                        </Button>
+                    )}
+                </ButtonGroup>
             </Form>
             <Modal
                 show={show}
@@ -262,6 +321,35 @@ function DatosUsuario() {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={() => navigate("/lista")}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={cambiarCon} onHide={() => setCambiarCon(false)}>
+                <Modal.Body>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridNewPassword">
+                        <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                        <FloatingLabel label="Contraseña nueva">
+                            <Form.Control type={view ? "password" : "text"} name="newPassword"
+                                onChange={(e) => setNewPassword(e.target.value)} />
+                        </FloatingLabel>
+                        <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                    </InputGroup>
+                    <InputGroup className="mb-3" as={Col} controlId="formGridConfirmPassword">
+                        <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                        <FloatingLabel label="Confirmar contraseña nueva">
+                            <Form.Control type={view ? "password" : "text"} name="confirmPassword"
+                                onChange={(e) => setConfirmPass(e.target.value)} />
+                        </FloatingLabel>
+                        <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                    </InputGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => cambiarContrasena()} disabled={!confirmPass}>
+                        Cambiar
+                    </Button>
+                    <Button variant="secondary" onClick={() => setCambiarCon(false)}>
                         Cerrar
                     </Button>
                 </Modal.Footer>

@@ -4,14 +4,18 @@ import Calendar from 'react-calendar';
 import toast, { Toaster } from 'react-hot-toast';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Row from 'react-bootstrap/Row';
 import Sidebar from './Sidebar';
+import Button from 'react-bootstrap/Button';
 import ListaColaboradores from "./ListaColaboradores";
 
 function Usuario() {
   const [colaboradores, setColaboradores] = useState();
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
+  const [razon, setRazon] = useState("");
+  const [otraRazon, setOtraRazon] = useState("");
   const [calendarValues, setCalendarValues] = useState();
   const [select, setSelect] = useState("Trabajado");
 
@@ -69,7 +73,7 @@ function Usuario() {
       fechas: dates,
       tipo: select,
       estado: (select === "Reposo") ? "Pendiente" : "",
-      razon: "",
+      razon: otraRazon ? otraRazon : razon,
     }
     fetch("http://localhost:8000/enviar",
       {
@@ -93,7 +97,7 @@ function Usuario() {
       .then((res) => res.json())
       .then((data) => {
         data.forEach(element => {
-          fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada]);
+          fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada, element.razon]);
         });
         setFechasUsadas(fechasFormateadas);
       })
@@ -124,6 +128,7 @@ function Usuario() {
       fechas: dates,
       tipo: select,
       estado: (select === "Reposo") ? "Pendiente" : "",
+      razon: otraRazon ? otraRazon : razon,
     }
     fetch("http://localhost:8000/cambiar",
       {
@@ -134,6 +139,7 @@ function Usuario() {
     setCalendarValues([]);
     setDates([]);
     getFechas(sessionStorage.getItem("user"));
+    window.location.reload();
   }
 
   useEffect(() => {
@@ -176,17 +182,31 @@ function Usuario() {
             <option value="Reposo">Reposo</option>
           </select>
           {select === "Reposo" && (
-            <Form.Select aria-label="Default select example">
-              <option>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </Form.Select>
+            <>
+              <FloatingLabel label="Razón de reposo:">
+                <Form.Select aria-label="Default select example" required defaultValue={""}
+                  onChange={(e) => setRazon(e.target.value)}>
+                  <option hidden></option>
+                  <option>Tramite de Licencia de Conducir</option>
+                  <option>Tramite de Documentos de Identidad</option>
+                  <option>Tramites Educativos</option>
+                  <option>Fallecimiento Familiar</option>
+                  <option>Nacimiento de Hijos</option>
+                  <option>Enfermedad de Familiar Directo</option>
+                  <option value="otro">Otro (Identifique:)</option>
+                </Form.Select>
+              </FloatingLabel>
+              {razon === "otro" && (
+                <FloatingLabel label="Razón de reposo:">
+                  <Form.Control onChange={(e) => setOtraRazon(e.target.value)}/>
+                </FloatingLabel>
+              )}
+            </>
           )}
           <br />
-          <button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</button>
-          <button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</button>
-          <button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</button>
+          <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
+          <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
+          <Button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</Button>
         </Col>
       </Row>
 

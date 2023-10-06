@@ -72,7 +72,7 @@ function AgregarUsuario() {
                 body: JSON.stringify(formJson),
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json());
-            navigate("/datos", { state: { email: email } });
+        navigate("/datos", { state: { email: email } });
     }
 
     return (
@@ -178,7 +178,7 @@ function AgregarUsuario() {
                                 <option>Cooserpoz</option>
                                 <option>Dynaxtream</option>
                                 <option>Entergix Facilities</option>
-                                <option>Essential OFS, C.A.</option>
+                                <option>Essential OFS, C.A</option>
                                 <option>Integra Well Services, C.A.</option>
                                 <option>Kybaliontech</option>
                                 <option>Neoconex Pro</option>
@@ -233,13 +233,33 @@ function AgregarUsuario() {
                         </InputGroup>
                     </Row>
                     <Row>
-                        <InputGroup className="mb-3" as={Col} controlId="formGridResponsable">
+                        <InputGroup className="mb-3" as={Col} controlId="formGridJefeD">
                             <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
-                            <FloatingLabel label="Responsable">
-                                <Form.Select name="responsable" defaultValue="" required>
-                                    <option value={""} disabled hidden></option>
+                            <FloatingLabel label="Jefe Directo">
+                                <Form.Select name="jefeD" defaultValue="" required>
+                                    <option value="" disabled hidden></option>
                                     {highUsers.map((item) =>
                                         <option value={item.id}>{item.nombre}</option>)}
+                                </Form.Select>
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridSupervisor">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <FloatingLabel label="Supervisor Funcional">
+                                <Form.Select name="supervisor" defaultValue="" required>
+                                    <option value="" disabled hidden></option>
+                                    {highUsers.map((item) =>
+                                        <option value={item.id}>{item.nombre}</option>)}
+                                </Form.Select>
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridRol">
+                            <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <FloatingLabel label="Rol">
+                                <Form.Select name="rol" defaultValue="" required>
+                                    <option value="" disabled hidden></option>
+                                    <option>Administrador</option>
+                                    <option>Usuario</option>
                                 </Form.Select>
                             </FloatingLabel>
                         </InputGroup>

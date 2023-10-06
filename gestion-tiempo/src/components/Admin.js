@@ -14,7 +14,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 
 function Admin() {
-  const [colaboradores, setColaboradores] = useState();
+  const [colaboradores, setColaboradores] = useState([]);
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
   const [calendarValues, setCalendarValues] = useState();
@@ -76,6 +76,10 @@ function Admin() {
     getFechas(reviewedUser);
   }
 
+  function getRazon(fecha){
+
+  }
+
   function getFechas(user) {
     const msj = toast.loading("Enviando...");
     let fechasFormateadas = [];
@@ -85,7 +89,7 @@ function Admin() {
       .then((res) => res.json())
       .then((data) => {
         data.forEach(element => {
-          fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada]);
+          fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada, element.razon]);
         });
         setFechasUsadas(fechasFormateadas);
       })
@@ -95,8 +99,8 @@ function Admin() {
   }
 
   useEffect(() => {
-    setNivel(sessionStorage.getItem("nivel"));
-    fetch("http://localhost:8000/colaboradores")
+    setNivel(sessionStorage.getItem("rol"));
+    fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
       .then((res) => res.json())
       .then((data) => setColaboradores(data));
     document.addEventListener("keydown", (event) => {
@@ -107,12 +111,10 @@ function Admin() {
     });
   }, []);
 
-  if (nivel !== "Administrativo") return <h1>No es admin</h1>;
-
   return (
     <div className="App">
       <Toaster />
-      {colaboradores ? (
+      {colaboradores ? (colaboradores.length === 0) ? <h1>No posee colaboradores que reporten directamente a usted.</h1> : (
         <div id="admin_only">
           <Container>
             <Row>
@@ -168,10 +170,29 @@ function Admin() {
             </Table>
           )}
           {dates && (
-            <ButtonGroup>
-              <Button onClick={() => aprobarReposo()}>Aprobar</Button>
-              <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
-            </ButtonGroup>
+            <>
+            {console.log(fechasUsadas)}
+              <ButtonGroup>
+                <Button onClick={() => aprobarReposo()}>Aprobar</Button>
+                <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
+              </ButtonGroup>
+              <Table>
+                <thead>
+                  <th>Dia</th>
+                  <th>Razón</th>
+                </thead>
+                <tbody>
+                  {dates.map(e =>
+                    <tr>
+                      <td>{e}</td>
+                      <td>{fechasUsadas.find((i) => i[0] === e)[3]}</td>
+                    </tr>
+                  )}
+                </tbody>
+
+              </Table>
+            </>
+
           )}
           <br />
           <Calendar value={calendarValues}
