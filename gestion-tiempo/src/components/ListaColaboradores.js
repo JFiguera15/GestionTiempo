@@ -34,7 +34,6 @@ function ListaColaboradores() {
                     global: {value: e.target.value, matchMode: FilterMatchMode.CONTAINS}
                 })} className="sm"></Form.Control>
             </FloatingLabel>
-
             {colaboradores && (
                 <>
                     <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}

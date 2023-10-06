@@ -15,10 +15,10 @@ const preguntasOperativo = [
 ];
 
 const preguntasTactico = [
-    ["Cumple con sus compromisos con alto desempeño frecuentemente y tiende a establecerse objetivos por encima de lo esperado.","Comprende las directivas recibidas y las transmite de forma verbal, se fija objetivos altos con frecuencia y los cumple. Reacciona en función de dar solución a los obstáculos que afecten la consecución del objetivo.", "Comprende las directivas recibidas y las transmite brindando apoyo y asesoría, se fija objetivos altos y los cumple tanto en calidad como frecuencia. Supera obstáculos con diligencia para reducir la posible afectación de las metas y objetivos.", "Apoya e instrumenta las directivas recibidas transmitiendo a los otros, por medio del ejemplo, la conducta a seguir. Se fija objetivos altos y los cumple casi siempre. Previene y supera obstáculos que afecten la consecución del objetivo."],
+    ["Cumple con sus compromisos con alto desempeño frecuentemente y tiende a establecerse objetivos por encima de lo esperado.", "Comprende las directivas recibidas y las transmite de forma verbal, se fija objetivos altos con frecuencia y los cumple. Reacciona en función de dar solución a los obstáculos que afecten la consecución del objetivo.", "Comprende las directivas recibidas y las transmite brindando apoyo y asesoría, se fija objetivos altos y los cumple tanto en calidad como frecuencia. Supera obstáculos con diligencia para reducir la posible afectación de las metas y objetivos.", "Apoya e instrumenta las directivas recibidas transmitiendo a los otros, por medio del ejemplo, la conducta a seguir. Se fija objetivos altos y los cumple casi siempre. Previene y supera obstáculos que afecten la consecución del objetivo."],
     ["Puede fijar objetivos que son aceptados por el equipo desde el punto de vista técnico y general, realizando un adecuado seguimiento de lo encomendado. Sabe fragmentar tareas. Sus compañeros confían en su expertise, trabaja con energía y buen ánimo.", "El equipo busca su opinión para fijar objetivos comunes, es competente organizando las tareas y hace seguimiento de su cumplimiento. Sus compañeros confían en su expertise, trabaja con energía y buen ánimo.", "El equipo lo percibe como referencia técnica, puede llegar a fijar objetivos y realiza un adecuado seguimiento brindando feedback ocasional a los distintos integrantes. Sabe delegar tareas. Escucha a los otros ocasionalmente. Motiva a sus supervisados con relativa frecuencia, es ejemplo de ética de trabajo.", "El equipo lo percibe como líder, fija objetivos y realiza un adecuado seguimiento brindando feedback oportuno a los distintos integrantes. Sabe delegar tareas con destreza. Escucha a los otros y es escuchado. Motiva a sus supervisados, es ejemplo de valores y ética de trabajo."],
     ["Analiza relaciones de algunas partes de un problema. Casi siempre su trabajo está correcto y con frecuencia da aportes. Establece prioridades para las tareas según su urgencia y en ocasiones la importancia. Es metódico en el abordaje de sus tareas. Se apega a los procedimientos fielmente.", "Puede conectar las interacciones entre las distintas partes de un problema. Su trabajo es pulcro y con frecuencia da aportes. Establece prioridades para las tareas según su urgencia y en ocasiones la importancia. Es metódico y meticuloso en el abordaje de sus tareas. Se apega a los procedimientos y ocasionalmente sugiere mejoras menores.", "Analiza las relaciones entre las muchas partes de un problema. Identifica al menos una causa o consecuencia de las acciones que realiza. Puede planificar sus acciones. Establece prioridades en función a urgencia - importancia. Apoya la optimización de los procedimientos.", "Analiza las relaciones entre las muchas partes de un problema. Reconoce varias causas o consecuencias de las acciones. Anticipa obstáculos y prevé los próximos pasos. Su trabajo es confiable y da aportes significativos. Establece prioridades en función a urgencia - importancia. Busca optimizar los procedimientos."],
-    ["Comprende la necesidad de que todos colaboren para la mejor consecución de los objetivos generales. Se compromete en la búsqueda de logros compartidos. Privilegia el interés del grupo por encima del interés personal.","Promueve la sincronía y la colaboración entre los miembros del equipo para la mejor consecución de los objetivos generales. Cumple con sus tareas y presta ocasionalmente apoyo a los otros miembros del equipo. Establece prioridades en función a las necesidades grupales.", "Se involucra en el cumplimiento de las tareas de todos los miembros de su equipo, para lograr los objetivos compartidos. Es referente profesional y fuente de confianza para los demás. Participa en el trabajo en equipo con otras áreas de la organización.", "Por medio de sus actitudes, alienta al buen desarrollo de las tareas de todos. Tiene sólida reputación profesional y genera confianza en los demás sin descuidar sus obligaciones específicas. Promueve el trabajo en equipo con otras áreas de la organización."]
+    ["Comprende la necesidad de que todos colaboren para la mejor consecución de los objetivos generales. Se compromete en la búsqueda de logros compartidos. Privilegia el interés del grupo por encima del interés personal.", "Promueve la sincronía y la colaboración entre los miembros del equipo para la mejor consecución de los objetivos generales. Cumple con sus tareas y presta ocasionalmente apoyo a los otros miembros del equipo. Establece prioridades en función a las necesidades grupales.", "Se involucra en el cumplimiento de las tareas de todos los miembros de su equipo, para lograr los objetivos compartidos. Es referente profesional y fuente de confianza para los demás. Participa en el trabajo en equipo con otras áreas de la organización.", "Por medio de sus actitudes, alienta al buen desarrollo de las tareas de todos. Tiene sólida reputación profesional y genera confianza en los demás sin descuidar sus obligaciones específicas. Promueve el trabajo en equipo con otras áreas de la organización."]
 ];
 
 const preguntasEstrategico = [
@@ -35,29 +35,72 @@ function Evaluacion() {
     const [pageEje3, setPageEje3] = useState(1);
     const [pageEje4, setPageEje4] = useState(1);
     const [sliderVal1, setSliderVal1] = useState(0);
-    const [sliderVal2, setSliderVal2] = useState(0);
-    const [sliderVal3, setSliderVal3] = useState(0);
+    let preguntas;
     const [results, setResults] = useState({
         pregunta6: 0,
         pregunta7: 0,
         pregunta8: 0,
         pregunta9: 0,
         pregunta10: 0,
-    })
+    });
+    const location = useLocation();
+
+    const nivelActual = location.state.nivel;
+    switch (nivelActual) {
+        case "Estratégico":
+            preguntas = preguntasEstrategico;
+            break;
+        case "Táctico":
+            preguntas = preguntasTactico;
+            break;
+        default:
+            preguntas = preguntasOperativo;
+            break;
+    }
+
 
     function handleSubmit(e) {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
+        const respuestas = {};
+        respuestas.pregunta1 = preguntas[0][(formJson.pregunta1 / 1.875) - 1];
+        respuestas.pregunta2 = preguntas[1][(formJson.pregunta2 / 1.875) - 1];
+        respuestas.pregunta3 = preguntas[2][(formJson.pregunta3 / 1.875) - 1];
+        respuestas.pregunta4 = preguntas[3][(formJson.pregunta4 / 1.875) - 1];
+        respuestas.pregunta5 = document.getElementById("tabla1").rows[1 + rowPicker(formJson.pregunta5)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.pregunta6 = document.getElementById("tabla2").rows[1 + rowPicker(formJson.pregunta6)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.pregunta7 = document.getElementById("tabla3").rows[1 + rowPicker(formJson.pregunta7)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.pregunta8 = document.getElementById("tabla4").rows[1 + rowPicker(formJson.pregunta8)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.pregunta9 = document.getElementById("tabla5").rows[1 + rowPicker(formJson.pregunta9)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.pregunta10 = document.getElementById("tabla6").rows[1 + rowPicker(formJson.pregunta10)].getElementsByTagName("td")[1].innerHTML;
+        console.log(respuestas);
         formJson.pregunta5 = (formJson.pregunta5 / 100) * 40;
         formJson.pregunta6 = (formJson.pregunta6 / 100) * 6.66;
         formJson.pregunta7 = (formJson.pregunta7 / 100) * 6.66;
         formJson.pregunta8 = (formJson.pregunta8 / 100) * 6.66;
         formJson.pregunta9 = (formJson.pregunta9 / 100) * 5;
         formJson.pregunta10 = (formJson.pregunta10 / 100) * 5;
-        formJson.total = Object.values(formJson).reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
-        console.log(formJson);
+        respuestas.total = Object.values(formJson).reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+        respuestas.evaluado = location.state.id;
+        respuestas.evaluador = sessionStorage.getItem("user");
+        console.log(respuestas);
+        fetch("http://localhost:8000/enviar_evaluacion",
+            {
+                method: "POST",
+                body: JSON.stringify(respuestas),
+                headers: { "Content-Type": "application/json" }
+            }).then((res) => res.json());
+        console.log(respuestas);
+    }
+
+    function rowPicker(x){
+        if (x <= 25) return 0;
+        else if (x <= 49) return 1;
+        else if (x <= 74) return 2;
+        else if (x <= 91) return 3;
+        else if (x <= 100) return 4;
     }
 
     let eje1 = [];
@@ -95,60 +138,60 @@ function Evaluacion() {
         <>
             <Form onSubmit={handleSubmit}>
                 <Container>
-                <h2>Eje I</h2>
-                <Table striped hidden={pageEje1 - 1 !== 0}>
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {preguntasOperativo[0].map((item, index) =>
-                        <tr><td><Form.Check type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} required /></td></tr>)}
-                    </tbody>
-                </Table>
-                <Table striped hidden={pageEje1 - 1 !== 1}>
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {preguntasOperativo[0].map((item, index) =>
-                        <tr><td><Form.Check type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
-                    </tbody>
-                </Table>
+                    <h2>Eje I</h2>
+                    <Table striped hidden={pageEje1 - 1 !== 0}>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {preguntas[0].map((item, index) =>
+                                <tr><td><Form.Check type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} /></td></tr>)}
+                        </tbody>
+                    </Table>
+                    <Table striped hidden={pageEje1 - 1 !== 1}>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {preguntas[1].map((item, index) =>
+                                <tr><td><Form.Check type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
+                        </tbody>
+                    </Table>
 
-                <Table striped hidden={pageEje1 - 1 !== 2}>
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {preguntasOperativo[1].map((item, index) =>
-                        <tr><td><Form.Check type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
-                    </tbody>
-                </Table>
+                    <Table striped hidden={pageEje1 - 1 !== 2}>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {preguntas[2].map((item, index) =>
+                                <tr><td><Form.Check type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
+                        </tbody>
+                    </Table>
 
-                <Table striped hidden={pageEje1 - 1 !== 3}>
-                    <thead>
-                        <tr>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {preguntasOperativo[1].map((item, index) =>
-                        <tr><td><Form.Check type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
-                    </tbody>
-                </Table>
-                <Pagination>{eje1}</Pagination>
+                    <Table striped hidden={pageEje1 - 1 !== 3}>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {preguntas[3].map((item, index) =>
+                                <tr><td><Form.Check type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
+                        </tbody>
+                    </Table>
+                    <Pagination>{eje1}</Pagination>
                 </Container>
                 <Container>
                     <h2>Eje II</h2>
                     <Form.Group>
                         <Form.Label>
-                        <Table striped>
+                            <Table striped id="tabla1">
                                 <thead>
                                     <tr>
                                         <th>Puntuación</th>
@@ -187,36 +230,36 @@ function Evaluacion() {
                 <Container>
                     <h2>Eje III</h2>
                     <Form.Group hidden={pageEje3 - 1 !== 0}>
-                        <Form.Label><Table striped>
-                                <thead>
-                                    <tr>
-                                        <th>Puntuación</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1% - 25%</td>
-                                        <td>El colaborador tiene un historial anual cumplimiento de los protocolos de HSE-Q igual o menor al 70% del cumplimiento.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>26% - 49%</td>
-                                        <td>El colaborador tiene un historial anual cumplimiento de los protocolos de HSE-Q entre el 71% al 80% del cumplimiento.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>50% - 74%</td>
-                                        <td>El colaborador cumple sus protocolos de HSE-Q en un 90%.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>75% - 91%</td>
-                                        <td>El colaborador cumple con sus protocolos de HSE-Q en un 100%.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>92% - 100%</td>
-                                        <td>El colaborador excede el cumplimiento de sus protocolos de HSEQ por encima de un 10% de lo establecido. </td>
-                                    </tr>
-                                </tbody>
-                            </Table>{results.pregunta6}%</Form.Label>
+                        <Form.Label><Table striped id="tabla2">
+                            <thead>
+                                <tr>
+                                    <th>Puntuación</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1% - 25%</td>
+                                    <td>El colaborador tiene un historial anual cumplimiento de los protocolos de HSE-Q igual o menor al 70% del cumplimiento.</td>
+                                </tr>
+                                <tr>
+                                    <td>26% - 49%</td>
+                                    <td>El colaborador tiene un historial anual cumplimiento de los protocolos de HSE-Q entre el 71% al 80% del cumplimiento.</td>
+                                </tr>
+                                <tr>
+                                    <td>50% - 74%</td>
+                                    <td>El colaborador cumple sus protocolos de HSE-Q en un 90%.</td>
+                                </tr>
+                                <tr>
+                                    <td>75% - 91%</td>
+                                    <td>El colaborador cumple con sus protocolos de HSE-Q en un 100%.</td>
+                                </tr>
+                                <tr>
+                                    <td>92% - 100%</td>
+                                    <td>El colaborador excede el cumplimiento de sus protocolos de HSEQ por encima de un 10% de lo establecido. </td>
+                                </tr>
+                            </tbody>
+                        </Table>{results.pregunta6}%</Form.Label>
                         <Form.Range name="pregunta6" onChange={(e) => {
                             setResults({
                                 ...results,
@@ -227,36 +270,36 @@ function Evaluacion() {
                     </Form.Group>
 
                     <Form.Group hidden={pageEje3 - 1 !== 1}>
-                        <Form.Label><Table striped>
-                                <thead>
-                                    <tr>
-                                        <th>Puntuación</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1% - 25%</td>
-                                        <td>El colaborador solo participa en las actividades de HSE-Q bajo exigencia de la organización.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>26% - 49%</td>
-                                        <td>El colaborador participa de forma voluntaria ocasionalmente en las actividades de HSE-Q. </td>
-                                    </tr>
-                                    <tr>
-                                        <td>50% - 74%</td>
-                                        <td>El colaborador participa de forma voluntaria frecuentemente en las actividades de HSE-Q. </td>
-                                    </tr>
-                                    <tr>
-                                        <td>75% - 91%</td>
-                                        <td>El colaborador participa de forma voluntaria frecuentemente en actividades de HSE-Q. Genera valor agregado (propone sugerencias, iniciativas) en materia de seguridad y calidad.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>92% - 100%</td>
-                                        <td>El colaborador participa activamente y siempre en las actividades de HSE-Q. Genera valor agregado (propone sugerencias, iniciativas) en materia de seguridad y calidad.</td>
-                                    </tr>
-                                </tbody>
-                            </Table>{results.pregunta7}%</Form.Label>
+                        <Form.Label><Table striped id="tabla3">
+                            <thead>
+                                <tr>
+                                    <th>Puntuación</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1% - 25%</td>
+                                    <td>El colaborador solo participa en las actividades de HSE-Q bajo exigencia de la organización.</td>
+                                </tr>
+                                <tr>
+                                    <td>26% - 49%</td>
+                                    <td>El colaborador participa de forma voluntaria ocasionalmente en las actividades de HSE-Q. </td>
+                                </tr>
+                                <tr>
+                                    <td>50% - 74%</td>
+                                    <td>El colaborador participa de forma voluntaria frecuentemente en las actividades de HSE-Q. </td>
+                                </tr>
+                                <tr>
+                                    <td>75% - 91%</td>
+                                    <td>El colaborador participa de forma voluntaria frecuentemente en actividades de HSE-Q. Genera valor agregado (propone sugerencias, iniciativas) en materia de seguridad y calidad.</td>
+                                </tr>
+                                <tr>
+                                    <td>92% - 100%</td>
+                                    <td>El colaborador participa activamente y siempre en las actividades de HSE-Q. Genera valor agregado (propone sugerencias, iniciativas) en materia de seguridad y calidad.</td>
+                                </tr>
+                            </tbody>
+                        </Table>{results.pregunta7}%</Form.Label>
                         <Form.Range name="pregunta7" onChange={(e) => {
                             setResults({
                                 ...results,
@@ -267,36 +310,36 @@ function Evaluacion() {
                     </Form.Group>
 
                     <Form.Group hidden={pageEje3 - 1 !== 2}>
-                        <Form.Label><Table striped>
-                                <thead>
-                                    <tr>
-                                        <th>Puntuación</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1% - 25%</td>
-                                        <td>El colaborador ha estado involucrado por lo menos en un (1) incidente de seguridad y/o calidad de gravedad leve, con llamados de atención y/o amonestaciones por escrito, ha requerido participación en el Programa de Reforzamiento en HSE-Q.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>26% - 49%</td>
-                                        <td>El colaborador ha recibido por lo menos una (1) amonestación escrita por desvíos de la norma, ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>50% - 74%</td>
-                                        <td>El colaborador ha recibido por lo menos un (1) llamado de atención verbal por desvíos de la norma, ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>75% - 91%</td>
-                                        <td>El colaborador nunca ha estado involucrado en incidentes de seguridad y/o calidad, tampoco ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>92% - 100%</td>
-                                        <td>El colaborador nunca ha estado involucrado en incidentes de seguridad y/o calidad, ayuda en su prevención, tampoco ha necesitado participar en el Programa de Reforzamiento en HSE-Q. sirve de mentor en materia de HSE-Q</td>
-                                    </tr>
-                                </tbody>
-                            </Table>{results.pregunta8}%</Form.Label>
+                        <Form.Label><Table striped id="tabla4">
+                            <thead>
+                                <tr>
+                                    <th>Puntuación</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1% - 25%</td>
+                                    <td>El colaborador ha estado involucrado por lo menos en un (1) incidente de seguridad y/o calidad de gravedad leve, con llamados de atención y/o amonestaciones por escrito, ha requerido participación en el Programa de Reforzamiento en HSE-Q.</td>
+                                </tr>
+                                <tr>
+                                    <td>26% - 49%</td>
+                                    <td>El colaborador ha recibido por lo menos una (1) amonestación escrita por desvíos de la norma, ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
+                                </tr>
+                                <tr>
+                                    <td>50% - 74%</td>
+                                    <td>El colaborador ha recibido por lo menos un (1) llamado de atención verbal por desvíos de la norma, ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
+                                </tr>
+                                <tr>
+                                    <td>75% - 91%</td>
+                                    <td>El colaborador nunca ha estado involucrado en incidentes de seguridad y/o calidad, tampoco ha necesitado participar en el Programa de Reforzamiento en HSE-Q.</td>
+                                </tr>
+                                <tr>
+                                    <td>92% - 100%</td>
+                                    <td>El colaborador nunca ha estado involucrado en incidentes de seguridad y/o calidad, ayuda en su prevención, tampoco ha necesitado participar en el Programa de Reforzamiento en HSE-Q. sirve de mentor en materia de HSE-Q</td>
+                                </tr>
+                            </tbody>
+                        </Table>{results.pregunta8}%</Form.Label>
                         <Form.Range name="pregunta8" onChange={(e) => {
                             setResults({
                                 ...results,
@@ -310,36 +353,36 @@ function Evaluacion() {
                 <Container>
                     <h2>Eje IV</h2>
                     <Form.Group hidden={pageEje4 - 1 !== 0}>
-                        <Form.Label><Table striped>
-                                <thead>
-                                    <tr>
-                                        <th>Puntuación</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1% - 25%</td>
-                                        <td>El colaborador tiene educación y/o experiencia muy por debajo de lo esperado para la posición que ocupa.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>26% - 49%</td>
-                                        <td>El colaborador tiene educación y/o experiencia por debajo de lo esperado para la posición que ocupa.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>50% - 74%</td>
-                                        <td>El colaborador tiene educación y/o experiencia dentro de lo esperado para la posición que ocupa.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>75% - 91%</td>
-                                        <td>El colaborador tiene educación y/o experiencia por encima de lo esperado para la posición que ocupa.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>92% - 100%</td>
-                                        <td>El colaborador tiene educación y/o experiencia muy por encima de lo esperado para la posición que ocupa.</td>
-                                    </tr>
-                                </tbody>
-                            </Table>{results.pregunta9}%</Form.Label>
+                        <Form.Label><Table striped id="tabla5">
+                            <thead>
+                                <tr>
+                                    <th>Puntuación</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1% - 25%</td>
+                                    <td>El colaborador tiene educación y/o experiencia muy por debajo de lo esperado para la posición que ocupa.</td>
+                                </tr>
+                                <tr>
+                                    <td>26% - 49%</td>
+                                    <td>El colaborador tiene educación y/o experiencia por debajo de lo esperado para la posición que ocupa.</td>
+                                </tr>
+                                <tr>
+                                    <td>50% - 74%</td>
+                                    <td>El colaborador tiene educación y/o experiencia dentro de lo esperado para la posición que ocupa.</td>
+                                </tr>
+                                <tr>
+                                    <td>75% - 91%</td>
+                                    <td>El colaborador tiene educación y/o experiencia por encima de lo esperado para la posición que ocupa.</td>
+                                </tr>
+                                <tr>
+                                    <td>92% - 100%</td>
+                                    <td>El colaborador tiene educación y/o experiencia muy por encima de lo esperado para la posición que ocupa.</td>
+                                </tr>
+                            </tbody>
+                        </Table>{results.pregunta9}%</Form.Label>
                         <Form.Range name="pregunta9" onChange={(e) => {
                             setResults({
                                 ...results,
@@ -349,36 +392,36 @@ function Evaluacion() {
                         </Form.Range>
                     </Form.Group>
                     <Form.Group hidden={pageEje4 - 1 !== 1}>
-                        <Form.Label><Table striped>
-                                <thead>
-                                    <tr>
-                                        <th>Puntuación</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1% - 25%</td>
-                                        <td>El colaborador tiene poco conocimiento del trabajo que realiza.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>26% - 49%</td>
-                                        <td>El colaborador tiene conocimiento básico del trabajo que realiza.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>50% - 74%</td>
-                                        <td>El colaborador tiene conocimiento adecuado del trabajo que realiza.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>75% - 91%</td>
-                                        <td>El colaborador tiene amplio conocimiento del trabajo que realiza.</td>
-                                    </tr>
-                                    <tr>
-                                        <td>92% - 100%</td>
-                                        <td>El colaborador tiene profundo y excelente conocimiento del trabajo que realiza.</td>
-                                    </tr>
-                                </tbody>
-                            </Table>{results.pregunta10}%</Form.Label>
+                        <Form.Label><Table striped id="tabla6">
+                            <thead>
+                                <tr>
+                                    <th>Puntuación</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1% - 25%</td>
+                                    <td>El colaborador tiene poco conocimiento del trabajo que realiza.</td>
+                                </tr>
+                                <tr>
+                                    <td>26% - 49%</td>
+                                    <td>El colaborador tiene conocimiento básico del trabajo que realiza.</td>
+                                </tr>
+                                <tr>
+                                    <td>50% - 74%</td>
+                                    <td>El colaborador tiene conocimiento adecuado del trabajo que realiza.</td>
+                                </tr>
+                                <tr>
+                                    <td>75% - 91%</td>
+                                    <td>El colaborador tiene amplio conocimiento del trabajo que realiza.</td>
+                                </tr>
+                                <tr>
+                                    <td>92% - 100%</td>
+                                    <td>El colaborador tiene profundo y excelente conocimiento del trabajo que realiza.</td>
+                                </tr>
+                            </tbody>
+                        </Table>{results.pregunta10}%</Form.Label>
                         <Form.Range name="pregunta10" onChange={(e) => {
                             setResults({
                                 ...results,

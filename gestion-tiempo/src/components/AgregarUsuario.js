@@ -215,7 +215,7 @@ function AgregarUsuario() {
                             <FloatingLabel label="Nivel">
                                 <Form.Select name="nivel" defaultValue="" required>
                                     <option value={""} disabled hidden></option>
-                                    <option>Administrativo</option>
+                                    <option>Operativo</option>
                                     <option>Estratégico</option>
                                     <option>Táctico</option>
                                 </Form.Select>

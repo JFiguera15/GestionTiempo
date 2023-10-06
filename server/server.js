@@ -115,11 +115,22 @@ app.post('/agregar_colaborador', (req, res) => {
         });
 });
 
+app.post('/enviar_evaluacion', (req, res) => {
+    let data = req.body;
+    const sql = "INSERT INTO evaluacion VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    connection.query(sql,
+        [data.evaluado, data.total, data.evaluador,
+        data.pregunta1, data.pregunta2, data.pregunta3, data.pregunta4, data.pregunta5,
+        data.pregunta6, data.pregunta7, data.pregunta8, data.pregunta9, data.pregunta10], function (err, result) {
+            if (err) throw err;
+        });
+});
+
 app.post('/actualizar_colaborador', (req, res) => {
     let data = req.body;
-    const sql = "UPDATE colaboradores SET " 
-    + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?, jefe_directo = ?, sup_funcional = ?, rol = ?" 
-    +  " WHERE id = ?";
+    const sql = "UPDATE colaboradores SET "
+        + "nombre = ?, empresa = ?, nivel = ?, tipo_horario = ?, nacionalidad = ?, telefono_p = ?, telefono_s = ?, direccion = ?, departamento = ?, cargo = ?, cedula = ?, genero = ?, fecha_nacimiento = ?, fecha_ingreso = ?, jefe_directo = ?, sup_funcional = ?, rol = ?"
+        + " WHERE id = ?";
     connection.query(sql,
         [data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
@@ -127,7 +138,7 @@ app.post('/actualizar_colaborador', (req, res) => {
         data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, data.id], function (err, result) {
             if (err) throw err;
         });
-    
+
 });
 
 app.post('/cambiar_password', (req, res) => {
@@ -139,15 +150,15 @@ app.post('/cambiar_password', (req, res) => {
         [data.password, data.id], function (err, result) {
             if (err) throw err;
         });
-    
+
 });
 
 app.post('/eliminar_colaborador', (req, res) => {
     let data = req.body;
     const sql = "DELETE FROM colaboradores where id = ?";
     connection.query(sql, data, function (err, result) {
-            if (err) throw err;
-        });
+        if (err) throw err;
+    });
 });
 
 app.post('/enviar', (req, res) => {

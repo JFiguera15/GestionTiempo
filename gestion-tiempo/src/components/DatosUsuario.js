@@ -52,6 +52,10 @@ function DatosUsuario() {
         setModificar(!modificar);
     }
 
+    function evaluar(){
+        navigate("/evaluacion", {state : {id: datos.id, nivel: datos.nivel}})
+    }
+
     useEffect(() => {
         fetch("http://localhost:8000/datos_usuario?id=" + getUser())
             .then((res) => res.json())
@@ -223,7 +227,7 @@ function DatosUsuario() {
                         <FloatingLabel label="Nivel">
                             <Form.Select name="nivel" required disabled={modificar}>
                                 <option hidden>{datos.nivel}</option>
-                                <option>Administrativo</option>
+                                <option>Operativo</option>
                                 <option>Estratégico</option>
                                 <option>Táctico</option>
                             </Form.Select>
@@ -286,6 +290,7 @@ function DatosUsuario() {
                                 {modificar ? "Modificar datos" : "Cancelar"}
                             </Button>
                             <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
+                            <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                         </>
                     )}
                     {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
