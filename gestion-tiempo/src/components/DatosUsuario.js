@@ -25,6 +25,7 @@ function DatosUsuario() {
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
+    const [fueEvaluado, setFueEvaluado] = useState(0);
     const [view, setView] = useState(true);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -52,8 +53,8 @@ function DatosUsuario() {
         setModificar(!modificar);
     }
 
-    function evaluar(){
-        navigate("/evaluacion", {state : {id: datos.id, nivel: datos.nivel}})
+    function evaluar() {
+        navigate("/evaluacion", { state: { id: datos.id, nivel: datos.nivel } })
     }
 
     useEffect(() => {
@@ -67,11 +68,17 @@ function DatosUsuario() {
             .then((data) => {
                 setDepartamentos(data);
             });
-        fetch("http://localhost:8000/usuarios_alto_nivel")
+        fetch("http://localhost:8000/colaboradoes_menos?id=" + getUser())
             .then((res) => res.json())
             .then((data) => {
                 setHighUsers(data);
             });
+        if (location.state?.email) {
+            fetch("http://localhost:8000/evaluado_por?evaluado=" + getUser() + "&evaluador=" + sessionStorage.getItem("user"))
+                .then((res) => res.json())
+                .then((data) => setFueEvaluado(data.length));
+        }
+
     }, [reload]);
 
     function handleSubmit(e) {
@@ -115,7 +122,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row>
+                <Row fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridNombre">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Nombre">
@@ -141,7 +148,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row>
+                <Row fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoP">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Teléfono principal">
@@ -155,7 +162,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row>
+                <Row fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridFechaN">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Fecha de Nacimiento">
@@ -203,7 +210,7 @@ function DatosUsuario() {
                     </FloatingLabel>
                 </InputGroup>
 
-                <Row className="mb-3">
+                <Row className="mb-3" fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridDepartamento">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-building"></i></InputGroup.Text>
                         <FloatingLabel label="Departamento">
@@ -244,7 +251,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row>
+                <Row fluid>
                     <InputGroup className="mb-3" as={Col} controlId="formGridJefeD">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
                         <FloatingLabel label="Jefe Directo">
@@ -290,9 +297,13 @@ function DatosUsuario() {
                                 {modificar ? "Modificar datos" : "Cancelar"}
                             </Button>
                             <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
-                            <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
+
                         </>
                     )}
+                    {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
+                        && (!fueEvaluado) && (
+                            <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
+                        )}
                     {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
                         <Button variant="secondary" onClick={() => setCambiarCon(true)}>
                             Cambiar Contraseña

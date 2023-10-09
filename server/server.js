@@ -48,6 +48,13 @@ app.get('/colaboradores_no_administrativos', (req, res) => {
     });
 });
 
+app.get('/colaboradoes_menos', (req, res) => {
+    connection.query("SELECT * FROM colaboradores WHERE NOT id = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/datos_usuario', (req, res) => {
     connection.query("SELECT * FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
@@ -64,6 +71,13 @@ app.get('/usuarios_alto_nivel', (req, res) => {
 
 app.get('/colaboradores_que_reportan', (req, res) => {
     connection.query("SELECT * FROM colaboradores WHERE jefe_directo = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/evaluado_por', (req, res) => {
+    connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador] ,function (err, result) {
         if (err) throw err;
         res.json(result);
     });
