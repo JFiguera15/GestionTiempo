@@ -38,7 +38,7 @@ function AgregarUsuario() {
             .then((data) => {
                 setDatos(data);
             });
-        fetch("http://localhost:8000/usuarios_alto_nivel")
+        fetch("http://localhost:8000/colaboradores_nombre_correo")
             .then((res) => res.json())
             .then((data) => {
                 setHighUsers(data);

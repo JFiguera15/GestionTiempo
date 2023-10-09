@@ -41,15 +41,15 @@ app.get('/colaboradores', (req, res) => {
     });
 });
 
-app.get('/colaboradores_no_administrativos', (req, res) => {
-    connection.query("SELECT * FROM COLABORADORES WHERE NOT nivel =\'Administrativo\'", function (err, result) {
+app.get('/colaboradores_nombre_correo', (req, res) => {
+    connection.query("SELECT nombre, id FROM COLABORADORES", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
 });
 
-app.get('/colaboradoes_menos', (req, res) => {
-    connection.query("SELECT * FROM colaboradores WHERE NOT id = \'" + req.query.id + "\'", function (err, result) {
+app.get('/colaboradores_menos', (req, res) => {
+    connection.query("SELECT nombre, id FROM colaboradores WHERE NOT id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -61,6 +61,7 @@ app.get('/nombre_colaborador', (req, res) => {
         res.json(result);
     });
 });
+
 
 app.get('/datos_usuario', (req, res) => {
     connection.query("SELECT * FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {

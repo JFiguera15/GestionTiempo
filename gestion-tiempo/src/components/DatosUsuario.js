@@ -69,7 +69,7 @@ function DatosUsuario() {
             .then((data) => {
                 setDepartamentos(data);
             });
-        fetch("http://localhost:8000/colaboradoes_menos?id=" + getUser())
+        fetch("http://localhost:8000/colaboradores_menos?id=" + getUser())
             .then((res) => res.json())
             .then((data) => {
                 setHighUsers(data);
