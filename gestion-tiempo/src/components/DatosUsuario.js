@@ -10,6 +10,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
+import ResultadosEvaluacion from "./ResultadosEvaluacion";
 
 
 function DatosUsuario() {
@@ -20,15 +21,15 @@ function DatosUsuario() {
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
     const [borrado, setBorrado] = useState(false);
+    const [verEval, setVerEval] = useState(false);
     const [cambiarCon, setCambiarCon] = useState(false);
     const [highUsers, setHighUsers] = useState([]);
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
-    const [fueEvaluado, setFueEvaluado] = useState(0);
+    const [evaluacion, setEvaluacion] = useState([]);
     const [view, setView] = useState(true);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -76,7 +77,7 @@ function DatosUsuario() {
         if (location.state?.email) {
             fetch("http://localhost:8000/evaluado_por?evaluado=" + getUser() + "&evaluador=" + sessionStorage.getItem("user"))
                 .then((res) => res.json())
-                .then((data) => setFueEvaluado(data.length));
+                .then((data) => setEvaluacion(data[0]));
         }
 
     }, [reload]);
@@ -301,8 +302,12 @@ function DatosUsuario() {
                         </>
                     )}
                     {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                        && (!fueEvaluado) && (
+                        && !evaluacion && (
                             <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
+                        )}
+                    {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
+                        && evaluacion && (
+                            <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
                         )}
                     {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
                         <Button variant="secondary" onClick={() => setCambiarCon(true)}>
@@ -311,6 +316,22 @@ function DatosUsuario() {
                     )}
                 </ButtonGroup>
             </Form>
+            <Modal
+                show={verEval}
+                onHide={() => setVerEval(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Eliminar usuario?</Modal.Title>
+                </Modal.Header>
+                {evaluacion && (
+                    <ResultadosEvaluacion resultados={evaluacion} />
+                )}
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setVerEval(false)}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <Modal
                 show={show}
                 onHide={handleClose}

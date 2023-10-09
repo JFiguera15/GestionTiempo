@@ -65,6 +65,7 @@ function AgregarUsuario() {
         const formData = new FormData(form);
         formData.append("id", email);
         formData.append("password", password);
+        formData.append("evaluando", "");
         const formJson = Object.fromEntries(formData.entries());
         fetch("http://localhost:8000/agregar_colaborador",
             {

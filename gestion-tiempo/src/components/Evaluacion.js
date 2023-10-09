@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/esm/Container";
 import Table from 'react-bootstrap/Table';
+import Modal from 'react-bootstrap/Modal';
 
 const preguntasOperativo = [
     ["Cumple con sus compromisos con desempeño promedio y se establece objetivos dentro de lo esperado.", "Cumple los compromisos con buen desempeño ocasionalmente y se establece objetivos dentro de lo esperado.", "Cumple con frecuencia los compromisos mostrando buen desempeño y tiende a establecerse objetivos por encima de lo esperado.", "Cumple con sus compromisos con alto desempeño frecuentemente y tiende a establecerse objetivos por encima de lo esperado."],
@@ -34,7 +35,10 @@ function Evaluacion() {
     const [pageEje1, setPageEje1] = useState(1);
     const [pageEje3, setPageEje3] = useState(1);
     const [pageEje4, setPageEje4] = useState(1);
+    const [show, setShow] = useState(false);
+    const [confirm, setConfirm] = useState(false);
     const [sliderVal1, setSliderVal1] = useState(0);
+    const navigate = useNavigate();
     let preguntas;
     const [results, setResults] = useState({
         pregunta6: 0,
@@ -59,9 +63,8 @@ function Evaluacion() {
     }
 
 
-    function handleSubmit(e) {
-        e.preventDefault();
-        const form = e.target;
+    function handleSubmit() {
+        const form = document.getElementById("form");
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
         const respuestas = {};
@@ -92,10 +95,10 @@ function Evaluacion() {
                 body: JSON.stringify(respuestas),
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json());
-        console.log(respuestas);
+        navigate("/datos", { state: { email: location.state.id } })
     }
 
-    function rowPicker(x){
+    function rowPicker(x) {
         if (x <= 25) return 0;
         else if (x <= 49) return 1;
         else if (x <= 74) return 2;
@@ -136,7 +139,7 @@ function Evaluacion() {
 
     return (
         <>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} id="form">
                 <Container>
                     <h2>Eje I</h2>
                     <Table striped hidden={pageEje1 - 1 !== 0}>
@@ -432,8 +435,26 @@ function Evaluacion() {
                     </Form.Group>
                     <Pagination>{eje4}</Pagination>
                 </Container>
-                <Button type="submit">Submit</Button>
+                <Button onClick={() => setShow(true)}>Enviar</Button>
             </Form>
+
+            <Modal
+                show={show}
+                onHide={() => setShow(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>¿Enviar evaluación?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Los resultados no se pueden cambiar una vez enviados.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleSubmit}>Enviar</Button>
+                    <Button variant="secondary" onClick={() => setShow(false)}>
+                        Cancelar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
         </>
     )

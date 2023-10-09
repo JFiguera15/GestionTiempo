@@ -55,6 +55,13 @@ app.get('/colaboradoes_menos', (req, res) => {
     });
 });
 
+app.get('/nombre_colaborador', (req, res) => {
+    connection.query("SELECT nombre FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/datos_usuario', (req, res) => {
     connection.query("SELECT * FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
