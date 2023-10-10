@@ -71,6 +71,10 @@ function Usuario() {
   };
 
   function enviarFechas() {
+    if (select === "Trabajado");
+    if (select === "Libre");
+    if (select === "Reposo");
+
     const body = {
       id: sessionStorage.getItem("user"),
       fechas: dates,
