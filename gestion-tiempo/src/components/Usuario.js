@@ -15,6 +15,7 @@ function Usuario() {
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
   const [razon, setRazon] = useState("");
+  const [diasComp, setDiasComp] = useState(0); 
   const [otraRazon, setOtraRazon] = useState("");
   const [calendarValues, setCalendarValues] = useState();
   const [select, setSelect] = useState("Trabajado");
@@ -58,12 +59,14 @@ function Usuario() {
   }
 
   const getDaysArray = function (start, end) {
+    let weekends = 0;
     for (var arr = [], dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
       if (!fechasUsadas.includes(new Date(dt).toLocaleDateString("sv"))) {
+        if(dt.getDay() === 0 || dt.getDay() === 6) weekends++;   
         arr.push(new Date(dt).toLocaleDateString("sv"));
       }
-
     }
+    setDiasComp(weekends);
     return arr;
   };
 
@@ -120,6 +123,7 @@ function Usuario() {
     setCalendarValues([]);
     setDates([]);
     getFechas(sessionStorage.getItem("user"));
+    setDiasComp(0);
   }
 
   function cambiarFechas() {
@@ -139,6 +143,7 @@ function Usuario() {
     setCalendarValues([]);
     setDates([]);
     getFechas(sessionStorage.getItem("user"));
+    setDiasComp(0);
     window.location.reload();
   }
 
@@ -148,6 +153,7 @@ function Usuario() {
       if (event.key === "Escape") {
         setDates();
         setCalendarValues([]);
+        setDiasComp(0);
       }
     });
   }, []);
@@ -161,6 +167,7 @@ function Usuario() {
         </Col>
         <Col xs={10}>
           <h1>Usuario</h1>
+          <h1>{diasComp}</h1>
           <br />
           <Calendar value={calendarValues}
             onChange={(e) => {
