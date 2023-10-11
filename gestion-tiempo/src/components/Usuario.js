@@ -132,7 +132,6 @@ function Usuario() {
           fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada, element.razon]);
         });
         setFechasUsadas(fechasFormateadas);
-
       })
       .then(() => {
         toast.dismiss(msj);
@@ -140,14 +139,6 @@ function Usuario() {
   }
 
   function borrarFechas() {
-    let dias = 0;
-    for (let i = 0; i <= dates.length; i++) {
-      fechasUsadas.forEach((item) => {
-        if (item[0] === dates[i] && item[1] === "Trabajado" && (new Date(dates[i]).getDay() === 5 || new Date(dates[i]).getDay() === 6)) {
-          dias++;
-        }
-      })
-    }
     const body = {
       id: sessionStorage.getItem("user"),
       fechas: dates,
@@ -165,36 +156,34 @@ function Usuario() {
   }
 
   function cambiarFechas() {
-    let dias = 0;
-    if (select === "Trabajado") dias += diasComp;
-    else {
-      for (let i = 0; i <= dates.length; i++) {
-        fechasUsadas.forEach((item) => {
-          if (item[0] === dates[i] && item[1] === "Trabajado" && (new Date(dates[i]).getDay() === 5 || new Date(dates[i]).getDay() === 6)) {
-            dias++;
-          }
-        })
+    let diasHabiles = 0;
+    if (razon === "Vacaciones") {
+      dates.forEach((item) => {
+        if (!(new Date(item).getDay() === 6 || new Date(item).getDay() === 5)) diasHabiles++;
+      })
+    };
+    if (diasHabiles <= diasVac) {
+      const body = {
+        id: sessionStorage.getItem("user"),
+        fechas: dates,
+        tipo: select,
+        estado: (select === "Reposo") ? "Pendiente" : "",
+        razon: otraRazon ? otraRazon : razon,
       }
+      fetch("http://localhost:8000/cambiar",
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" }
+        }).then((res) => res.json());
+      setCalendarValues([]);
+      setDates([]);
+      getFechas(sessionStorage.getItem("user"));
+      setDiasComp(0);
+      window.location.reload();
+    } else {
+      alert("No tiene suficientes dias de vacaciones disponibles");
     }
-
-    const body = {
-      id: sessionStorage.getItem("user"),
-      fechas: dates,
-      tipo: select,
-      estado: (select === "Reposo") ? "Pendiente" : "",
-      razon: otraRazon ? otraRazon : razon,
-    }
-    fetch("http://localhost:8000/cambiar",
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
-      }).then((res) => res.json());
-    setCalendarValues([]);
-    setDates([]);
-    getFechas(sessionStorage.getItem("user"));
-    setDiasComp(0);
-    window.location.reload();
   }
 
   useEffect(() => {

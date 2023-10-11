@@ -17,8 +17,9 @@ function Admin() {
   const [colaboradores, setColaboradores] = useState([]);
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
+  const [diasVac, setDiasVac] = useState(0);
+  const [diasComp, setDiasComp] = useState(0);
   const [calendarValues, setCalendarValues] = useState();
-  const [nivel, setNivel] = useState();
   const [reviewedUser, setReviewedUser] = useState();
 
   function writeClass(date) {
@@ -76,8 +77,30 @@ function Admin() {
     getFechas(reviewedUser);
   }
 
-  function getRazon(fecha){
+  function calculateCompensatoryDays() {
+    let dias = 0;
+    fechasUsadas.forEach((item) => {
+      if (item[1] === "Trabajado" && ((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) dias++;
+    })
+    return dias;
+  }
 
+  function getVacationDays(dias, totalVac) {
+    let vacationDays = diasVac;
+    vacationDays += dias;
+    let diasHabiles = 0;
+    fechasUsadas.forEach((item) => {
+      if (item[3] === "Vacaciones" && !((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) diasHabiles++;
+    })
+    if (diasHabiles <= vacationDays) {
+      if (diasHabiles > dias) {
+        diasHabiles -= dias;
+        setDiasComp(0);
+        setDiasVac(diasVac - diasHabiles);
+      } else {
+        setDiasComp(dias - diasHabiles);
+      }
+    }
   }
 
   function getFechas(user) {
@@ -99,7 +122,6 @@ function Admin() {
   }
 
   useEffect(() => {
-    setNivel(sessionStorage.getItem("rol"));
     fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
       .then((res) => res.json())
       .then((data) => setColaboradores(data));
@@ -110,6 +132,11 @@ function Admin() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    getVacationDays(calculateCompensatoryDays());
+
+  }, [fechasUsadas]);
 
   return (
     <div className="App">
@@ -123,18 +150,19 @@ function Admin() {
                   <Form.Select
                     aria-label="Default select example"
                     defaultValue=""
-                    onChange={(e) => setReviewedUser(e.target.value)}>
+                    onChange={(e) => {
+                      getFechas(colaboradores[e.target.value].id);
+                      setReviewedUser(colaboradores[e.target.value].id);
+                      setDiasVac(15 + (new Date().getFullYear() - new Date(colaboradores[e.target.value].fecha_ingreso).getFullYear()));
+                    }}>
                     <option value={""} disabled hidden></option>{
                       colaboradores.filter((e) => e.id !== sessionStorage.getItem("user"))
-                        .map((item) =>
-                          <option value={item.id} key={item.id}>{item.nombre} - {item.id}</option>
+                        .map((item, index) =>
+                          <option value={index} key={item.id}>{item.nombre} - {item.id}</option>
                         )
                     }
                   </Form.Select>
                 </FloatingLabel>
-              </Col>
-              <Col>
-                <Button onClick={() => getFechas(reviewedUser)}>Ver</Button>
               </Col>
             </Row>
           </Container>
@@ -169,9 +197,11 @@ function Admin() {
 
             </Table>
           )}
+          <h1>Dias de vacaciones disponibles: {diasVac}</h1>
+          <h1>Dias compensatorios: {diasComp}</h1>
           {dates && (
             <>
-            {console.log(fechasUsadas)}
+              {console.log(fechasUsadas)}
               <ButtonGroup>
                 <Button onClick={() => aprobarReposo()}>Aprobar</Button>
                 <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
