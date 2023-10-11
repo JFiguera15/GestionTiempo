@@ -8,23 +8,19 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Row from 'react-bootstrap/Row';
 import Sidebar from './Sidebar';
 import Button from 'react-bootstrap/Button';
-import ListaColaboradores from "./ListaColaboradores";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 
 function Usuario() {
-  const [colaboradores, setColaboradores] = useState();
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
   const [razon, setRazon] = useState("");
-  const [diasComp, setDiasComp] = useState(0); 
+  const [diasVac, setDiasVac] = useState(0);
+  const [diasComp, setDiasComp] = useState(0);
   const [otraRazon, setOtraRazon] = useState("");
   const [calendarValues, setCalendarValues] = useState();
   const [select, setSelect] = useState("Trabajado");
 
-
-  function setUser(user) {
-    const parts = user.split(",");
-    //sessionStorage.setItem("user", parts[0]);
-  }
 
   function verificar(negate) {
     if (dates) {
@@ -59,39 +55,68 @@ function Usuario() {
   }
 
   const getDaysArray = function (start, end) {
-    let weekends = 0;
     for (var arr = [], dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)) {
       if (!fechasUsadas.includes(new Date(dt).toLocaleDateString("sv"))) {
-        if(dt.getDay() === 0 || dt.getDay() === 6) weekends++;   
         arr.push(new Date(dt).toLocaleDateString("sv"));
       }
     }
-    setDiasComp(weekends);
     return arr;
   };
 
-  function enviarFechas() {
-    if (select === "Trabajado");
-    if (select === "Libre");
-    if (select === "Reposo");
+  function calculateCompensatoryDays() {
+    let dias = 0;
+    fechasUsadas.forEach((item) => {
+      if (item[1] === "Trabajado" && ((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) dias++;
+    })
+    return dias;
+  }
 
-    const body = {
-      id: sessionStorage.getItem("user"),
-      fechas: dates,
-      tipo: select,
-      estado: (select === "Reposo") ? "Pendiente" : "",
-      razon: otraRazon ? otraRazon : razon,
+  function getVacationDays(dias) {
+    let vacationDays = diasVac;
+    vacationDays += dias;
+    let diasHabiles = 0;
+    fechasUsadas.forEach((item) => {
+      if (item[3] === "Vacaciones" && !((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) diasHabiles++;
+    })
+    if (diasHabiles <= vacationDays) {
+      if (diasHabiles > dias) {
+        diasHabiles -= dias;
+        setDiasComp(0);
+        setDiasVac(diasVac - diasHabiles);
+      } else {
+        setDiasComp(dias - diasHabiles);
+      }
     }
-    fetch("http://localhost:8000/enviar",
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
-      }).then((res) => res.json());
-    setCalendarValues([]);
-    setDates();
-    window.location.reload();
-    //getFechas(sessionStorage.getItem("user"));
+  }
+
+  function enviarFechas() {
+    let diasHabiles = 0;
+    if (razon === "Vacaciones") {
+      dates.forEach((item) => {
+        if (!(new Date(item).getDay() === 6 || new Date(item).getDay() === 5)) diasHabiles++;
+      })
+    };
+    if (diasHabiles <= diasVac) {
+      const body = {
+        id: sessionStorage.getItem("user"),
+        fechas: dates,
+        tipo: select,
+        estado: (select === "Reposo") ? "Pendiente" : "",
+        razon: otraRazon ? otraRazon : razon,
+      }
+      fetch("http://localhost:8000/enviar",
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: { "Content-Type": "application/json" }
+        }).then((res) => res.json());
+      setCalendarValues([]);
+      setDates();
+      window.location.reload();
+    } else {
+      alert("No tiene suficientes dias de vacaciones disponibles");
+    }
+
   }
 
   function getFechas() {
@@ -107,6 +132,7 @@ function Usuario() {
           fechasFormateadas.push([new Date(element.fecha).toLocaleDateString("sv"), element.tipo, element.aprobada, element.razon]);
         });
         setFechasUsadas(fechasFormateadas);
+
       })
       .then(() => {
         toast.dismiss(msj);
@@ -114,6 +140,14 @@ function Usuario() {
   }
 
   function borrarFechas() {
+    let dias = 0;
+    for (let i = 0; i <= dates.length; i++) {
+      fechasUsadas.forEach((item) => {
+        if (item[0] === dates[i] && item[1] === "Trabajado" && (new Date(dates[i]).getDay() === 5 || new Date(dates[i]).getDay() === 6)) {
+          dias++;
+        }
+      })
+    }
     const body = {
       id: sessionStorage.getItem("user"),
       fechas: dates,
@@ -126,11 +160,23 @@ function Usuario() {
       }).then((res) => res.json());
     setCalendarValues([]);
     setDates([]);
-    getFechas(sessionStorage.getItem("user"));
-    setDiasComp(0);
+    getFechas();
+    window.location.reload();
   }
 
   function cambiarFechas() {
+    let dias = 0;
+    if (select === "Trabajado") dias += diasComp;
+    else {
+      for (let i = 0; i <= dates.length; i++) {
+        fechasUsadas.forEach((item) => {
+          if (item[0] === dates[i] && item[1] === "Trabajado" && (new Date(dates[i]).getDay() === 5 || new Date(dates[i]).getDay() === 6)) {
+            dias++;
+          }
+        })
+      }
+    }
+
     const body = {
       id: sessionStorage.getItem("user"),
       fechas: dates,
@@ -153,14 +199,27 @@ function Usuario() {
 
   useEffect(() => {
     getFechas();
+    fetch("http://localhost:8000/datos_fecha?id=" + sessionStorage.getItem("user"))
+      .then((res) => res.json())
+      .then((data) => {
+        setDiasVac(15 + (new Date().getFullYear() - new Date(data[0].fecha_ingreso).getFullYear()));
+      });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         setDates();
         setCalendarValues([]);
-        setDiasComp(0);
+        setRazon();
+        setOtraRazon();
       }
     });
+
   }, []);
+
+  useEffect(() => {
+    if (fechasUsadas.length > 0) {
+      getVacationDays(calculateCompensatoryDays());
+    };
+  }, [fechasUsadas]);
 
   return (
     <div className="App">
@@ -171,7 +230,13 @@ function Usuario() {
         </Col>
         <Col xs={10}>
           <h1>Usuario</h1>
-          <h1>{diasComp}</h1>
+          {fechasUsadas && (
+            <>
+              <h1>Dias de vacaciones disponibles: {diasVac}</h1>
+              <h1>Dias compensatorios: {diasComp}</h1>
+            </>
+          )}
+
           <br />
           <Calendar value={calendarValues}
             onChange={(e) => {
@@ -185,19 +250,20 @@ function Usuario() {
               ? writeClass(date)
               : null}
           />
-          <select
+          <Form.Select
             value={select}
             onChange={e => setSelect(e.target.value)}>
             <option value="Trabajado">Trabajado</option>
             <option value="Libre">Libre</option>
             <option value="Reposo">Reposo</option>
-          </select>
+          </Form.Select>
           {select === "Reposo" && (
             <>
               <FloatingLabel label="Razón de reposo:">
                 <Form.Select aria-label="Default select example" required defaultValue={""}
                   onChange={(e) => setRazon(e.target.value)}>
                   <option hidden></option>
+                  <option>Vacaciones</option>
                   <option>Tramite de Licencia de Conducir</option>
                   <option>Tramite de Documentos de Identidad</option>
                   <option>Tramites Educativos</option>
@@ -209,15 +275,18 @@ function Usuario() {
               </FloatingLabel>
               {razon === "otro" && (
                 <FloatingLabel label="Razón de reposo:">
-                  <Form.Control onChange={(e) => setOtraRazon(e.target.value)}/>
+                  <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
                 </FloatingLabel>
               )}
             </>
           )}
           <br />
-          <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
-          <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
-          <Button onClick={borrarFechas} disabled={!verificar(true)}>Borrar</Button>
+          <ButtonGroup>
+            <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
+            <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
+            <Button onClick={borrarFechas} disabled={!verificar(true)} variant="danger">Borrar</Button>
+          </ButtonGroup>
+
         </Col>
       </Row>
 

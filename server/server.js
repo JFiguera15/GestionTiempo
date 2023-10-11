@@ -62,6 +62,12 @@ app.get('/nombre_colaborador', (req, res) => {
     });
 });
 
+app.get('/datos_fecha', (req, res) => {
+    connection.query("SELECT fecha_ingreso FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
 
 app.get('/datos_usuario', (req, res) => {
     connection.query("SELECT * FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
@@ -85,7 +91,7 @@ app.get('/colaboradores_que_reportan', (req, res) => {
 });
 
 app.get('/evaluado_por', (req, res) => {
-    connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador] ,function (err, result) {
+    connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador], function (err, result) {
         if (err) throw err;
         res.json(result);
     });
