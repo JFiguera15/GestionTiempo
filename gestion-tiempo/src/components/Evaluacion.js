@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/esm/Container";
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
+import Swal from 'sweetalert2'
 
 const preguntasOperativo = [
     ["Cumple con sus compromisos con desempeño promedio y se establece objetivos dentro de lo esperado.", "Cumple los compromisos con buen desempeño ocasionalmente y se establece objetivos dentro de lo esperado.", "Cumple con frecuencia los compromisos mostrando buen desempeño y tiende a establecerse objetivos por encima de lo esperado.", "Cumple con sus compromisos con alto desempeño frecuentemente y tiende a establecerse objetivos por encima de lo esperado."],
@@ -36,7 +37,6 @@ function Evaluacion() {
     const [pageEje3, setPageEje3] = useState(1);
     const [pageEje4, setPageEje4] = useState(1);
     const [show, setShow] = useState(false);
-    const [confirm, setConfirm] = useState(false);
     const [sliderVal1, setSliderVal1] = useState(0);
     const navigate = useNavigate();
     let preguntas;
@@ -67,6 +67,11 @@ function Evaluacion() {
         const form = document.getElementById("form");
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
+        if(!Object.keys(formJson).some((item) => !formJson[item])){
+            Swal.fire("La evaluación no esta completa");
+            setShow(false);
+            return;
+        }
         const respuestas = {};
         respuestas.pregunta1 = preguntas[0][(formJson.pregunta1 / 1.875) - 1];
         respuestas.pregunta2 = preguntas[1][(formJson.pregunta2 / 1.875) - 1];
@@ -150,7 +155,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[0].map((item, index) =>
-                                <tr><td><Form.Check type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr><td><Form.Check required type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)}/></td></tr>)}
                         </tbody>
                     </Table>
                     <Table striped hidden={pageEje1 - 1 !== 1}>
@@ -161,7 +166,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[1].map((item, index) =>
-                                <tr><td><Form.Check type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr><td><Form.Check required type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
 
@@ -173,7 +178,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[2].map((item, index) =>
-                                <tr><td><Form.Check type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr><td><Form.Check required type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
 
@@ -185,7 +190,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[3].map((item, index) =>
-                                <tr><td><Form.Check type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr><td><Form.Check required type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
                     <Pagination>{eje1}</Pagination>

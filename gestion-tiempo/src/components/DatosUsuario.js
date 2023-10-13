@@ -18,6 +18,7 @@ function DatosUsuario() {
     const [datos, setDatos] = useState({});
     const [departamentos, setDepartamentos] = useState([]);
     const [modificar, setModificar] = useState(true);
+    const [evaluador, setEvaluador] = useState();
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
     const [borrado, setBorrado] = useState(false);
@@ -74,10 +75,14 @@ function DatosUsuario() {
             .then((data) => {
                 setHighUsers(data);
             });
-        if (location.state?.email) {
+        if (location.state?.email && sessionStorage.getItem("rol") === "Administrador") {
+            fetch("http://localhost:8000/evaluaciones_de?evaluado=" + getUser())
+                .then((res) => res.json())
+                .then((data) => setEvaluacion(data));
+        } else if (location.state?.email) {
             fetch("http://localhost:8000/evaluado_por?evaluado=" + getUser() + "&evaluador=" + sessionStorage.getItem("user"))
                 .then((res) => res.json())
-                .then((data) => setEvaluacion(data[0]));
+                .then((data) => setEvaluacion(data));
         }
 
     }, [reload]);
@@ -302,11 +307,11 @@ function DatosUsuario() {
                         </>
                     )}
                     {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                        && !evaluacion && (
+                        && (datos.evaluando === "En proceso") && (evaluacion.length === 0) && (
                             <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                         )}
-                    {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                        && evaluacion && (
+                    {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user") || sessionStorage.getItem("rol") === "Administrador")
+                        && (evaluacion.length > 0) && (
                             <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
                         )}
                     {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
@@ -320,13 +325,27 @@ function DatosUsuario() {
                 show={verEval}
                 onHide={() => setVerEval(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>¿Eliminar usuario?</Modal.Title>
+                    <Modal.Title>Resultados Evaluación de desempeño</Modal.Title>
                 </Modal.Header>
-                {evaluacion && (
-                    <ResultadosEvaluacion resultados={evaluacion} />
+
+                {evaluacion.length > 0 && (
+                    <>
+                        <FloatingLabel label="Evaluación de:">
+                            <Form.Select name="evaluador"
+                                onChange={(e) => setEvaluador(e.target.value)} defaultValue={""}>
+                                <option value="" disabled hidden></option>
+                                {evaluacion.map((item, index) =>
+                                    <option value={index}>{item.evaluador}</option>)}
+                            </Form.Select>
+                        </FloatingLabel>
+
+                        {evaluador && (
+                            <ResultadosEvaluacion resultados={evaluacion[evaluador]} />
+                        )}
+                    </>
                 )}
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setVerEval(false)}>
+                    <Button onClick={() => setVerEval(false)}>
                         Cerrar
                     </Button>
                 </Modal.Footer>

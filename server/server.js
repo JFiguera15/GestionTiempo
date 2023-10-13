@@ -63,7 +63,7 @@ app.get('/nombre_colaborador', (req, res) => {
 });
 
 app.get('/datos_fecha', (req, res) => {
-    connection.query("SELECT fecha_ingreso FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
+    connection.query("SELECT fecha_ingreso, tipo_horario FROM colaboradores WHERE id = \'" + req.query.id + "\'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -92,6 +92,13 @@ app.get('/colaboradores_que_reportan', (req, res) => {
 
 app.get('/evaluado_por', (req, res) => {
     connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador], function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/evaluaciones_de', (req, res) => {
+    connection.query("SELECT * FROM evaluacion WHERE evaluado = ?", req.query.evaluado, function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -133,12 +140,12 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, ""], function (err, result) {
             if (err) throw err;
         });
 });
@@ -150,6 +157,18 @@ app.post('/enviar_evaluacion', (req, res) => {
         [data.evaluado, data.total, data.evaluador,
         data.pregunta1, data.pregunta2, data.pregunta3, data.pregunta4, data.pregunta5,
         data.pregunta6, data.pregunta7, data.pregunta8, data.pregunta9, data.pregunta10], function (err, result) {
+            if (err) throw err;
+        });
+});
+
+app.post('/iniciar_evaluacion', (req, res) => {
+    connection.query("UPDATE colaboradores SET evaluando = ?", "En proceso", function (err, result) {
+            if (err) throw err;
+        });
+});
+
+app.post('/terminar_evaluacion', (req, res) => {
+    connection.query("UPDATE colaboradores SET evaluando = ?", "No", function (err, result) {
             if (err) throw err;
         });
 });

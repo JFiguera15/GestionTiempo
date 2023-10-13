@@ -17,6 +17,7 @@ function Admin() {
   const [colaboradores, setColaboradores] = useState([]);
   const [fechasUsadas, setFechasUsadas] = useState([]);
   const [dates, setDates] = useState();
+  const [horario, setHorario] = useState();
   const [diasVac, setDiasVac] = useState(0);
   const [diasComp, setDiasComp] = useState(0);
   const [calendarValues, setCalendarValues] = useState();
@@ -78,6 +79,7 @@ function Admin() {
   }
 
   function calculateCompensatoryDays() {
+    if (horario === "7x1") return 0;
     let dias = 0;
     fechasUsadas.forEach((item) => {
       if (item[1] === "Trabajado" && ((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) dias++;
@@ -148,11 +150,11 @@ function Admin() {
               <Col>
                 <FloatingLabel label="Usuario a ver">
                   <Form.Select
-                    aria-label="Default select example"
                     defaultValue=""
                     onChange={(e) => {
                       getFechas(colaboradores[e.target.value].id);
                       setReviewedUser(colaboradores[e.target.value].id);
+                      setHorario(colaboradores[e.target.value].tipo_horario);
                       setDiasVac(15 + (new Date().getFullYear() - new Date(colaboradores[e.target.value].fecha_ingreso).getFullYear()));
                     }}>
                     <option value={""} disabled hidden></option>{

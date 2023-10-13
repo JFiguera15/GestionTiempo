@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Swal from 'sweetalert2'
 
 
 function Login() {
@@ -33,9 +34,9 @@ function Login() {
             }).then((res) => res.json())
             .then((data) => {
                 if (data === "Contraseña incorrecta") {
-                    alert(data);
+                    Swal.fire(data);
                 } else if (data === "Usuario incorrecto") {
-                    alert(data);
+                    Swal.fire(data);
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
                     sessionStorage.setItem("rol", data[0].rol);

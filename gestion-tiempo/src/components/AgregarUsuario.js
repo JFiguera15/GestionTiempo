@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 
 function AgregarUsuario() {
@@ -46,15 +47,19 @@ function AgregarUsuario() {
     }, []);
 
     function check() {
-        if (datos?.some((e) => e.id === email)) {
-            alert("Ya existe usuario con este correo.");
-            return;
-        }
-        else if (password === confirmPass) {
-            setConfirmar(true);
-            return;
+        if(password && confirmPass && email){
+            if (datos?.some((e) => e.id === email)) {
+                Swal.fire("Ya existe usuario con este correo.");
+                return;
+            } else if (password === confirmPass) {
+                setConfirmar(true);
+                return;
+            } else {
+                Swal.fire("Las contraseñas no son iguales");
+                return;
+            }
         } else {
-            alert("Las contraseñas no son iguales");
+            Swal.fire("Por favor escriba los datos");
             return;
         }
     }

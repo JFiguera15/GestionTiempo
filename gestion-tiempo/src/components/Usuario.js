@@ -20,6 +20,7 @@ function Usuario() {
   const [otraRazon, setOtraRazon] = useState("");
   const [calendarValues, setCalendarValues] = useState();
   const [select, setSelect] = useState("Trabajado");
+  const [horario, setHorario] = useState("");
 
 
   function verificar(negate) {
@@ -64,6 +65,7 @@ function Usuario() {
   };
 
   function calculateCompensatoryDays() {
+    if (horario === "7x1") return 0;
     let dias = 0;
     fechasUsadas.forEach((item) => {
       if (item[1] === "Trabajado" && ((new Date(item[0]).getDay() === 5 || new Date(item[0]).getDay() === 6))) dias++;
@@ -192,6 +194,7 @@ function Usuario() {
       .then((res) => res.json())
       .then((data) => {
         setDiasVac(15 + (new Date().getFullYear() - new Date(data[0].fecha_ingreso).getFullYear()));
+        setHorario(data[0].tipo_horario);
       });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
@@ -221,6 +224,7 @@ function Usuario() {
           <h1>Usuario</h1>
           {fechasUsadas && (
             <>
+              <h1>Tipo de horario: {horario}</h1>
               <h1>Dias de vacaciones disponibles: {diasVac}</h1>
               <h1>Dias compensatorios: {diasComp}</h1>
             </>
