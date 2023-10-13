@@ -28,6 +28,11 @@ function AgregarUsuario() {
         setModificar(!modificar);
     }
 
+    function validateEmail(email) {
+        var re = /\S+@\S+\.\S+/;
+        return re.test(email);
+      }
+
     useEffect(() => {
         fetch("http://localhost:8000/departamentos")
             .then((res) => res.json())
@@ -47,7 +52,7 @@ function AgregarUsuario() {
     }, []);
 
     function check() {
-        if(password && confirmPass && email){
+        if(password && confirmPass && email && validateEmail(email.trim())){
             if (datos?.some((e) => e.id === email)) {
                 Swal.fire("Ya existe usuario con este correo.");
                 return;
@@ -59,7 +64,7 @@ function AgregarUsuario() {
                 return;
             }
         } else {
-            Swal.fire("Por favor escriba los datos");
+            Swal.fire("Por favor escribir datos válidos");
             return;
         }
     }

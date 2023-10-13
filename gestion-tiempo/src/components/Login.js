@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Swal from 'sweetalert2'
 
 
 function Login() {
@@ -34,9 +33,9 @@ function Login() {
             }).then((res) => res.json())
             .then((data) => {
                 if (data === "Contraseña incorrecta") {
-                    Swal.fire(data);
+                    alert(data);
                 } else if (data === "Usuario incorrecto") {
-                    Swal.fire(data);
+                    alert(data);
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
                     sessionStorage.setItem("rol", data[0].rol);
@@ -46,7 +45,7 @@ function Login() {
     }
 
     return (
-        <Container>
+        <Container fluid="md" style={{marginTop: 15 + "%"}}>
             <Col>
                 <Form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
@@ -62,7 +61,6 @@ function Login() {
                         </FloatingLabel>
                         <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
                     </InputGroup>
-                    <br />
                     <Button variant="primary" type="submit">
                         Enviar
                     </Button>

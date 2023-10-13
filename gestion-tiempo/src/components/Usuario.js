@@ -6,9 +6,10 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Row from 'react-bootstrap/Row';
-import Sidebar from './Sidebar';
+import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Container from "react-bootstrap/Container";
 
 
 function Usuario() {
@@ -216,75 +217,93 @@ function Usuario() {
   return (
     <div className="App">
       <Toaster />
-      <Row>
-        <Col>
-          <Sidebar />
-        </Col>
-        <Col xs={10}>
-          <h1>Usuario</h1>
-          {fechasUsadas && (
-            <>
-              <h1>Tipo de horario: {horario}</h1>
-              <h1>Dias de vacaciones disponibles: {diasVac}</h1>
-              <h1>Dias compensatorios: {diasComp}</h1>
-            </>
-          )}
-
-          <br />
-          <Calendar value={calendarValues}
-            onChange={(e) => {
-              setDates(getDaysArray(e[0], e[1]))
-              setCalendarValues(e)
-            }}
-            selectRange={true}
-            locale="es-VE"
-            tileClassName={({ date, view }) => view === 'month'
-              && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
-              ? writeClass(date)
-              : null}
-          />
-          <Form.Select
-            value={select}
-            onChange={e => setSelect(e.target.value)}>
-            <option value="Trabajado">Trabajado</option>
-            <option value="Libre">Libre</option>
-            <option value="Reposo">Reposo</option>
-          </Form.Select>
-          {select === "Reposo" && (
-            <>
-              <FloatingLabel label="Razón de reposo:">
-                <Form.Select aria-label="Default select example" required defaultValue={""}
-                  onChange={(e) => setRazon(e.target.value)}>
-                  <option hidden></option>
-                  <option>Vacaciones</option>
-                  <option>Tramite de Licencia de Conducir</option>
-                  <option>Tramite de Documentos de Identidad</option>
-                  <option>Tramites Educativos</option>
-                  <option>Fallecimiento Familiar</option>
-                  <option>Nacimiento de Hijos</option>
-                  <option>Enfermedad de Familiar Directo</option>
-                  <option value="otro">Otro (Identifique:)</option>
+      <Container fluid="sm">
+        <Row>
+          <Col>
+            {fechasUsadas && (
+              <Table bordered size="sm">
+                <thead>
+                  <tr>
+                    <th>Tipo de horario:</th>
+                    <th>Días de vacaciones disponibles:</th>
+                    <th>Días compensatorios disponibles:</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{horario}</td>
+                    <td>{diasVac}</td>
+                    <td>{diasComp}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
+            <Calendar value={calendarValues}
+              onChange={(e) => {
+                setDates(getDaysArray(e[0], e[1]))
+                setCalendarValues(e)
+              }}
+              selectRange={true}
+              locale="es-VE"
+              tileClassName={({ date, view }) => view === 'month'
+                && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
+                ? writeClass(date)
+                : null}
+            />
+            <Row>
+              <Col>
+                <Form.Select
+                  value={select}
+                  onChange={e => setSelect(e.target.value)}>
+                  <option value="Trabajado">Trabajado</option>
+                  <option value="Libre">Libre</option>
+                  <option value="Reposo">Reposo</option>
                 </Form.Select>
-              </FloatingLabel>
-              {razon === "otro" && (
-                <FloatingLabel label="Razón de reposo:">
-                  <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
-                </FloatingLabel>
+              </Col>
+            </Row>
+            <Row>
+              {select === "Reposo" && (
+                <Col  xs={12} md={8} xl={12}>
+                  <FloatingLabel label="Razón de reposo:">
+                    <Form.Select aria-label="Default select example" required defaultValue={""}
+                      onChange={(e) => setRazon(e.target.value)}>
+                      <option hidden></option>
+                      <option>Vacaciones</option>
+                      <option>Tramite de Licencia de Conducir</option>
+                      <option>Tramite de Documentos de Identidad</option>
+                      <option>Tramites Educativos</option>
+                      <option>Fallecimiento Familiar</option>
+                      <option>Nacimiento de Hijos</option>
+                      <option>Enfermedad de Familiar Directo</option>
+                      <option value="otro">Otro (Identifique:)</option>
+                    </Form.Select>
+                  </FloatingLabel>
+                  <Row>
+                    {razon === "otro" && (
+                      <Col>
+                        <FloatingLabel label="Razón de reposo:">
+                          <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
+                        </FloatingLabel>
+                      </Col>
+                    )}
+                  </Row>
+                </Col>
               )}
-            </>
-          )}
-          <br />
-          <ButtonGroup>
-            <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
-            <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
-            <Button onClick={borrarFechas} disabled={!verificar(true)} variant="danger">Borrar</Button>
-          </ButtonGroup>
-
-        </Col>
-      </Row>
-
-
+            </Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <ButtonGroup>
+              <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
+              <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
+              <Button onClick={borrarFechas} disabled={!verificar(true)} variant="danger">Borrar</Button>
+            </ButtonGroup>
+          </Col>
+        </Row>
+      </Container >
     </div>
+
   );
 }
 

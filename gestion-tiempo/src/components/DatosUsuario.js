@@ -11,6 +11,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import ResultadosEvaluacion from "./ResultadosEvaluacion";
+import Navigation from "./Navigation";
 
 
 function DatosUsuario() {
@@ -119,8 +120,11 @@ function DatosUsuario() {
 
     return (
         <Container fluid>
+            <Row>
+                <Navigation user={sessionStorage.getItem("rol")} />
+            </Row>
             <Form onSubmit={handleSubmit}>
-                <Row fluid>
+                <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
                         <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                         <FloatingLabel label="Correo">
@@ -128,7 +132,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row fluid>
+                <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridNombre">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Nombre">
@@ -154,7 +158,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row fluid>
+                <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridTelefonoP">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Teléfono principal">
@@ -168,7 +172,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row fluid>
+                <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridFechaN">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
                         <FloatingLabel label="Fecha de Nacimiento">
@@ -216,7 +220,7 @@ function DatosUsuario() {
                     </FloatingLabel>
                 </InputGroup>
 
-                <Row className="mb-3" fluid>
+                <Row className="mb-3">
                     <InputGroup className="mb-3" as={Col} controlId="formGridDepartamento">
                         <InputGroup.Text id="basic-addon1"><i className="bi bi-building"></i></InputGroup.Text>
                         <FloatingLabel label="Departamento">
@@ -257,7 +261,7 @@ function DatosUsuario() {
                         </FloatingLabel>
                     </InputGroup>
                 </Row>
-                <Row fluid>
+                <Row>
                     <InputGroup className="mb-3" as={Col} controlId="formGridJefeD">
                         <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
                         <FloatingLabel label="Jefe Directo">
