@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Navigation from "./Navigation";
 
 
 function Admin() {
@@ -141,7 +142,8 @@ function Admin() {
   }, [fechasUsadas]);
 
   return (
-    <div className="App">
+    <div className="aprobar">
+      <Navigation user={sessionStorage.getItem("rol")} />
       <Toaster />
       {colaboradores ? (colaboradores.length === 0) ? <h1>No posee colaboradores que reporten directamente a usted.</h1> : (
         <div id="admin_only">

@@ -10,6 +10,8 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from "react-bootstrap/Container";
+import Navigation from "./Navigation";
+
 
 
 function Usuario() {
@@ -215,8 +217,9 @@ function Usuario() {
   }, [fechasUsadas]);
 
   return (
-    <div className="App">
+    <div className="solicitar">
       <Toaster />
+      <Navigation user={sessionStorage.getItem("rol")} />
       <Container fluid="sm">
         <Row>
           <Col>
@@ -263,7 +266,7 @@ function Usuario() {
             </Row>
             <Row>
               {select === "Reposo" && (
-                <Col  xs={12} md={8} xl={12}>
+                <Col xs={12} md={8} xl={12}>
                   <FloatingLabel label="Razón de reposo:">
                     <Form.Select aria-label="Default select example" required defaultValue={""}
                       onChange={(e) => setRazon(e.target.value)}>

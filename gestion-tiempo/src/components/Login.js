@@ -45,7 +45,12 @@ function Login() {
     }
 
     return (
-        <Container fluid="md" style={{marginTop: 15 + "%"}}>
+        <Container fluid="md" style={
+            {marginTop: 15 + "%", 
+            backgroundColor: "#3258B6", 
+            padding: 25 + "px", 
+            border: 5 + "px solid black",
+            borderRadius: 25 + "px"}}>
             <Col>
                 <Form onSubmit={handleSubmit}>
                     <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
@@ -59,9 +64,9 @@ function Login() {
                         <FloatingLabel label="Contraseña">
                             <Form.Control type= {view ? "password" : "text" }  name="password" onChange={(e) => setPassword(e.target.value)} />
                         </FloatingLabel>
-                        <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                        <Button variant="info" onClick={() => setView(!view)}>{view ? <i class="bi bi-eye"></i> : <i class="bi bi-eye-slash"></i>}</Button>
                     </InputGroup>
-                    <Button variant="primary" type="submit">
+                    <Button variant="secondary" type="submit">
                         Enviar
                     </Button>
                 </Form>

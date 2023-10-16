@@ -1,10 +1,23 @@
 .App {
   text-align: center;
+  background-color: #7ABEE7;
+}
+
+html {
+  background-color: #7ABEE7;
 }
 
 a {
   text-decoration: none;
   color: white;
+}
+
+a.nav-link {
+  color: white;
+  font-weight: bold;
+  font-size: large;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 a.active {
@@ -13,6 +26,10 @@ a.active {
 
 a:hover {
   background-color: #006edc;
+}
+
+button.btn.btn-info{
+  background-color: #f8f9fa;
 }
 
 .react-calendar {

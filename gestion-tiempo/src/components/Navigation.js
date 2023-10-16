@@ -5,8 +5,13 @@ import Navbar from 'react-bootstrap/Navbar';
 function Navigation({ user }) {
     if (user === "Administrador") {
         return (
-            <Navbar>
+            <Navbar style={{
+                backgroundColor: "#013466",
+                marginBottom: 25 + "px",
+                width: 100 + "%",
+            }}>
                 <Nav>
+                    <img src={require("./images//logo.png")}  width="140" height="50"></img>
                     <Nav.Link href="/usuario">Usuario</Nav.Link>
                     <Nav.Link href="/admin">Admin</Nav.Link>
                     <Nav.Link href="/datos">Datos</Nav.Link>

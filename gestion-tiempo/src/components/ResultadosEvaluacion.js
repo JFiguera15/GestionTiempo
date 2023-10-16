@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
 
 function ResultadosEvaluacion({ resultados }) {
 

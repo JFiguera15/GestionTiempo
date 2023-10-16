@@ -10,8 +10,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useNavigate } from 'react-router-dom';
 import { FilterMatchMode } from "primereact/api";
-import ModalHeader from "react-bootstrap/esm/ModalHeader";
-
+import Navigation from "./Navigation";
 
 function ListaColaboradores() {
 
@@ -47,7 +46,8 @@ function ListaColaboradores() {
 
 
     return (
-        <div>
+        <div id="lista">
+            <Navigation user={sessionStorage.getItem("rol")} />
             {colaboradores.length > 0 && (
                 <>
                     <Row>
@@ -71,7 +71,7 @@ function ListaColaboradores() {
                         )}
 
                     </Row>
-                    <Row>
+                    <Row style={{marginTop: 25 + "px"}}>
                         <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
                             selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })}>
