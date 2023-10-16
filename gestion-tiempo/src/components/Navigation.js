@@ -1,37 +1,52 @@
 import "../App.css";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function Navigation({ user }) {
     if (user === "Administrador") {
         return (
-            <Navbar style={{
+            <Navbar expand="md" style={{
                 backgroundColor: "#013466",
                 marginBottom: 25 + "px",
                 width: 100 + "%",
-            }}>
-                <Nav>
-                    <img src={require("./images//logo.png")}  width="140" height="50"></img>
-                    <Nav.Link href="/usuario">Usuario</Nav.Link>
-                    <Nav.Link href="/admin">Admin</Nav.Link>
-                    <Nav.Link href="/datos">Datos</Nav.Link>
-                    <Nav.Link href="/lista">Lista</Nav.Link>
-                    <Nav.Link href="/agregar_usuario">Agregar</Nav.Link>
-                    <Nav.Link href="/login">Salir</Nav.Link>
-                </Nav>
+            }} >
+                <Navbar.Brand><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
+                <Navbar.Collapse>
+                    <Nav>
+                        <Nav.Link href="/datos">Datos personales</Nav.Link>
+                        <Nav.Link href="/lista">Lista de colaboradores</Nav.Link>
+                        <NavDropdown title="Gestión de tiempo">
+                            <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
+                        </NavDropdown>
+                        <Nav.Link href="/login">Salir</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
             </Navbar>
         )
     }
     else {
         return (
-            <Navbar>
-                <Nav>
-                    <Nav.Link href="/usuario">Usuario</Nav.Link>
-                    <Nav.Link href="/admin">Admin</Nav.Link>
-                    <Nav.Link href="/datos">Datos</Nav.Link>
-                    <Nav.Link href="/lista">Lista</Nav.Link>
-                    <Nav.Link href="/login">Salir</Nav.Link>
-                </Nav>
+            <Navbar expand="md" className="px-3" style={{
+                backgroundColor: "#013466",
+                marginBottom: 25 + "px",
+                width: 100 + "%",
+            }} >
+                <Navbar.Brand><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
+                <Navbar.Collapse>
+                    <Nav>
+                        <Nav.Link href="/datos">Datos personales</Nav.Link>
+                        <Nav.Link href="/lista">Lista de colaboradores</Nav.Link>
+                        <NavDropdown title="Gestión de tiempo">
+                            <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
+                        </NavDropdown>
+                        <Nav.Link href="/login" className="justify-content-end">Salir</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
             </Navbar>
         )
     }

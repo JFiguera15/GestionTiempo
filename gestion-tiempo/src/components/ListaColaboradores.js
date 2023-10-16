@@ -50,9 +50,9 @@ function ListaColaboradores() {
             <Navigation user={sessionStorage.getItem("rol")} />
             {colaboradores.length > 0 && (
                 <>
-                    <Row>
-                        <Col>
-                            <FloatingLabel label="Buscar:">
+                    <Row className="mx-3">
+                        <Col className="mb-3" sm={12} lg={4}>
+                            <FloatingLabel label="Buscar:" style={{ maxWidth: 900 + "px" }}>
                                 <Form.Control onChange={(e) =>
                                     setFilters({
                                         global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS }
@@ -60,18 +60,23 @@ function ListaColaboradores() {
                             </FloatingLabel>
                         </Col>
                         {sessionStorage.getItem("rol") === "Administrador" && (
-                            <Col>
-                                {colaboradores[0].evaluando === "No" && (
-                                    <Button onClick={() => setShow(true)}>Iniciar proceso de evaluación de desempeño</Button>
-                                )}
-                                {colaboradores[0].evaluando === "En proceso" && (
-                                    <Button onClick={() => setShow(true)}>Terminar proceso de evaluación de desempeño</Button>
-                                )}
-                            </Col>
+                            <>
+                                <Col className="mb-3" sm={12} lg={4}>
+                                    <Button onClick={() => navigate("/agregar_usuario")}>Agregar nuevo colaborador</Button>
+                                </Col>
+                                <Col className="mb-3" sm={12} lg={4}>
+                                    {colaboradores[0].evaluando === "No" && (
+                                        <Button onClick={() => setShow(true)}>Iniciar proceso de evaluación de desempeño</Button>
+                                    )}
+                                    {colaboradores[0].evaluando === "En proceso" && (
+                                        <Button onClick={() => setShow(true)}>Terminar proceso de evaluación de desempeño</Button>
+                                    )}
+                                </Col>
+                            </>
                         )}
 
                     </Row>
-                    <Row style={{marginTop: 25 + "px"}}>
+                    <Row style={{ marginTop: 25 + "px" }}>
                         <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
                             selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })}>

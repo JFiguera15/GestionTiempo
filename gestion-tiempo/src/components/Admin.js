@@ -60,6 +60,7 @@ function Admin() {
     setCalendarValues([]);
     setDates();
     getFechas(reviewedUser);
+    window.location.reload();
   }
 
   function noAprobarReposo() {
@@ -77,6 +78,7 @@ function Admin() {
     setCalendarValues([]);
     setDates();
     getFechas(reviewedUser);
+    window.location.reload();
   }
 
   function calculateCompensatoryDays() {
@@ -148,9 +150,10 @@ function Admin() {
       {colaboradores ? (colaboradores.length === 0) ? <h1>No posee colaboradores que reporten directamente a usted.</h1> : (
         <div id="admin_only">
           <Container>
-            <Row>
+            <Row className="mb-3">
               <Col>
-                <FloatingLabel label="Usuario a ver">
+                <FloatingLabel label="Usuario a ver"
+                  style={{ width: 500 + "px", marginLeft: "auto", marginRight: "auto" }}>
                   <Form.Select
                     defaultValue=""
                     onChange={(e) => {
@@ -169,81 +172,83 @@ function Admin() {
                 </FloatingLabel>
               </Col>
             </Row>
-          </Container>
-
-          <br />
-          {reviewedUser && (
-            <Table id="data_colaborador">
-              <thead>
-                <tr>
-                  <th>Correo</th>
-                  <th>Nombre</th>
-                  <th>Empresa</th>
-                  <th>Departamento</th>
-                  <th>Cargo</th>
-                  <th>Nivel</th>
-                  <th>Horario</th>
-                </tr>
-              </thead>
-              <tbody>
-                {colaboradores.filter(e => e.id === reviewedUser).map(e =>
-                  <tr>
-                    <td>{e.id}</td>
-                    <td>{e.nombre}</td>
-                    <td>{e.empresa}</td>
-                    <td>{e.departamento}</td>
-                    <td>{e.cargo}</td>
-                    <td>{e.nivel}</td>
-                    <td>{e.tipo_horario}</td>
-                  </tr>
-                )}
-              </tbody>
-
-            </Table>
-          )}
-          <h1>Dias de vacaciones disponibles: {diasVac}</h1>
-          <h1>Dias compensatorios: {diasComp}</h1>
-          {dates && (
-            <>
-              {console.log(fechasUsadas)}
-              <ButtonGroup>
-                <Button onClick={() => aprobarReposo()}>Aprobar</Button>
-                <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
-              </ButtonGroup>
-              <Table>
+            {reviewedUser && (
+              <Table id="data_colaborador" size="sm" responsive="md">
                 <thead>
-                  <th>Dia</th>
-                  <th>Razón</th>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Empresa</th>
+                    <th>Departamento</th>
+                    <th>Cargo</th>
+                    <th>Nivel</th>
+                    <th>Horario</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  {dates.map(e =>
+                  {colaboradores.filter(e => e.id === reviewedUser).map(e =>
                     <tr>
-                      <td>{e}</td>
-                      <td>{fechasUsadas.find((i) => i[0] === e)[3]}</td>
+                      <td>{e.nombre}</td>
+                      <td>{e.id}</td>
+                      <td>{e.empresa}</td>
+                      <td>{e.departamento}</td>
+                      <td>{e.cargo}</td>
+                      <td>{e.nivel}</td>
+                      <td>{e.tipo_horario}</td>
                     </tr>
                   )}
                 </tbody>
 
               </Table>
-            </>
+            )}
+            <h2>Dias de vacaciones disponibles: {diasVac}</h2>
+            <h2>Dias compensatorios: {diasComp}</h2>
+            <Row>
+              <Col className="mb-3">
+                <Calendar value={calendarValues}
+                  onChange={(e) => {
+                    setDates(getDaysArray(e[0], e[1]))
+                    setCalendarValues(e)
+                  }}
+                  selectRange={true}
+                  tileDisabled={({ date, view }) => view === 'month'
+                    && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Reposo"))}
+                  locale="es-VE"
+                  tileClassName={({ date, view }) => view === 'month'
+                    && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
+                    ? writeClass(date)
+                    : null}
+                />
+              </Col>
+            </Row>
+            {dates && (
+              <>
+                {console.log(fechasUsadas)}
+                <ButtonGroup className="mb-3">
+                  <Button onClick={() => aprobarReposo()}>Aprobar</Button>
+                  <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
+                </ButtonGroup>
+                <Table bordered striped size="sm"
+                  style={{ width: 50 + "%", marginLeft: "auto", marginRight: "auto" }}>
+                  <thead>
+                    <tr>
+                      <th>Dia</th>
+                      <th>Razón</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dates.map(e =>
+                      <tr>
+                        <td>{e}</td>
+                        <td>{fechasUsadas.find((i) => i[0] === e)[3]}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </>
+            )}
+          </Container>
 
-          )}
-          <br />
-          <Calendar value={calendarValues}
-            onChange={(e) => {
-              setDates(getDaysArray(e[0], e[1]))
-              setCalendarValues(e)
-            }}
-            selectRange={true}
-            tileDisabled={({ date, view }) => view === 'month'
-              && !fechasUsadas.some(e => (e[0] === date.toLocaleDateString("sv") && e[1] === "Reposo"))}
-            locale="es-VE"
-            tileClassName={({ date, view }) => view === 'month'
-              && fechasUsadas.some(e => e[0] === date.toLocaleDateString("sv"))
-              ? writeClass(date)
-              : null}
-          />
-          <br />
         </div>
       ) : (
         <Spinner animation="border" role="status">

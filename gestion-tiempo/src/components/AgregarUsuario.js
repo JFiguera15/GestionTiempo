@@ -155,35 +155,42 @@ function AgregarUsuario() {
                                 </InputGroup>
                             </Col>
                         </Row>
-                        <Row className="mb-3" >
-                            <InputGroup as={Col} controlId="formGridTelefonoP">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
-                                <FloatingLabel label="Teléfono principal">
-                                    <Form.Control name="telefonoP" required />
-                                </FloatingLabel>
-                            </InputGroup>
-                            <InputGroup as={Col} controlId="formGridTelefonoS">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
-                                <FloatingLabel label="Teléfono Secundario">
-                                    <Form.Control name="telefonoS" />
-                                </FloatingLabel>
-                            </InputGroup>
+                        <Row>
+                            <Col className="mb-3" xs={12} sm={6}>
+                                <InputGroup controlId="formGridTelefonoP">
+                                    <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Teléfono principal">
+                                        <Form.Control name="telefonoP" required />
+                                    </FloatingLabel>
+                                </InputGroup>
+                            </Col>
+                            <Col className="mb-3" xs={12} sm={6}>
+                                <InputGroup controlId="formGridTelefonoS">
+                                    <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Teléfono Secundario">
+                                        <Form.Control name="telefonoS" />
+                                    </FloatingLabel>
+                                </InputGroup>
+                            </Col>
                         </Row>
-                        <Row className="mb-3">
-                            <InputGroup as={Col} controlId="formGridFechaN">
-                                <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
-                                <FloatingLabel label="Fecha de Nacimiento">
-                                    <Form.Control name="fechaN" type="date" required />
-                                </FloatingLabel>
-                            </InputGroup>
-                            <InputGroup as={Col} controlId="formGridFechaI">
-                                <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
-                                <FloatingLabel label="Fecha de Ingreso" >
-                                    <Form.Control name="fechaI" type="date" required />
-                                </FloatingLabel>
-                            </InputGroup>
+                        <Row >
+                            <Col className="mb-3" xs={12} sm={6}>
+                                <InputGroup controlId="formGridFechaN">
+                                    <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Fecha de Nacimiento">
+                                        <Form.Control name="fechaN" type="date" required />
+                                    </FloatingLabel>
+                                </InputGroup>
+                            </Col>
+                            <Col className="mb-3" xs={12} sm={6}>
+                                <InputGroup controlId="formGridFechaI">
+                                    <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Fecha de Ingreso" >
+                                        <Form.Control name="fechaI" type="date" required />
+                                    </FloatingLabel>
+                                </InputGroup>
+                            </Col>
                         </Row>
-
                         <Row className="mb-3">
                             <InputGroup as={Col} controlId="formGridDireccion">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-geo-alt-fill"></i></InputGroup.Text>

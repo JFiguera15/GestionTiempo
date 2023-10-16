@@ -241,6 +241,10 @@ function Usuario() {
                 </tbody>
               </Table>
             )}
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
             <Calendar value={calendarValues}
               onChange={(e) => {
                 setDates(getDaysArray(e[0], e[1]))
@@ -253,48 +257,53 @@ function Usuario() {
                 ? writeClass(date)
                 : null}
             />
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            <Form.Select
+              value={select}
+              onChange={e => setSelect(e.target.value)}
+              style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }}>
+              <option value="Trabajado">Trabajado</option>
+              <option value="Libre">Libre</option>
+              <option value="Reposo">Reposo</option>
+            </Form.Select>
+          </Col>
+        </Row>
+        {select === "Reposo" && (
+          <>
             <Row>
-              <Col>
-                <Form.Select
-                  value={select}
-                  onChange={e => setSelect(e.target.value)}>
-                  <option value="Trabajado">Trabajado</option>
-                  <option value="Libre">Libre</option>
-                  <option value="Reposo">Reposo</option>
-                </Form.Select>
+              <Col className="mb-3">
+                <FloatingLabel label="Razón de reposo:"
+                  style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
+                  <Form.Select aria-label="Default select example" required defaultValue={""}
+                    onChange={(e) => setRazon(e.target.value)}>
+                    <option hidden></option>
+                    <option>Vacaciones</option>
+                    <option>Tramite de Licencia de Conducir</option>
+                    <option>Tramite de Documentos de Identidad</option>
+                    <option>Tramites Educativos</option>
+                    <option>Fallecimiento Familiar</option>
+                    <option>Nacimiento de Hijos</option>
+                    <option>Enfermedad de Familiar Directo</option>
+                    <option value="otro">Otro (Identifique:)</option>
+                  </Form.Select>
+                </FloatingLabel>
               </Col>
             </Row>
             <Row>
-              {select === "Reposo" && (
-                <Col xs={12} md={8} xl={12}>
-                  <FloatingLabel label="Razón de reposo:">
-                    <Form.Select aria-label="Default select example" required defaultValue={""}
-                      onChange={(e) => setRazon(e.target.value)}>
-                      <option hidden></option>
-                      <option>Vacaciones</option>
-                      <option>Tramite de Licencia de Conducir</option>
-                      <option>Tramite de Documentos de Identidad</option>
-                      <option>Tramites Educativos</option>
-                      <option>Fallecimiento Familiar</option>
-                      <option>Nacimiento de Hijos</option>
-                      <option>Enfermedad de Familiar Directo</option>
-                      <option value="otro">Otro (Identifique:)</option>
-                    </Form.Select>
+              {razon === "otro" && (
+                <Col>
+                  <FloatingLabel label="Razón de reposo:"
+                    style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
+                    <Form.Control onChange={(e) => setOtraRazon(e.target.value)}/>
                   </FloatingLabel>
-                  <Row>
-                    {razon === "otro" && (
-                      <Col>
-                        <FloatingLabel label="Razón de reposo:">
-                          <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
-                        </FloatingLabel>
-                      </Col>
-                    )}
-                  </Row>
                 </Col>
               )}
             </Row>
-          </Col>
-        </Row>
+          </>
+        )}
         <Row>
           <Col>
             <ButtonGroup>
@@ -305,7 +314,7 @@ function Usuario() {
           </Col>
         </Row>
       </Container >
-    </div>
+    </div >
 
   );
 }

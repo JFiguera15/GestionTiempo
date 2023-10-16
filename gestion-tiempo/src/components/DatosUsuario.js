@@ -167,37 +167,45 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                     </Row>
-                    <Row className="mb-3">
-                        <InputGroup as={Col} controlId="formGridTelefonoP">
-                            <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Teléfono principal">
-                                <Form.Control defaultValue={datos.telefono_p} name="telefonoP" disabled={modificar} required />
-                            </FloatingLabel>
-                        </InputGroup>
-                        <InputGroup as={Col} controlId="formGridTelefonoS">
-                            <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Teléfono Secundario">
-                                <Form.Control defaultValue={datos.telefono_s} name="telefonoS" disabled={modificar} />
-                            </FloatingLabel>
-                        </InputGroup>
+                    <Row >
+                        <Col className="mb-3" xs={12} sm={6}>
+                            <InputGroup controlId="formGridTelefonoP">
+                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Teléfono principal">
+                                    <Form.Control defaultValue={datos.telefono_p} name="telefonoP" disabled={modificar} required />
+                                </FloatingLabel>
+                            </InputGroup>
+                        </Col>
+                        <Col className="mb-3" xs={12} sm={6}>
+                            <InputGroup controlId="formGridTelefonoS">
+                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Teléfono Secundario">
+                                    <Form.Control defaultValue={datos.telefono_s} name="telefonoS" disabled={modificar} />
+                                </FloatingLabel>
+                            </InputGroup>
+                        </Col>
                     </Row>
-                    <Row className="mb-3">
-                        <InputGroup as={Col} controlId="formGridFechaN">
-                            <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Fecha de Nacimiento">
-                                <Form.Control
-                                    defaultValue={datos.fecha_nacimiento?.split("T")[0]}
-                                    name="fechaN" disabled={modificar} type="date" />
-                            </FloatingLabel>
-                        </InputGroup>
-                        <InputGroup as={Col} controlId="formGridFechaI">
-                            <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Fecha de Ingreso">
-                                <Form.Control
-                                    defaultValue={datos.fecha_ingreso?.split("T")[0]}
-                                    name="fechaI" disabled={modificar} type="date" />
-                            </FloatingLabel>
-                        </InputGroup>
+                    <Row >
+                        <Col className="mb-3" xs={12} sm={6}>
+                            <InputGroup controlId="formGridFechaN">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Fecha de Nacimiento">
+                                    <Form.Control
+                                        defaultValue={datos.fecha_nacimiento?.split("T")[0]}
+                                        name="fechaN" disabled={modificar} type="date" />
+                                </FloatingLabel>
+                            </InputGroup>
+                        </Col>
+                        <Col className="mb-3" xs={12} sm={6}>
+                            <InputGroup controlId="formGridFechaI">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Fecha de Ingreso">
+                                    <Form.Control
+                                        defaultValue={datos.fecha_ingreso?.split("T")[0]}
+                                        name="fechaI" disabled={modificar} type="date" />
+                                </FloatingLabel>
+                            </InputGroup>
+                        </Col>
                     </Row>
                     <Row className="mb-3">
                         <InputGroup as={Col} controlId="formGridDireccion">
@@ -319,7 +327,7 @@ function DatosUsuario() {
 
 
                     </Row>
-                    <ButtonGroup>
+                    <ButtonGroup className="mb-3">
                         {!modificar && (
                             <Button variant="primary" type="submit">
                                 Enviar

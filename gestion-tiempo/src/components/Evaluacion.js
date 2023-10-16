@@ -67,7 +67,7 @@ function Evaluacion() {
         const form = document.getElementById("form");
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
-        if(!Object.keys(formJson).some((item) => !formJson[item])){
+        if(Object.keys(formJson).length !== 10){
             Swal.fire("La evaluación no esta completa");
             setShow(false);
             return;
