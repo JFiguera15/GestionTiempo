@@ -121,9 +121,12 @@ function DatosUsuario() {
     return (
         <div id="datos">
             <Navigation user={sessionStorage.getItem("rol")} />
-
-            <Container fluid="md" style={{ height: 100 + "%" }}>
-
+            <Container fluid="md" style={{
+                height: 100 + "%",
+                backgroundColor: "#3258B6",
+                paddingTop: 10 + "px",
+                border: 5 + "px solid black",
+            }}>
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3" >
                         <InputGroup as={Col} controlId="formGridEmail">

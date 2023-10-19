@@ -39,16 +39,22 @@ function ListaColaboradores() {
 
 
     useEffect(() => {
-        fetch("http://localhost:8000/colaboradores")
+        if(sessionStorage.getItem("rol") === "Administrador") {
+            fetch("http://localhost:8000/colaboradores")
             .then((res) => res.json())
             .then((data) => setColaboradores(data));
+        } else {
+            fetch("http://localhost:8000/colaboradores_revision?id=" + sessionStorage.getItem("user"))
+            .then((res) => res.json())
+            .then((data) => setColaboradores(data));
+        }
     }, []);
 
 
     return (
         <div id="lista">
             <Navigation user={sessionStorage.getItem("rol")} />
-            {colaboradores.length > 0 && (
+            {colaboradores.length > 0 ? (
                 <>
                     <Row className="mx-3">
                         <Col className="mb-3" sm={12} lg={4}>
@@ -87,7 +93,7 @@ function ListaColaboradores() {
                         </DataTable>
                     </Row>
                 </>
-            )}
+            ) : (<h1>No hay colaboradores que usted pueda ver</h1>)}
             <Modal show={show} onHide={() => setShow(false)}>
                 {colaboradores[0]?.evaluando === "No" && (
                     <>

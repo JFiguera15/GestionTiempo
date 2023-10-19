@@ -90,6 +90,13 @@ app.get('/colaboradores_que_reportan', (req, res) => {
     });
 });
 
+app.get('/colaboradores_revision', (req, res) => {
+    connection.query("SELECT * FROM colaboradores WHERE (jefe_directo = ?) OR (sup_funcional = ?)", [req.query.id, req.query.id], function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/evaluado_por', (req, res) => {
     connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador], function (err, result) {
         if (err) throw err;

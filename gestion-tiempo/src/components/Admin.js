@@ -153,7 +153,7 @@ function Admin() {
             <Row className="mb-3">
               <Col>
                 <FloatingLabel label="Usuario a ver"
-                  style={{ width: 500 + "px", marginLeft: "auto", marginRight: "auto" }}>
+                  style={{ maxWidth: 500 + "px", marginLeft: "auto", marginRight: "auto" }}>
                   <Form.Select
                     defaultValue=""
                     onChange={(e) => {
@@ -240,7 +240,7 @@ function Admin() {
                     {dates.map(e =>
                       <tr>
                         <td>{e}</td>
-                        <td>{fechasUsadas.find((i) => i[0] === e)[3]}</td>
+                        <td>{fechasUsadas.find((i) => i[0] === e) ? fechasUsadas.find((i) => i[0] === e)[3] : "No aplica"}</td>
                       </tr>
                     )}
                   </tbody>
