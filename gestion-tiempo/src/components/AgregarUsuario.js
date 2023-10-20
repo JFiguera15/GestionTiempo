@@ -90,7 +90,12 @@ function AgregarUsuario() {
     return (
         <div id="agregar">
             <Navigation user={sessionStorage.getItem("rol")} />
-            <Container fluid="md">
+            <Container fluid="md" style={{
+                height: 100 + "%",
+                backgroundColor: "#3258B6",
+                paddingTop: 10 + "px",
+                border: 5 + "px solid black",
+            }}>
                 {!confirmar && datos && (
                     <Col>
                         <InputGroup className="mb-3" as={Col} controlId="formGridEmail">

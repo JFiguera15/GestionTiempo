@@ -76,7 +76,7 @@ function DatosUsuario() {
             .then((data) => {
                 setHighUsers(data);
             });
-        if (location.state?.email && sessionStorage.getItem("rol") === "Administrador") {
+        if (location.state?.email && (sessionStorage.getItem("rol") === "Administrador" || sessionStorage.getItem("user") === getUser())) {
             fetch("http://localhost:8000/evaluaciones_de?evaluado=" + getUser())
                 .then((res) => res.json())
                 .then((data) => setEvaluacion(data));
@@ -349,8 +349,7 @@ function DatosUsuario() {
                             && (datos.evaluando === "En proceso") && (evaluacion.length === 0) && (
                                 <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                             )}
-                        {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user") || sessionStorage.getItem("rol") === "Administrador")
-                            && (evaluacion.length > 0) && (
+                        {(evaluacion.length > 0) && (
                                 <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
                             )}
                         {(sessionStorage.getItem("user") === datos.id) && (modificar) && (

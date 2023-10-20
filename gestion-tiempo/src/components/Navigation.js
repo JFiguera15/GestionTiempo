@@ -11,7 +11,7 @@ function Navigation({ user }) {
                 marginBottom: 25 + "px",
                 width: 100 + "%",
             }} >
-                <Navbar.Brand><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
+                <Navbar.Brand href="/datos"><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
                 <Navbar.Collapse>
                     <Nav>
@@ -34,7 +34,7 @@ function Navigation({ user }) {
                 marginBottom: 25 + "px",
                 width: 100 + "%",
             }} >
-                <Navbar.Brand><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
+                <Navbar.Brand href="/datos"><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
                 <Navbar.Collapse>
                     <Nav>

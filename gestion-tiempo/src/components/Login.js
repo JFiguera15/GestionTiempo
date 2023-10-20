@@ -67,7 +67,7 @@ function Login() {
                         <Button variant="info" onClick={() => setView(!view)}>{view ? <i class="bi bi-eye"></i> : <i class="bi bi-eye-slash"></i>}</Button>
                     </InputGroup>
                     <Button variant="success" type="submit">
-                        Entrar
+                        Iniciar Sesión
                     </Button>
                 </Form>
             </Col>

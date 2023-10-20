@@ -145,7 +145,7 @@ function Evaluacion() {
     return (
         <>
             <Form onSubmit={handleSubmit} id="form">
-                <Container>
+                <Container fluid="md" style={{maxWidth: 768 + "px"}}>
                     <h2>Eje I</h2>
                     <Table striped hidden={pageEje1 - 1 !== 0}>
                         <thead>
@@ -195,7 +195,7 @@ function Evaluacion() {
                     </Table>
                     <Pagination>{eje1}</Pagination>
                 </Container>
-                <Container>
+                <Container fluid="md" style={{maxWidth: 768 + "px"}}>
                     <h2>Eje II</h2>
                     <Form.Group>
                         <Form.Label>
@@ -235,7 +235,7 @@ function Evaluacion() {
                         }} defaultValue={sliderVal1} />
                     </Form.Group>
                 </Container>
-                <Container>
+                <Container fluid="md"  style={{maxWidth: 768 + "px"}}>
                     <h2>Eje III</h2>
                     <Form.Group hidden={pageEje3 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla2">
@@ -358,7 +358,7 @@ function Evaluacion() {
                     </Form.Group>
                     <Pagination>{eje3}</Pagination>
                 </Container>
-                <Container>
+                <Container fluid="md"  style={{maxWidth: 768 + "px"}}>
                     <h2>Eje IV</h2>
                     <Form.Group hidden={pageEje4 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla5">
