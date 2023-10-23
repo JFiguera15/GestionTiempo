@@ -118,6 +118,20 @@ app.get('/fechas', (req, res) => {
     });
 });
 
+app.get('/colaboradores_evaluados', (req, res) => {
+    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/estado_evaluacion', (req, res) => {
+    connection.query("SELECT evaluando FROM colaboradores", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/correos', (req, res) => {
     connection.query("SELECT id FROM colaboradores", function (err, result) {
         if (err) throw err;
@@ -139,7 +153,6 @@ app.post('/login', (req, res) => {
         if (data.length === 0) return res.json("Usuario incorrecto")
         else if (bcrypt.compareSync(req.body.password, data[0].password)) return res.json(data);
         return res.json("Contraseña incorrecta");
-
     })
 });
 
@@ -169,13 +182,13 @@ app.post('/enviar_evaluacion', (req, res) => {
 });
 
 app.post('/iniciar_evaluacion', (req, res) => {
-    connection.query("UPDATE colaboradores SET evaluando = ?", "En proceso", function (err, result) {
+    connection.query("UPDATE colaboradores SET evaluando = ?", "Activo", function (err, result) {
             if (err) throw err;
         });
 });
 
 app.post('/terminar_evaluacion', (req, res) => {
-    connection.query("UPDATE colaboradores SET evaluando = ?", "No", function (err, result) {
+    connection.query("UPDATE colaboradores SET evaluando = ?", "Inactivo", function (err, result) {
             if (err) throw err;
         });
 });

@@ -32,6 +32,10 @@ button.btn.btn-info{
   background-color: #f8f9fa;
 }
 
+table {
+  border: "2px solid black";
+}
+
 .react-calendar {
   width: 350px;
   max-width: 100%;

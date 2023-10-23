@@ -11,7 +11,8 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from "react-bootstrap/Container";
 import Navigation from "./Navigation";
-
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 
 function Usuario() {
@@ -224,22 +225,23 @@ function Usuario() {
         <Row>
           <Col>
             {fechasUsadas && (
-              <Table bordered size="sm">
-                <thead>
-                  <tr>
-                    <th>Tipo de horario:</th>
-                    <th>Días de vacaciones disponibles:</th>
-                    <th>Días compensatorios disponibles:</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{horario}</td>
-                    <td>{diasVac}</td>
-                    <td>{diasComp}</td>
-                  </tr>
-                </tbody>
-              </Table>
+                <Table bordered size="sm" 
+                style={{ width: 50 + "%", marginLeft: "auto", marginRight: "auto" }}>
+                  <thead>
+                    <tr>
+                      <th>Tipo de horario:</th>
+                      <th>Días de vacaciones disponibles:</th>
+                      <th>Días compensatorios disponibles:</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{horario}</td>
+                      <td>{diasVac}</td>
+                      <td>{diasComp}</td>
+                    </tr>
+                  </tbody>
+                </Table>
             )}
           </Col>
         </Row>
@@ -259,7 +261,6 @@ function Usuario() {
             />
           </Col>
         </Row>
-        <Row className="mb-3">
           <Col>
             <Form.Select
               value={select}
@@ -270,11 +271,10 @@ function Usuario() {
               <option value="Reposo">Reposo</option>
             </Form.Select>
           </Col>
-        </Row>
         {select === "Reposo" && (
           <>
             <Row>
-              <Col className="mb-3">
+              <Col>
                 <FloatingLabel label="Razón de reposo:"
                   style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
                   <Form.Select aria-label="Default select example" required defaultValue={""}
@@ -294,10 +294,10 @@ function Usuario() {
             </Row>
             <Row>
               {razon === "otro" && (
-                <Col>
+                <Col className="mb-3">
                   <FloatingLabel label="Razón de reposo:"
                     style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
-                    <Form.Control onChange={(e) => setOtraRazon(e.target.value)}/>
+                    <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
                   </FloatingLabel>
                 </Col>
               )}

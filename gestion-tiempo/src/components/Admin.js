@@ -109,7 +109,7 @@ function Admin() {
   }
 
   function getFechas(user) {
-    const msj = toast.loading("Enviando...");
+    const msj = toast.loading("Cargando...");
     let fechasFormateadas = [];
     setCalendarValues([]);
     setDates();
@@ -173,7 +173,8 @@ function Admin() {
               </Col>
             </Row>
             {reviewedUser && (
-              <Table id="data_colaborador" size="sm" responsive="md">
+              <Table bordered id="data_colaborador" size="sm" responsive="md"
+                style={{ width: 70 + "%", marginLeft: "auto", marginRight: "auto" }}>
                 <thead>
                   <tr>
                     <th>Nombre</th>
@@ -182,7 +183,6 @@ function Admin() {
                     <th>Departamento</th>
                     <th>Cargo</th>
                     <th>Nivel</th>
-                    <th>Horario</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,15 +194,35 @@ function Admin() {
                       <td>{e.departamento}</td>
                       <td>{e.cargo}</td>
                       <td>{e.nivel}</td>
-                      <td>{e.tipo_horario}</td>
                     </tr>
                   )}
                 </tbody>
 
               </Table>
             )}
-            <h2>Dias de vacaciones disponibles: {diasVac}</h2>
-            <h2>Dias compensatorios: {diasComp}</h2>
+            <Row>
+              <Col>
+                {reviewedUser && (
+                  <Table bordered size="sm"
+                    style={{ width: 60 + "%", marginLeft: "auto", marginRight: "auto" }}>
+                    <thead>
+                      <tr>
+                        <th>Tipo de horario:</th>
+                        <th>Días de vacaciones disponibles:</th>
+                        <th>Días compensatorios disponibles:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{horario}</td>
+                        <td>{diasVac}</td>
+                        <td>{diasComp}</td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                )}
+              </Col>
+            </Row>
             <Row>
               <Col className="mb-3">
                 <Calendar value={calendarValues}
@@ -220,35 +240,33 @@ function Admin() {
                     : null}
                 />
               </Col>
-            </Row>
-            {dates && (
-              <>
-                {console.log(fechasUsadas)}
-                <ButtonGroup className="mb-3">
-                  <Button onClick={() => aprobarReposo()}>Aprobar</Button>
-                  <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
-                </ButtonGroup>
-                <Table bordered striped size="sm"
-                  style={{ width: 50 + "%", marginLeft: "auto", marginRight: "auto" }}>
-                  <thead>
-                    <tr>
-                      <th>Dia</th>
-                      <th>Razón</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dates.map(e =>
+              {dates && (
+                <Col>
+                  {console.log(fechasUsadas)}
+                  <Table bordered striped size="sm">
+                    <thead>
                       <tr>
-                        <td>{e}</td>
-                        <td>{fechasUsadas.find((i) => i[0] === e) ? fechasUsadas.find((i) => i[0] === e)[3] : "No aplica"}</td>
+                        <th>Dia</th>
+                        <th>Razón</th>
                       </tr>
-                    )}
-                  </tbody>
-                </Table>
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {dates.map(e =>
+                        <tr>
+                          <td>{e}</td>
+                          <td>{fechasUsadas.find((i) => i[0] === e) ? fechasUsadas.find((i) => i[0] === e)[3] : "No aplica"}</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </Table>
+                  <ButtonGroup className="mb-3">
+                    <Button onClick={() => aprobarReposo()}>Aprobar</Button>
+                    <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
+                  </ButtonGroup>
+                </Col>
+              )}
+            </Row>
           </Container>
-
         </div>
       ) : (
         <Spinner animation="border" role="status">

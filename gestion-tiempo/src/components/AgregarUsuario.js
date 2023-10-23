@@ -316,7 +316,7 @@ function AgregarUsuario() {
 
                         </Row>
 
-                        <Button variant="primary" type="submit">
+                        <Button variant="primary" type="submit" className="mb-3">
                             Enviar
                         </Button>
                         {sessionStorage.getItem("user") === datos?.id && (

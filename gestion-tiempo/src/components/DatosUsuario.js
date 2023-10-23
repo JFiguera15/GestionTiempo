@@ -346,7 +346,7 @@ function DatosUsuario() {
                             </>
                         )}
                         {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                            && (datos.evaluando === "En proceso") && (evaluacion.length === 0) && (
+                            && (datos.evaluando === "Activo") && (evaluacion.length === 0) && (
                                 <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                             )}
                         {(evaluacion.length > 0) && (

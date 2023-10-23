@@ -22,7 +22,7 @@ function ResultadosEvaluacion({ resultados }) {
 
     return (
         <>
-            <Container>
+            <Container style={{padding : 5 + "px"}}>
                 <h4>Evaluado:</h4>
                 <p>{evaluado}</p>
                 <h4>Evaluador:</h4>
