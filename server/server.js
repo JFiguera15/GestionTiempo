@@ -118,8 +118,40 @@ app.get('/fechas', (req, res) => {
     });
 });
 
+app.get('/colaboradores_aprobados', (req, res) => {
+    connection.query("select * FROM colaboradores WHERE id IN (SELECT id FROM fechas WHERE aprobada = 'Sí')", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/colaboradores_por_aprobar', (req, res) => {
+    connection.query("SELECT COUNT(DISTINCT id) FROM fechas WHERE aprobada = 'Pendiente' AND id IN (SELECT id FROM colaboradores WHERE jefe_directo = ?)", 
+    req.query.id, function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/colaboradores_por_aprobar_admin', (req, res) => {
+    connection.query("SELECT COUNT(DISTINCT id) FROM fechas WHERE aprobada = 'Sí'", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+
+app.get('/colaboradores_por_evaluar', (req, res) => {
+    connection.query("SELECT COUNT(id) from colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND (id NOT IN (SELECT evaluado FROM evaluacion))",
+    [req.query.id, req.query.id], function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+
 app.get('/colaboradores_evaluados', (req, res) => {
-    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
+    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador, evaluacion.resultados FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
         if (err) throw err;
         res.json(result);
     });

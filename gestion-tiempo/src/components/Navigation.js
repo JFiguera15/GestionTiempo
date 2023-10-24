@@ -1,9 +1,22 @@
+import { useEffect, useState } from "react";
 import "../App.css";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function Navigation({ user }) {
+    const [porAprobar, setPorAprobar] = useState(false);
+    const [porEvaluar, setPorEvaluar] = useState(false);
+
+    useEffect(() => {
+        fetch("http://localhost:8000/colaboradores_por_aprobar_admin")
+            .then((res) => res.json())
+            .then((data) => {
+                if(Object.values(data[0])[0]) setPorAprobar(true);
+                console.log(Object.values(data[0])[0]);
+            });
+    }, [])
+
     if (user === "Administrador") {
         return (
             <Navbar expand="md" style={{
@@ -24,7 +37,7 @@ function Navigation({ user }) {
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="/agregar_usuario">Agregar colaborador nuevo</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Gestión de tiempo">
+                        <NavDropdown title= {porAprobar ? ("Gestión de tiempo") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
                             <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
                         </NavDropdown>

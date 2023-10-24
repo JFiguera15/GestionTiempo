@@ -49,7 +49,7 @@ function Admin() {
     const body = {
       id: reviewedUser,
       fechas: dates,
-      tipo: "Sí",
+      tipo: (sessionStorage.getItem('rol') === "Administrador") ? "GTH" : "Sí",
     }
     fetch("http://localhost:8000/aprobar",
       {
@@ -127,9 +127,15 @@ function Admin() {
   }
 
   useEffect(() => {
-    fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
-      .then((res) => res.json())
-      .then((data) => setColaboradores(data));
+    if (sessionStorage.getItem("rol") === "Administrador") {
+      fetch("http://localhost:8000/colaboradores_aprobados")
+        .then((res) => res.json())
+        .then((data) => setColaboradores(data));
+    } else {
+      fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
+        .then((res) => res.json())
+        .then((data) => setColaboradores(data));
+    }
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         setDates();

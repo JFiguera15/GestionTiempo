@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -21,40 +20,11 @@ function ListaEvaluados() {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
 
-    function iniciarProceso() {
-        fetch("http://localhost:8000/iniciar_evaluacion", {
-            method: "POST",
-        }).then((res) => res.json());
-        setShow(false);
-        window.location.reload();
-    }
-
-    function terminarProceso() {
-        fetch("http://localhost:8000/terminar_evaluacion", {
-            method: "POST",
-        }).then((res) => res.json());
-        setShow(false);
-        window.location.reload();
-    }
-
-
     useEffect(() => {
         fetch("http://localhost:8000/colaboradores_evaluados")
             .then((res) => res.json())
             .then((data) => {
-                const uniqueIds = [];
-                const unique = data.filter(element => {
-                    const isDuplicate = uniqueIds.includes(element.id);
-
-                    if (!isDuplicate) {
-                        uniqueIds.push(element.id);
-
-                        return true;
-                    }
-
-                    return false;
-                });
-                setColaboradores(unique);
+                setColaboradores(data);
             });
     }, []);
 
@@ -95,6 +65,8 @@ function ListaEvaluados() {
                             <Column field="id" header="Correo" sortable />
                             <Column field="empresa" header="Empresa" sortable />
                             <Column field="cargo" header="Cargo" sortable />
+                            <Column field="evaluador" header="Evaluado por:" sortable />
+                            <Column field="resultados" header="Puntuación" sortable />
                         </DataTable>
                     </Row>
                 </>
