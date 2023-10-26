@@ -5,16 +5,26 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function Navigation({ user }) {
-    const [porAprobar, setPorAprobar] = useState(false);
+    const [porAprobar, setPorAprobar] = useState(0);
     const [porEvaluar, setPorEvaluar] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:8000/colaboradores_por_aprobar_admin")
+        if(user === "Administrador") {
+            fetch("http://localhost:8000/colaboradores_por_aprobar_admin")
             .then((res) => res.json())
             .then((data) => {
-                if(Object.values(data[0])[0]) setPorAprobar(true);
+                setPorAprobar(Object.values(data[0])[0]);
                 console.log(Object.values(data[0])[0]);
             });
+        } else {
+            fetch("http://localhost:8000/colaboradores_por_aprobar?id=" + sessionStorage.getItem("user"))
+            .then((res) => res.json())
+            .then((data) => {
+                setPorAprobar(Object.values(data[0])[0]);
+                console.log(Object.values(data[0])[0]);
+            });
+        }
+        
     }, [])
 
     if (user === "Administrador") {
@@ -37,7 +47,7 @@ function Navigation({ user }) {
                             <NavDropdown.Divider />
                             <NavDropdown.Item href="/agregar_usuario">Agregar colaborador nuevo</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title= {porAprobar ? ("Gestión de tiempo") : "Gestión de tiempo"}>
+                        <NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
                             <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
                         </NavDropdown>
@@ -69,7 +79,7 @@ function Navigation({ user }) {
                         <NavDropdown title="Colaboradores">
                             <NavDropdown.Item href="/lista">Lista de colaboradores</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown title="Gestión de tiempo">
+                        <NavDropdown NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
                             <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
                         </NavDropdown>

@@ -246,7 +246,7 @@ app.post('/cambiar_password', (req, res) => {
     const password = bcrypt.hashSync(data.password, salt);
     const sql = "UPDATE colaboradores SET password = ? WHERE id = ?";
     connection.query(sql,
-        [data.password, data.id], function (err, result) {
+        [password, data.id], function (err, result) {
             if (err) throw err;
         });
 
