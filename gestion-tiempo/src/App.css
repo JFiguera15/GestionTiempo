@@ -7,25 +7,12 @@ html {
   background-color: #7ABEE7;
 }
 
-a {
-  text-decoration: none;
-  color: white;
-}
-
 a.nav-link {
   color: white;
   font-weight: bold;
   font-size: large;
   margin-top: auto;
   margin-bottom: auto;
-}
-
-a.active {
-  background-color: #006edc;
-}
-
-a:hover {
-  background-color: #006edc;
 }
 
 button.btn.btn-info{
@@ -218,4 +205,12 @@ table {
 .reposo-gth {
   background: orange !important;
   color: #000000;
+}
+
+h1 {
+  color: white !important;
+  max-width: 500px;
+  margin: auto;
+  background-color: #013466;
+  padding: 20px;
 }

@@ -37,7 +37,7 @@ function Navigation({ user }) {
                 boxShadow : "0px 4px 5px 0px rgba(0,0,0,0.75)"
             }} >
                 <Navbar.Brand href="/datos"><img src={require("./images//logo.png")} 
-                width="140" height="50"></img></Navbar.Brand>
+                width="170" height="50"></img></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
                 <Navbar.Collapse>
                     <Nav>
@@ -49,7 +49,7 @@ function Navigation({ user }) {
                         </NavDropdown>
                         <NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
-                            <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin">{porAprobar ? "De otros colaboradores (" + porAprobar + ")" : "De otros colaboradores"}</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Desempeño">
                             <NavDropdown.Item href="/lista_evaluados">Lista de colaboradores evaluados</NavDropdown.Item>
@@ -71,7 +71,7 @@ function Navigation({ user }) {
                 WebkitBoxShadow: "0px 4px 5px 0px rgba(0,0,0,0.75)",
                 boxShadow : "0px 4px 5px 0px rgba(0,0,0,0.75)"
             }} >
-                <Navbar.Brand href="/datos"><img src={require("./images//logo.png")} width="140" height="50"></img></Navbar.Brand>
+                <Navbar.Brand href="/datos"><img src={require("./images//logo.png")} width="170" height="50"></img></Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ backgroundColor: "#7ABEE7" }} />
                 <Navbar.Collapse>
                     <Nav>
@@ -81,7 +81,7 @@ function Navigation({ user }) {
                         </NavDropdown>
                         <NavDropdown NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
-                            <NavDropdown.Item href="/admin">De otros colaboradores</NavDropdown.Item>
+                            <NavDropdown.Item href="/admin">{porAprobar ? "De otros colaboradores (" + porAprobar + ")" : "De otros colaboradores"}</NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link href="/login" className="justify-content-end">Salir</Nav.Link>
                     </Nav>

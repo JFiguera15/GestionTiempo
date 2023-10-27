@@ -60,13 +60,14 @@ function ListaEvaluados() {
                     <Row style={{ marginTop: 25 + "px" }}>
                         <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
-                            selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })} style={{ border: "2px solid black" }}>
+                            selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })}
+                            style={{ border: "2px solid black" }}>
                             <Column field="nombre" header="Nombre" sortable />
                             <Column field="id" header="Correo" sortable />
                             <Column field="empresa" header="Empresa" sortable />
                             <Column field="cargo" header="Cargo" sortable />
                             <Column field="evaluador" header="Evaluado por:" sortable />
-                            <Column field="resultados" header="Puntuación" sortable />
+                            <Column field="resultados" header="Puntuación (%)" sortable />
                         </DataTable>
                     </Row>
                 </>

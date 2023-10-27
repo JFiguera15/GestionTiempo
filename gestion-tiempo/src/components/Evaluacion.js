@@ -8,6 +8,7 @@ import Container from "react-bootstrap/esm/Container";
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Swal from 'sweetalert2'
+import Navigation from "./Navigation";
 
 const preguntasOperativo = [
     ["Cumple con sus compromisos con desempeño promedio y se establece objetivos dentro de lo esperado.", "Cumple los compromisos con buen desempeño ocasionalmente y se establece objetivos dentro de lo esperado.", "Cumple con frecuencia los compromisos mostrando buen desempeño y tiende a establecerse objetivos por encima de lo esperado.", "Cumple con sus compromisos con alto desempeño frecuentemente y tiende a establecerse objetivos por encima de lo esperado."],
@@ -67,7 +68,7 @@ function Evaluacion() {
         const form = document.getElementById("form");
         const formData = new FormData(form);
         const formJson = Object.fromEntries(formData.entries());
-        if(Object.keys(formJson).length !== 10){
+        if (Object.keys(formJson).length !== 10) {
             Swal.fire("La evaluación no esta completa");
             setShow(false);
             return;
@@ -83,7 +84,6 @@ function Evaluacion() {
         respuestas.pregunta8 = document.getElementById("tabla4").rows[1 + rowPicker(formJson.pregunta8)].getElementsByTagName("td")[1].innerHTML;
         respuestas.pregunta9 = document.getElementById("tabla5").rows[1 + rowPicker(formJson.pregunta9)].getElementsByTagName("td")[1].innerHTML;
         respuestas.pregunta10 = document.getElementById("tabla6").rows[1 + rowPicker(formJson.pregunta10)].getElementsByTagName("td")[1].innerHTML;
-        console.log(respuestas);
         formJson.pregunta5 = (formJson.pregunta5 / 100) * 40;
         formJson.pregunta6 = (formJson.pregunta6 / 100) * 6.66;
         formJson.pregunta7 = (formJson.pregunta7 / 100) * 6.66;
@@ -91,9 +91,9 @@ function Evaluacion() {
         formJson.pregunta9 = (formJson.pregunta9 / 100) * 5;
         formJson.pregunta10 = (formJson.pregunta10 / 100) * 5;
         respuestas.total = Object.values(formJson).reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+        respuestas.total = respuestas.total.toFixed(2);
         respuestas.evaluado = location.state.id;
         respuestas.evaluador = sessionStorage.getItem("user");
-        console.log(respuestas);
         fetch("http://localhost:8000/enviar_evaluacion",
             {
                 method: "POST",
@@ -144,8 +144,9 @@ function Evaluacion() {
 
     return (
         <>
+            <Navigation user={sessionStorage.getItem("rol")} />
             <Form onSubmit={handleSubmit} id="form">
-                <Container fluid="md" style={{maxWidth: 768 + "px"}}>
+                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje I</h2>
                     <Table striped hidden={pageEje1 - 1 !== 0}>
                         <thead>
@@ -155,7 +156,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[0].map((item, index) =>
-                                <tr><td><Form.Check required type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)}/></td></tr>)}
+                                <tr><td><Form.Check required type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
                     <Table striped hidden={pageEje1 - 1 !== 1}>
@@ -195,7 +196,7 @@ function Evaluacion() {
                     </Table>
                     <Pagination>{eje1}</Pagination>
                 </Container>
-                <Container fluid="md" style={{maxWidth: 768 + "px"}}>
+                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje II</h2>
                     <Form.Group>
                         <Form.Label>
@@ -235,7 +236,7 @@ function Evaluacion() {
                         }} defaultValue={sliderVal1} />
                     </Form.Group>
                 </Container>
-                <Container fluid="md"  style={{maxWidth: 768 + "px"}}>
+                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje III</h2>
                     <Form.Group hidden={pageEje3 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla2">
@@ -358,7 +359,7 @@ function Evaluacion() {
                     </Form.Group>
                     <Pagination>{eje3}</Pagination>
                 </Container>
-                <Container fluid="md"  style={{maxWidth: 768 + "px"}}>
+                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje IV</h2>
                     <Form.Group hidden={pageEje4 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla5">

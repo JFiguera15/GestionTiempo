@@ -153,9 +153,14 @@ function Admin() {
     <div className="aprobar">
       <Navigation user={sessionStorage.getItem("rol")} />
       <Toaster />
-      {colaboradores ? (colaboradores.length === 0) ? <h1>No posee colaboradores que reporten directamente a usted.</h1> : (
+      {colaboradores ? (colaboradores.length === 0) ? <h1>No existen solicitudes actualmente.</h1> : (
         <div id="admin_only">
-          <Container>
+          <Container fluid="sm" style={{
+            height: 100 + "%",
+            backgroundColor: "#3258B6",
+            paddingTop: 10 + "px",
+            border: 5 + "px solid black",
+          }}>
             <Row className="mb-3">
               <Col>
                 <FloatingLabel label="Usuario a ver"
@@ -230,7 +235,7 @@ function Admin() {
               </Col>
             </Row>
             <Row>
-              <Col className="mb-3">
+              <Col className="mb-3" md sm={12}>
                 <Calendar value={calendarValues}
                   onChange={(e) => {
                     setDates(getDaysArray(e[0], e[1]))
@@ -246,8 +251,45 @@ function Admin() {
                     : null}
                 />
               </Col>
+              <Col md sm={12}>
+                <Table bordered>
+                  <thead>
+                    <tr>
+                      <th colSpan={2}>Leyenda</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style={{ backgroundColor: "#00a128" }}></td>
+                      <td>Día trabajado</td>
+                    </tr>
+                    <tr>
+                      <td style={{ backgroundColor: "#f53232" }}></td>
+                      <td>Día libre</td>
+                    </tr>
+                    <tr>
+                      <td style={{ backgroundColor: "#5776ff" }}></td>
+                      <td>Día de resposo solicitado</td>
+                    </tr>
+                    <tr>
+                      <td style={{ backgroundColor: "#0f3bff" }}></td>
+                      <td>Día de resposo aprobado por jefe</td>
+
+                    </tr>
+                    <tr>
+                      <td style={{ backgroundColor: "orange" }}></td>
+                      <td>Día de resposo aprobado por GTH</td>
+
+                    </tr>
+                    <tr>
+                      <td style={{ backgroundColor: "#001057" }}></td>
+                      <td>Día de resposo no aprobado</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Col>
               {dates && (
-                <Col>
+                <Col md sm={12}>
                   {console.log(fechasUsadas)}
                   <Table bordered striped size="sm">
                     <thead>
@@ -265,12 +307,17 @@ function Admin() {
                       )}
                     </tbody>
                   </Table>
-                  <ButtonGroup className="mb-3">
-                    <Button onClick={() => aprobarReposo()}>Aprobar</Button>
-                    <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
-                  </ButtonGroup>
+
                 </Col>
               )}
+            </Row>
+            <Row>
+              <Col>
+                <ButtonGroup className="mb-3">
+                  <Button onClick={() => aprobarReposo()}>Aprobar</Button>
+                  <Button onClick={() => noAprobarReposo()}>No aprobar</Button>
+                </ButtonGroup>
+              </Col>
             </Row>
           </Container>
         </div>

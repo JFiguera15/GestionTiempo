@@ -11,9 +11,6 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from "react-bootstrap/Container";
 import Navigation from "./Navigation";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-
 
 function Usuario() {
   const [fechasUsadas, setFechasUsadas] = useState([]);
@@ -221,32 +218,37 @@ function Usuario() {
     <div className="solicitar">
       <Toaster />
       <Navigation user={sessionStorage.getItem("rol")} />
-      <Container fluid="sm">
+      <Container fluid="sm" style={{
+                height: 100 + "%",
+                backgroundColor: "#3258B6",
+                paddingTop: 10 + "px",
+                border: 5 + "px solid black",
+            }}>
         <Row>
           <Col>
             {fechasUsadas && (
-                <Table bordered size="sm" 
+              <Table bordered size="sm"
                 style={{ width: 50 + "%", marginLeft: "auto", marginRight: "auto" }}>
-                  <thead>
-                    <tr>
-                      <th>Tipo de horario:</th>
-                      <th>Días de vacaciones disponibles:</th>
-                      <th>Días compensatorios disponibles:</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{horario}</td>
-                      <td>{diasVac}</td>
-                      <td>{diasComp}</td>
-                    </tr>
-                  </tbody>
-                </Table>
+                <thead>
+                  <tr>
+                    <th>Tipo de horario:</th>
+                    <th>Días de vacaciones disponibles:</th>
+                    <th>Días compensatorios disponibles:</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{horario}</td>
+                    <td>{diasVac}</td>
+                    <td>{diasComp}</td>
+                  </tr>
+                </tbody>
+              </Table>
             )}
           </Col>
         </Row>
-        <Row className="mb-3">
-          <Col>
+        <Row>
+          <Col md={6} sm={12} className="mb-3">
             <Calendar value={calendarValues}
               onChange={(e) => {
                 setDates(getDaysArray(e[0], e[1]))
@@ -260,8 +262,46 @@ function Usuario() {
                 : null}
             />
           </Col>
+          <Col md={6} sm={12}>
+            <Table bordered>
+              <thead>
+                <tr>
+                  <th colSpan={2}>Leyenda</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ backgroundColor: "#00a128" }}></td>
+                  <td>Día trabajado</td>
+                </tr>
+                <tr>
+                  <td style={{ backgroundColor: "#f53232" }}></td>
+                  <td>Día libre</td>
+                </tr>
+                <tr>
+                  <td style={{ backgroundColor: "#5776ff" }}></td>
+                  <td>Día de resposo solicitado</td>
+                </tr>
+                <tr>
+                  <td style={{ backgroundColor: "#0f3bff" }}></td>
+                  <td>Día de resposo aprobado por jefe</td>
+
+                </tr>
+                <tr>
+                  <td style={{ backgroundColor: "orange" }}></td>
+                  <td>Día de resposo aprobado por GTH</td>
+
+                </tr>
+                <tr>
+                  <td style={{ backgroundColor: "#001057" }}></td>
+                  <td>Día de resposo no aprobado</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Col>
         </Row>
-          <Col>
+        <Row>
+          <Col md sm={12} className="mb-1">
             <Form.Select
               value={select}
               onChange={e => setSelect(e.target.value)}
@@ -271,10 +311,9 @@ function Usuario() {
               <option value="Reposo">Reposo</option>
             </Form.Select>
           </Col>
-        {select === "Reposo" && (
-          <>
-            <Row>
-              <Col>
+          {select === "Reposo" && (
+            <>
+              <Col md sm={12} className="mb-1">
                 <FloatingLabel label="Razón de reposo:"
                   style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
                   <Form.Select aria-label="Default select example" required defaultValue={""}
@@ -291,22 +330,21 @@ function Usuario() {
                   </Form.Select>
                 </FloatingLabel>
               </Col>
-            </Row>
-            <Row>
               {razon === "otro" && (
-                <Col className="mb-3">
+                <Col className="mb-3" md sm={12}>
                   <FloatingLabel label="Razón de reposo:"
                     style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
                     <Form.Control onChange={(e) => setOtraRazon(e.target.value)} />
                   </FloatingLabel>
                 </Col>
               )}
-            </Row>
-          </>
-        )}
+            </>
+          )}
+        </Row>
+
         <Row>
           <Col>
-            <ButtonGroup>
+            <ButtonGroup className="mb-3">
               <Button onClick={enviarFechas} disabled={!dates || verificar(false)}>Enviar</Button>
               <Button onClick={cambiarFechas} disabled={!verificar(true)}>Cambiar</Button>
               <Button onClick={borrarFechas} disabled={!verificar(true)} variant="danger">Borrar</Button>
