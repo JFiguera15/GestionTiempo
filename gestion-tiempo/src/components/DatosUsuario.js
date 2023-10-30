@@ -432,12 +432,13 @@ function DatosUsuario() {
                     <Modal.Body>
                         <Form.Label>Pregunta</Form.Label>
                         <Form.Select defaultValue={""} className="mb-1" id="pregunta_s">
+                            <option hidden>{datos?.pregunta_seguridad}</option>
                             <option>¿En qué ciudad se conocieron tus padres?</option>
                             <option>¿Cómo se llamaba tu mamá?</option>
                             <option>¿A qué secundaria fuiste?</option>
                         </Form.Select>
                         <Form.Label>Respuesta</Form.Label>
-                        <Form.Control id="respuesta_s"></Form.Control>
+                        <Form.Control id="respuesta_s" defaultValue={datos?.respuesta_seguridad}></Form.Control>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={() => changeSecQuestion(document.getElementById("pregunta_s").value, document.getElementById("respuesta_s").value)}>Enviar</Button>
