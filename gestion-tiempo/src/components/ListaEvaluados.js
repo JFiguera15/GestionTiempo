@@ -35,7 +35,7 @@ function ListaEvaluados() {
             {colaboradores.length > 0 ? (
                 <>
                     <Row className="mx-3">
-                        <Col className="mb-3" sm={12} md={4}>
+                        <Col sm={12} md={4}>
                             <FloatingLabel label="Buscar:" style={{ maxWidth: 900 + "px" }}>
                                 <Form.Control onChange={(e) =>
                                     setFilters({
@@ -43,19 +43,6 @@ function ListaEvaluados() {
                                     })} className="sm"></Form.Control>
                             </FloatingLabel>
                         </Col>
-                        {sessionStorage.getItem("rol") === "Administrador" && (
-                            <>
-                                <Col className="mb-3" sm={12} lg={4}>
-                                    {colaboradores[0].evaluando === "No" && (
-                                        <Button onClick={() => setShow(true)}>Iniciar proceso de evaluación de desempeño</Button>
-                                    )}
-                                    {colaboradores[0].evaluando === "En proceso" && (
-                                        <Button onClick={() => setShow(true)}>Terminar proceso de evaluación de desempeño</Button>
-                                    )}
-                                </Col>
-                            </>
-                        )}
-
                     </Row>
                     <Row style={{ marginTop: 25 + "px" }}>
                         <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}

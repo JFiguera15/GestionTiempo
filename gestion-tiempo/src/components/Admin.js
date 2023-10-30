@@ -268,7 +268,7 @@ function Admin() {
                       <td>Día libre</td>
                     </tr>
                     <tr>
-                      <td style={{ backgroundColor: "#5776ff" }}></td>
+                      <td style={{ backgroundColor: "gray" }}></td>
                       <td>Día de resposo solicitado</td>
                     </tr>
                     <tr>

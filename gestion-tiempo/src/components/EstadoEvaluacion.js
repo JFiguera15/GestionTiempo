@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import Navigation from "./Navigation";
 import Spinner from 'react-bootstrap/Spinner';
 import Container from "react-bootstrap/Container";
-import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
 
@@ -45,7 +43,7 @@ function EstadoEvaluacion() {
                         {
                             color: "white",
                             marginTop: 7 + "%",
-                            backgroundColor: "#3258B6",
+                            backgroundColor: "#013466",
                             padding: 25 + "px",
                             border: 5 + "px solid black",
                             borderRadius: 25 + "px",

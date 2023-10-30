@@ -37,7 +37,7 @@ function ListaColaboradores() {
             {colaboradores.length > 0 ? (
                 <>
                     <Row className="mx-3">
-                        <Col className="mb-3" sm={12} md={4}>
+                        <Col sm={12} md={4}>
                             <FloatingLabel label="Buscar:" style={{ maxWidth: 900 + "px" }}>
                                 <Form.Control onChange={(e) =>
                                     setFilters({

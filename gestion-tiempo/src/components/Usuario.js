@@ -263,7 +263,7 @@ function Usuario() {
             />
           </Col>
           <Col md={6} sm={12}>
-            <Table bordered>
+            <Table>
               <thead>
                 <tr>
                   <th colSpan={2}>Leyenda</th>
@@ -279,7 +279,7 @@ function Usuario() {
                   <td>Día libre</td>
                 </tr>
                 <tr>
-                  <td style={{ backgroundColor: "#5776ff" }}></td>
+                  <td style={{ backgroundColor: "gray" }}></td>
                   <td>Día de resposo solicitado</td>
                 </tr>
                 <tr>

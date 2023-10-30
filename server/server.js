@@ -249,7 +249,15 @@ app.post('/cambiar_password', (req, res) => {
         [password, data.id], function (err, result) {
             if (err) throw err;
         });
+});
 
+app.post('/cambiar_respuesta_seguridad', (req, res) => {
+    let data = req.body;
+    const sql = "UPDATE colaboradores SET pregunta_seguridad = ?, respuesta_seguridad = ?  WHERE id = ?";
+    connection.query(sql,
+        [data.pregunta, data.respuesta, data.id], function (err, result) {
+            if (err) throw err;
+        });
 });
 
 app.post('/eliminar_colaborador', (req, res) => {

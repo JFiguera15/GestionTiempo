@@ -6,18 +6,24 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-
+import Row from 'react-bootstrap/Row';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fogot, setForgot] = useState(false);
     const [view, setView] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         sessionStorage.clear();
     }, []);
+
+    function forgotPass(){
+
+    }
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -46,34 +52,44 @@ function Login() {
 
     return (
         <Container fluid="md" style={
-            {marginTop: 15 + "%", 
-            backgroundColor: "#3258B6", 
-            padding: 25 + "px", 
-            border: 5 + "px solid black",
-            borderRadius: 25 + "px"}}>
-            <Col>
-                <Form onSubmit={handleSubmit}>
-                    <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
-                        <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-                        <FloatingLabel label="Correo">
-                            <Form.Control type="email" name="email" onChange={(e) => setEmail(e.target.value)} />
-                        </FloatingLabel>
-                    </InputGroup>
-                    <InputGroup className="mb-3" as={Col} controlId="formGridPassword">
-                        <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
-                        <FloatingLabel label="Contraseña">
-                            <Form.Control type= {view ? "password" : "text" }  name="password" onChange={(e) => setPassword(e.target.value)} />
-                        </FloatingLabel>
-                        <Button variant="info" onClick={() => setView(!view)}>{view ? <i class="bi bi-eye"></i> : <i class="bi bi-eye-slash"></i>}</Button>
-                    </InputGroup>
-                    <Button variant="success" type="submit">
-                        Iniciar Sesión
-                    </Button>
-                </Form>
-            </Col>
-        </Container>
-
-
+            {
+                marginTop: 15 + "%",
+                backgroundColor: "#013466",
+                padding: 25 + "px",
+                border: 5 + "px solid black",
+                borderRadius: 25 + "px"
+            }}>
+            <Row>
+                <Col lg={6}>
+                    <img src={require("./images//logo-2.png")} className="mb-3" style={{ width: 100 + "%", height: "auto" }} alt="Logo Integra WS"></img>
+                </Col>
+                <Col lg={6}>
+                    <Form onSubmit={handleSubmit}>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
+                            <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+                            <FloatingLabel label="Correo">
+                                <Form.Control type="email" name="email" onChange={(e) => setEmail(e.target.value)} />
+                            </FloatingLabel>
+                        </InputGroup>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridPassword">
+                            <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                            <FloatingLabel label="Contraseña">
+                                <Form.Control type={view ? "password" : "text"} name="password" onChange={(e) => setPassword(e.target.value)} />
+                            </FloatingLabel>
+                            <Button variant="info" onClick={() => setView(!view)}>{view ? <i class="bi bi-eye"></i> : <i class="bi bi-eye-slash"></i>}</Button>
+                        </InputGroup>
+                        <ButtonGroup>
+                            <Button variant="success" type="submit">
+                                Iniciar Sesión
+                            </Button>
+                            <Button variant="secondary">
+                                Olvidé mi contraseña
+                            </Button>
+                        </ButtonGroup>  
+                    </Form>
+                </Col>
+            </Row>
+        </Container >
     );
 }
 

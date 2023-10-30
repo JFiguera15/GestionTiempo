@@ -22,11 +22,11 @@ function DatosUsuario() {
     const [evaluador, setEvaluador] = useState();
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
+    const [changeQuestion, setChangeQuestion] = useState(false);
     const [borrado, setBorrado] = useState(false);
     const [verEval, setVerEval] = useState(false);
     const [cambiarCon, setCambiarCon] = useState(false);
     const [highUsers, setHighUsers] = useState([]);
-    const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const [evaluacion, setEvaluacion] = useState([]);
@@ -60,10 +60,25 @@ function DatosUsuario() {
         navigate("/evaluacion", { state: { id: datos.id, nivel: datos.nivel } })
     }
 
+    function changeSecQuestion(q, a) {
+        if (q && a) {
+            fetch("http://localhost:8000/cambiar_respuesta_seguridad",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ pregunta: q, respuesta: a, id: datos.id }),
+                    headers: { "Content-Type": "application/json" }
+                }).then(window.location.reload());
+        } else {
+            alert("Escriba una respuesta válida");
+        }
+
+    }
+
     useEffect(() => {
         fetch("http://localhost:8000/datos_usuario?id=" + getUser())
             .then((res) => res.json())
             .then((data) => {
+                console.log(data[0])
                 setDatos(data[0]);
             });
         fetch("http://localhost:8000/departamentos")
@@ -106,16 +121,14 @@ function DatosUsuario() {
     }
 
     function cambiarContrasena() {
-        if (newPassword !== password) {
-            if (newPassword === confirmPass) {
-                fetch("http://localhost:8000/cambiar_password",
-                    {
-                        method: "POST",
-                        body: JSON.stringify({ password: newPassword, id: datos.id }),
-                        headers: { "Content-Type": "application/json" }
-                    }).then(setCambiarCon(false));
-            } else alert("Las contraseñas no coinciden");
-        } else alert("La contraseña nueva no puede ser la misma que la contraseña vieja");
+        if (newPassword === confirmPass) {
+            fetch("http://localhost:8000/cambiar_password",
+                {
+                    method: "POST",
+                    body: JSON.stringify({ password: newPassword, id: datos.id }),
+                    headers: { "Content-Type": "application/json" }
+                }).then(setCambiarCon(false));
+        } else alert("Las contraseñas no coinciden");
     }
 
     return (
@@ -350,12 +363,17 @@ function DatosUsuario() {
                                 <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                             )}
                         {(evaluacion.length > 0) && (
-                                <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
-                            )}
+                            <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
+                        )}
                         {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
-                            <Button variant="secondary" onClick={() => setCambiarCon(true)}>
-                                Cambiar Contraseña
-                            </Button>
+                            <>
+                                <Button variant="secondary" onClick={() => setCambiarCon(true)}>
+                                    Cambiar Contraseña
+                                </Button>
+                                <Button variant="secondary" onClick={() => setChangeQuestion(true)}>
+                                    Cambiar pregunta de seguridad
+                                </Button>
+                            </>
                         )}
                     </ButtonGroup>
                 </Form>
@@ -389,6 +407,43 @@ function DatosUsuario() {
                     </Modal.Footer>
                 </Modal>
 
+                <Modal show={!datos?.pregunta_seguridad}>
+                    <Modal.Header>
+                        <Modal.Title>Seleccionar Pregunta de seguridad</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Label>Pregunta</Form.Label>
+                        <Form.Select defaultValue={""} className="mb-1" id="pregunta_s">
+                            <option>¿En qué ciudad se conocieron tus padres?</option>
+                            <option>¿Cómo se llamaba tu mamá?</option>
+                            <option>¿A qué secundaria fuiste?</option>
+                        </Form.Select>
+                        <Form.Label>Respuesta</Form.Label>
+                        <Form.Control id="respuesta_s"></Form.Control>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={() => changeSecQuestion(document.getElementById("pregunta_s").value, document.getElementById("respuesta_s").value)}>Enviar</Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={changeQuestion}>
+                    <Modal.Header>
+                        <Modal.Title>Cambiar Pregunta de seguridad</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Label>Pregunta</Form.Label>
+                        <Form.Select defaultValue={""} className="mb-1" id="pregunta_s">
+                            <option>¿En qué ciudad se conocieron tus padres?</option>
+                            <option>¿Cómo se llamaba tu mamá?</option>
+                            <option>¿A qué secundaria fuiste?</option>
+                        </Form.Select>
+                        <Form.Label>Respuesta</Form.Label>
+                        <Form.Control id="respuesta_s"></Form.Control>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={() => changeSecQuestion(document.getElementById("pregunta_s").value, document.getElementById("respuesta_s").value)}>Enviar</Button>
+                        <Button variant="secondary" onClick={() => setChangeQuestion(false)}>Cancelar</Button>
+                    </Modal.Footer>
+                </Modal>
                 <Modal
                     show={show}
                     onHide={handleClose}
