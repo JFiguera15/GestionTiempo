@@ -35,7 +35,8 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/colaboradores', (req, res) => {
-    connection.query("SELECT * FROM COLABORADORES", function (err, result) {
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES"
+    connection.query(sql, function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -84,14 +85,16 @@ app.get('/usuarios_alto_nivel', (req, res) => {
 });
 
 app.get('/colaboradores_que_reportan', (req, res) => {
-    connection.query("SELECT * FROM colaboradores WHERE jefe_directo = \'" + req.query.id + "\'", function (err, result) {
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE jefe_directo = ?"
+    connection.query(sql, req.query.id, function (err, result) {
         if (err) throw err;
         res.json(result);
     });
 });
 
 app.get('/colaboradores_revision', (req, res) => {
-    connection.query("SELECT * FROM colaboradores WHERE (jefe_directo = ?) OR (sup_funcional = ?)", [req.query.id, req.query.id], function (err, result) {
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE (jefe_directo = ?) OR (sup_funcional = ?)"
+    connection.query(sql, [req.query.id, req.query.id], function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -178,6 +181,13 @@ app.get('/departamentos', (req, res) => {
     });
 });
 
+app.get('/pregunta_seguridad', (req, res) => {
+    connection.query("SELECT pregunta_seguridad, respuesta_seguridad FROM colaboradores WHERE id = ?", req.query.id, function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.post('/login', (req, res) => {
     const sql = "SELECT id, password, rol FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
@@ -204,11 +214,11 @@ app.post('/agregar_colaborador', (req, res) => {
 
 app.post('/enviar_evaluacion', (req, res) => {
     let data = req.body;
-    const sql = "INSERT INTO evaluacion VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = "INSERT INTO evaluacion VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql,
-        [data.evaluado, data.total, data.evaluador,
-        data.pregunta1, data.pregunta2, data.pregunta3, data.pregunta4, data.pregunta5,
-        data.pregunta6, data.pregunta7, data.pregunta8, data.pregunta9, data.pregunta10], function (err, result) {
+        [data.evaluado, data.total, data.evaluador, data.fecha,
+        data.respuesta1, data.respuesta2, data.respuesta3, data.respuesta4, data.respuesta5,
+        data.respuesta6, data.respuesta7, data.respuesta8, data.respuesta9, data.respuesta10], function (err, result) {
             if (err) throw err;
         });
 });

@@ -27,28 +27,34 @@ function ResultadosEvaluacion({ resultados }) {
                 <p>{evaluado}</p>
                 <h4>Evaluador:</h4>
                 <p>{evaluador}</p>
+                <h4>Fecha de realización</h4>
+                <p>{resultados.fecha.split('T')[0]}</p>
                 <h4>Puntuación total:</h4>
                 <p>{resultados.resultados}%</p>
-                <h4>Pregunta 1:</h4>
-                <p>{resultados.pregunta1}</p>
-                <h4>Pregunta 2:</h4>
-                <p>{resultados.pregunta2}</p>
-                <h4>Pregunta 3:</h4>
-                <p>{resultados.pregunta3}</p>
-                <h4>Pregunta 4:</h4>
-                <p>{resultados.pregunta4}</p>
-                <h4>Pregunta 5:</h4>
-                <p>{resultados.pregunta5}</p>
-                <h4>Pregunta 6:</h4>
-                <p>{resultados.pregunta6}</p>
-                <h4>Pregunta 7:</h4>
-                <p>{resultados.pregunta7}</p>
-                <h4>Pregunta 8:</h4>
-                <p>{resultados.pregunta8}</p>
-                <h4>Pregunta 9:</h4>
-                <p>{resultados.pregunta9}</p>
-                <h4>Pregunta 10:</h4>
-                <p>{resultados.pregunta10}</p>
+                <h4>Eje I: Compentencias claves</h4>
+                <h4>Pregunta 1: Compromiso y disciplina personal</h4>
+                <p>{resultados.respuesta1}</p>
+                <h4>Pregunta 2: Liderazgo</h4>
+                <p>{resultados.respuesta2}</p>
+                <h4>Pregunta 3: Orientación al detalle</h4>
+                <p>{resultados.respuesta3}</p>
+                <h4>Pregunta 4: Trabajo Colaborativo</h4>
+                <p>{resultados.respuesta4}</p>
+                <h4>Eje II: Desempeño de funciones clave</h4>
+                <h4>Pregunta 5: Cumplimiento de funciones clave</h4>
+                <p>{resultados.respuesta5}</p>
+                <h4>Eje III: Perfil de adherencia a la Seguridad y Calidad</h4>
+                <h4>Pregunta 6: Cumplimiento de protocolos HSE-Q</h4>
+                <p>{resultados.respuesta6}</p>
+                <h4>Pregunta 7: Participación de actividades HSE-Q</h4>
+                <p>{resultados.respuesta7}</p>
+                <h4>Pregunta 8: Participación en el Programa de Reforzamiento en HSE-Q</h4>
+                <p>{resultados.respuesta8}</p>
+                <h4>Eje IV: Credibilidad Técnica</h4>
+                <h4>Pregunta 9: Educación y/o experiencia relacionada a la posición que ocupa.</h4>
+                <p>{resultados.respuesta9}</p>
+                <h4>Pregunta 10: Conocimiento del trabajo</h4>
+                <p>{resultados.respuesta10}</p>
             </Container>
         </>
     )

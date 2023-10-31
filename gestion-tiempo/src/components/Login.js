@@ -8,12 +8,16 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Modal from 'react-bootstrap/Modal';
 
 function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [fogot, setForgot] = useState(false);
+    const [forgot, setForgot] = useState(false);
+    const [pregunta, setPregunta] = useState("");
+    const [respuesta, setRespuesta] = useState("");
+    const [verified, setVerified] = useState(false);
     const [view, setView] = useState(true);
     const navigate = useNavigate();
 
@@ -21,8 +25,22 @@ function Login() {
         sessionStorage.clear();
     }, []);
 
-    function forgotPass(){
+    function forgotPass(id) {
+        fetch("http://localhost:8000/pregunta_seguridad?id=" + id)
+            .then((res) => res.json())
+            .then((data) => {
+                setPregunta(data[0]?.pregunta_seguridad);
+                setRespuesta(data[0]?.respuesta_seguridad);
+            });
+    }
 
+    function changePass(id, pass) {
+        fetch("http://localhost:8000/cambiar_password",
+            {
+                method: "POST",
+                body: JSON.stringify({ password: pass, id: id }),
+                headers: { "Content-Type": "application/json" }
+            }).then(setForgot(false)).then(alert("Contraseña cambiada con éxito"));
     }
 
     function handleSubmit(e) {
@@ -82,13 +100,73 @@ function Login() {
                             <Button variant="success" type="submit">
                                 Iniciar Sesión
                             </Button>
-                            <Button variant="secondary">
+                            <Button variant="secondary" onClick={() => setForgot(true)}>
                                 Olvidé mi contraseña
                             </Button>
-                        </ButtonGroup>  
+                        </ButtonGroup>
                     </Form>
                 </Col>
             </Row>
+
+            <Modal show={forgot}>
+                <Modal.Header>
+                    <Modal.Title>Recuperar contraseña</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <>
+                        <h4>Correo:</h4>
+                        <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
+                            <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
+                            <FloatingLabel label="Correo">
+                                <Form.Control type="email" id="recover_email" readOnly={pregunta} />
+                            </FloatingLabel>
+                        </InputGroup>
+                    </>
+                    {(!pregunta && !verified) && (
+                        <Button onClick={() => forgotPass(document.getElementById("recover_email").value)}>Verificar</Button>
+                    )}
+                    {(pregunta && !verified) && (
+                        <>
+                            <h4>{pregunta}</h4>
+                            <Form.Control id="response" className="mb-2"></Form.Control>
+                            <Button onClick={() => {
+                                if (document.getElementById("response").value === respuesta) {
+                                    setVerified(true);
+                                } else {
+                                    alert("Respuesta incorrecta");
+                                }
+                            }}>Verificar</Button>
+                        </>
+                    )}
+                    {verified && (
+                        <>
+                            <InputGroup as={Col} controlId="formGridNewPassword">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Contraseña nueva">
+                                    <Form.Control type={view ? "password" : "text"} id="newPassword" />
+                                </FloatingLabel>
+                                <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                            </InputGroup>
+                            <InputGroup as={Col} controlId="formGridConfirmPassword" className="mb-3">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                                <FloatingLabel label="Confirmar contraseña nueva">
+                                    <Form.Control type={view ? "password" : "text"} id="confirmPassword" />
+                                </FloatingLabel>
+                                <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                            </InputGroup>
+                            <Button onClick={() => {
+                                if (document.getElementById("newPassword").value === document.getElementById("confirmPassword").value) {
+                                    changePass(document.getElementById("recover_email").value, document.getElementById("newPassword").value)
+                                } else {
+                                    alert("Las contraseñas no coinciden.")
+                                }
+                            }
+                            }>Cambiar contraseña</Button>
+                        </>
+                    )}
+
+                </Modal.Body>
+            </Modal>
         </Container >
     );
 }

@@ -74,16 +74,16 @@ function Evaluacion() {
             return;
         }
         const respuestas = {};
-        respuestas.pregunta1 = preguntas[0][(formJson.pregunta1 / 1.875) - 1];
-        respuestas.pregunta2 = preguntas[1][(formJson.pregunta2 / 1.875) - 1];
-        respuestas.pregunta3 = preguntas[2][(formJson.pregunta3 / 1.875) - 1];
-        respuestas.pregunta4 = preguntas[3][(formJson.pregunta4 / 1.875) - 1];
-        respuestas.pregunta5 = document.getElementById("tabla1").rows[1 + rowPicker(formJson.pregunta5)].getElementsByTagName("td")[1].innerHTML;
-        respuestas.pregunta6 = document.getElementById("tabla2").rows[1 + rowPicker(formJson.pregunta6)].getElementsByTagName("td")[1].innerHTML;
-        respuestas.pregunta7 = document.getElementById("tabla3").rows[1 + rowPicker(formJson.pregunta7)].getElementsByTagName("td")[1].innerHTML;
-        respuestas.pregunta8 = document.getElementById("tabla4").rows[1 + rowPicker(formJson.pregunta8)].getElementsByTagName("td")[1].innerHTML;
-        respuestas.pregunta9 = document.getElementById("tabla5").rows[1 + rowPicker(formJson.pregunta9)].getElementsByTagName("td")[1].innerHTML;
-        respuestas.pregunta10 = document.getElementById("tabla6").rows[1 + rowPicker(formJson.pregunta10)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta1 = preguntas[0][(formJson.pregunta1 / 1.875) - 1];
+        respuestas.respuesta2 = preguntas[1][(formJson.pregunta2 / 1.875) - 1];
+        respuestas.respuesta3 = preguntas[2][(formJson.pregunta3 / 1.875) - 1];
+        respuestas.respuesta4 = preguntas[3][(formJson.pregunta4 / 1.875) - 1];
+        respuestas.respuesta5 = document.getElementById("tabla1").rows[1 + rowPicker(formJson.pregunta5)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta6 = document.getElementById("tabla2").rows[1 + rowPicker(formJson.pregunta6)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta7 = document.getElementById("tabla3").rows[1 + rowPicker(formJson.pregunta7)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta8 = document.getElementById("tabla4").rows[1 + rowPicker(formJson.pregunta8)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta9 = document.getElementById("tabla5").rows[1 + rowPicker(formJson.pregunta9)].getElementsByTagName("td")[1].innerHTML;
+        respuestas.respuesta10 = document.getElementById("tabla6").rows[1 + rowPicker(formJson.pregunta10)].getElementsByTagName("td")[1].innerHTML;
         formJson.pregunta5 = (formJson.pregunta5 / 100) * 40;
         formJson.pregunta6 = (formJson.pregunta6 / 100) * 6.66;
         formJson.pregunta7 = (formJson.pregunta7 / 100) * 6.66;
@@ -94,6 +94,7 @@ function Evaluacion() {
         respuestas.total = respuestas.total.toFixed(2);
         respuestas.evaluado = location.state.id;
         respuestas.evaluador = sessionStorage.getItem("user");
+        respuestas.fecha = new Date().toISOString().split('T')[0];
         fetch("http://localhost:8000/enviar_evaluacion",
             {
                 method: "POST",
@@ -148,6 +149,8 @@ function Evaluacion() {
             <Form onSubmit={handleSubmit} id="form">
                 <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje I</h2>
+                    <h2>Competencias claves</h2>
+                    <h2>(30% de la evaluación)</h2>
                     <Table striped hidden={pageEje1 - 1 !== 0}>
                         <thead>
                             <tr>
@@ -198,6 +201,8 @@ function Evaluacion() {
                 </Container>
                 <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje II</h2>
+                    <h2>Desempeño de funciones clave</h2>
+                    <h2>(40% de la evaluación)</h2>
                     <Form.Group>
                         <Form.Label>
                             <Table striped id="tabla1">
@@ -238,6 +243,8 @@ function Evaluacion() {
                 </Container>
                 <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje III</h2>
+                    <h2>Perfil de adherencia a la Seguridad y Calidad</h2>
+                    <h2>(20% de la evaluación)</h2>
                     <Form.Group hidden={pageEje3 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla2">
                             <thead>
@@ -361,6 +368,8 @@ function Evaluacion() {
                 </Container>
                 <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
                     <h2>Eje IV</h2>
+                    <h2>Credibilidad Técnica</h2>
+                    <h2>(10% de la evaluación)</h2>
                     <Form.Group hidden={pageEje4 - 1 !== 0}>
                         <Form.Label><Table striped id="tabla5">
                             <thead>

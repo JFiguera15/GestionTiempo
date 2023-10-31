@@ -36,7 +36,6 @@ function DatosUsuario() {
     const navigate = useNavigate();
 
     function borrar() {
-        console.log(JSON.stringify(datos.id));
         fetch("http://localhost:8000/eliminar_colaborador",
             {
                 method: "POST",
@@ -78,7 +77,6 @@ function DatosUsuario() {
         fetch("http://localhost:8000/datos_usuario?id=" + getUser())
             .then((res) => res.json())
             .then((data) => {
-                console.log(data[0])
                 setDatos(data[0]);
             });
         fetch("http://localhost:8000/departamentos")
@@ -109,7 +107,6 @@ function DatosUsuario() {
         const formData = new FormData(form);
         formData.append("id", datos.id)
         const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
         fetch("http://localhost:8000/actualizar_colaborador",
             {
                 method: "POST",
@@ -127,7 +124,7 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ password: newPassword, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(setCambiarCon(false));
+                }).then(setCambiarCon(false)).then(alert("Contraseña cambiada con éxito"));
         } else alert("Las contraseñas no coinciden");
     }
 
@@ -363,7 +360,7 @@ function DatosUsuario() {
                                 <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
                             )}
                         {(evaluacion.length > 0) && (
-                            <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluación</Button>
+                            <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluaciones</Button>
                         )}
                         {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
                             <>
@@ -381,7 +378,7 @@ function DatosUsuario() {
                     show={verEval}
                     onHide={() => setVerEval(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Resultados Evaluación de desempeño</Modal.Title>
+                        <Modal.Title>Resultados evaluaciones de desempeño</Modal.Title>
                     </Modal.Header>
 
                     {evaluacion.length > 0 && (
@@ -407,7 +404,7 @@ function DatosUsuario() {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={!datos?.pregunta_seguridad}>
+                <Modal show={(sessionStorage.getItem("user") === getUser() && !datos?.pregunta_seguridad)}>
                     <Modal.Header>
                         <Modal.Title>Seleccionar Pregunta de seguridad</Modal.Title>
                     </Modal.Header>
