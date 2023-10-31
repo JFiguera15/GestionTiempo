@@ -108,7 +108,7 @@ function Login() {
                 </Col>
             </Row>
 
-            <Modal show={forgot}>
+            <Modal show={forgot} onHide={() => setForgot(false)}>
                 <Modal.Header>
                     <Modal.Title>Recuperar contraseña</Modal.Title>
                 </Modal.Header>

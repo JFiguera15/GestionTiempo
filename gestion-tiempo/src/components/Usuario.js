@@ -98,14 +98,14 @@ function Usuario() {
       dates.forEach((item) => {
         if (!(new Date(item).getDay() === 6 || new Date(item).getDay() === 5)) diasHabiles++;
       })
-    };
+    }
     if (diasHabiles <= diasVac) {
       const body = {
         id: sessionStorage.getItem("user"),
         fechas: dates,
         tipo: select,
-        estado: (select === "Reposo") ? "Pendiente" : "",
-        razon: otraRazon ? otraRazon : razon,
+        estado: (select === "Reposo") ? "Pendiente" : "No aplica",
+        razon: otraRazon ? otraRazon : (razon ? razon : "No aplica"),
       }
       fetch("http://localhost:8000/enviar",
         {
@@ -170,8 +170,8 @@ function Usuario() {
         id: sessionStorage.getItem("user"),
         fechas: dates,
         tipo: select,
-        estado: (select === "Reposo") ? "Pendiente" : "",
-        razon: otraRazon ? otraRazon : razon,
+        estado: (select === "Reposo") ? "Pendiente" : "No aplica",
+        razon: otraRazon ? otraRazon : (razon ? razon : "No aplica"),
       }
       fetch("http://localhost:8000/cambiar",
         {

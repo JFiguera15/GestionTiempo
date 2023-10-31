@@ -182,7 +182,18 @@ table {
   color: #000000;
 }
 
+.trabajado-no.aplica {
+  background: #00a128 !important;
+  color: #000000;
+}
+
+
 .libre {
+  background: #f53232 !important;
+  color: #ffffff;
+}
+
+.libre-no.aplica {
   background: #f53232 !important;
   color: #ffffff;
 }
@@ -214,3 +225,12 @@ h1 {
   background-color: #013466;
   padding: 20px;
 }
+
+.pregunta {
+  color: white;
+  background-color: #013466;
+  border: 5px solid black;
+  border-radius: 25px;
+}
+
+

@@ -24,6 +24,9 @@ function ListaEvaluados() {
         fetch("http://localhost:8000/colaboradores_evaluados")
             .then((res) => res.json())
             .then((data) => {
+                data.forEach(element => {
+                    element.fecha = element.fecha.split('T')[0];
+                });
                 setColaboradores(data);
             });
     }, []);
@@ -55,6 +58,7 @@ function ListaEvaluados() {
                             <Column field="cargo" header="Cargo" sortable />
                             <Column field="evaluador" header="Evaluado por:" sortable />
                             <Column field="resultados" header="Puntuación (%)" sortable />
+                            <Column field="fecha" header="Fecha de evaluación" sortable />
                         </DataTable>
                     </Row>
                 </>

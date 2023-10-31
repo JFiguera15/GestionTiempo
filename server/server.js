@@ -154,7 +154,7 @@ app.get('/colaboradores_por_evaluar', (req, res) => {
 
 
 app.get('/colaboradores_evaluados', (req, res) => {
-    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador, evaluacion.resultados FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
+    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador, evaluacion.resultados, evaluacion.fecha FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
         if (err) throw err;
         res.json(result);
     });

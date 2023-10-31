@@ -147,7 +147,7 @@ function Evaluacion() {
         <>
             <Navigation user={sessionStorage.getItem("rol")} />
             <Form onSubmit={handleSubmit} id="form">
-                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
+                <Container className="pregunta" fluid="md">
                     <h2>Eje I</h2>
                     <h2>Competencias claves</h2>
                     <h2>(30% de la evaluación)</h2>
@@ -199,7 +199,7 @@ function Evaluacion() {
                     </Table>
                     <Pagination>{eje1}</Pagination>
                 </Container>
-                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
+                <Container fluid="md" className="pregunta">
                     <h2>Eje II</h2>
                     <h2>Desempeño de funciones clave</h2>
                     <h2>(40% de la evaluación)</h2>
@@ -241,7 +241,7 @@ function Evaluacion() {
                         }} defaultValue={sliderVal1} />
                     </Form.Group>
                 </Container>
-                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
+                <Container fluid="md" className="pregunta">
                     <h2>Eje III</h2>
                     <h2>Perfil de adherencia a la Seguridad y Calidad</h2>
                     <h2>(20% de la evaluación)</h2>
@@ -366,7 +366,7 @@ function Evaluacion() {
                     </Form.Group>
                     <Pagination>{eje3}</Pagination>
                 </Container>
-                <Container fluid="md" style={{ maxWidth: 768 + "px" }}>
+                <Container fluid="md" className="pregunta">
                     <h2>Eje IV</h2>
                     <h2>Credibilidad Técnica</h2>
                     <h2>(10% de la evaluación)</h2>
@@ -451,7 +451,7 @@ function Evaluacion() {
                     <Pagination>{eje4}</Pagination>
                 </Container>
                 <Button onClick={() => setShow(true)}>Enviar</Button>
-            </Form>
+            </Form >
 
             <Modal
                 show={show}

@@ -12,6 +12,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import ResultadosEvaluacion from "./ResultadosEvaluacion";
 import Navigation from "./Navigation";
+import * as XLSX from 'xlsx/xlsx.mjs';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
+import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
 
 function DatosUsuario() {
@@ -23,7 +27,6 @@ function DatosUsuario() {
     const [reload, setReload] = useState(true);
     const [show, setShow] = useState(false);
     const [changeQuestion, setChangeQuestion] = useState(false);
-    const [borrado, setBorrado] = useState(false);
     const [verEval, setVerEval] = useState(false);
     const [cambiarCon, setCambiarCon] = useState(false);
     const [highUsers, setHighUsers] = useState([]);
@@ -43,7 +46,7 @@ function DatosUsuario() {
                 headers: { "Content-Type": "text/plain" }
             });
         handleClose();
-        setBorrado(true);
+        alert("Borrado con éxito.")
     }
 
     function getUser() {
@@ -58,6 +61,29 @@ function DatosUsuario() {
     function evaluar() {
         navigate("/evaluacion", { state: { id: datos.id, nivel: datos.nivel } })
     }
+
+    function downloadCSV(data) {
+        console.log(data);
+        const headers = Object.keys(data[0]);
+        const csvContent = "data:text/csv;charset=utf-8," + [["Fecha", "Tipo", "¿Aprobada?", "Razón"], ...data.map(obj => headers.map(key => obj[key]))].map(e => e.join(",")).join("\n");
+        const encodedURI = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedURI);
+        link.setAttribute("download", "fechas_" + getUser().split("@")[0] + ".csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    function exportToExcel(data) {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.sheet_add_aoa(worksheet, [
+            ["Fecha", "Tipo", "¿Aprobada?", "Razón"]
+        ], { origin: "A1" });
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        XLSX.writeFile(workbook, "fechas_" + getUser().split("@")[0] + ".xlsx");
+    }
+
 
     function changeSecQuestion(q, a) {
         if (q && a) {
@@ -92,11 +118,11 @@ function DatosUsuario() {
         if (location.state?.email && (sessionStorage.getItem("rol") === "Administrador" || sessionStorage.getItem("user") === getUser())) {
             fetch("http://localhost:8000/evaluaciones_de?evaluado=" + getUser())
                 .then((res) => res.json())
-                .then((data) => setEvaluacion(data));
+                .then((data) => { setEvaluacion(data) });
         } else if (location.state?.email) {
             fetch("http://localhost:8000/evaluado_por?evaluado=" + getUser() + "&evaluador=" + sessionStorage.getItem("user"))
                 .then((res) => res.json())
-                .then((data) => setEvaluacion(data));
+                .then((data) => { setEvaluacion(data) });
         }
 
     }, [reload]);
@@ -336,43 +362,88 @@ function DatosUsuario() {
                                 </FloatingLabel>
                             </InputGroup>
                         </Col>
-
-
-
                     </Row>
-                    <ButtonGroup className="mb-3">
-                        {!modificar && (
-                            <Button variant="primary" type="submit">
-                                Enviar
-                            </Button>
-                        )}
-                        {((sessionStorage.getItem("rol") === "Administrador")) && (
-                            <>
-                                <Button variant="primary" onClick={() => estaModificando()}>
-                                    {modificar ? "Modificar datos" : "Cancelar"}
-                                </Button>
-                                <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
-
-                            </>
-                        )}
-                        {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                            && (datos.evaluando === "Activo") && (evaluacion.length === 0) && (
-                                <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
-                            )}
-                        {(evaluacion.length > 0) && (
-                            <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluaciones</Button>
-                        )}
-                        {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
-                            <>
-                                <Button variant="secondary" onClick={() => setCambiarCon(true)}>
-                                    Cambiar Contraseña
-                                </Button>
-                                <Button variant="secondary" onClick={() => setChangeQuestion(true)}>
-                                    Cambiar pregunta de seguridad
-                                </Button>
-                            </>
-                        )}
-                    </ButtonGroup>
+                    <Row>
+                        <Col>
+                            <ButtonGroup className="mb-3">
+                                {!modificar && (
+                                    <Button variant="primary" type="submit">
+                                        Enviar
+                                    </Button>
+                                )}
+                                {((sessionStorage.getItem("rol") === "Administrador")) && (
+                                    <>
+                                        <Button variant="primary" onClick={() => estaModificando()}>
+                                            {modificar ? "Modificar datos" : "Cancelar"}
+                                        </Button>
+                                        <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
+                                        <Dropdown>
+                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                                Exportar datos de fechas
+                                            </Dropdown.Toggle>
+                                            <DropdownMenu>
+                                                <Dropdown.Item onClick={() => {
+                                                    const fechas = [];
+                                                    fetch("http://localhost:8000/fechas?id=" + getUser())
+                                                        .then((res) => res.json())
+                                                        .then((data) => {
+                                                            if (data.length === 0) {
+                                                                alert("No hay datos referentes a este usuario.");
+                                                                return;
+                                                            }
+                                                            data.forEach(element => {
+                                                                fechas.push([new Date(element.fecha).toISOString().split('T')[0], element.tipo, element.aprobada, element.razon]);
+                                                            });
+                                                            downloadCSV(fechas);
+                                                        });
+                                                }}>CSV</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => {
+                                                    const fechas = [];
+                                                    fetch("http://localhost:8000/fechas?id=" + getUser())
+                                                        .then((res) => res.json())
+                                                        .then((data) => {
+                                                            if (data.length === 0) {
+                                                                alert("No hay datos referentes a este usuario.");
+                                                                return;
+                                                            }
+                                                            data.forEach(element => {
+                                                                fechas.push([new Date(element.fecha).toISOString().split('T')[0], element.tipo, element.aprobada, element.razon]);
+                                                            });
+                                                            exportToExcel(fechas);
+                                                        });
+                                                }}>Excel</Dropdown.Item>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </>
+                                )}
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <ButtonGroup className="mb-3">
+                                {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
+                                    && (datos.evaluando === "Activo")
+                                    && !(evaluacion.some((e) => new Date(e.fecha).getFullYear() === new Date().getFullYear()))
+                                    && (
+                                        <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
+                                    )}
+                                {(evaluacion.length > 0) && (
+                                    <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluaciones</Button>
+                                )}
+                                {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
+                                    <>
+                                        <Button variant="secondary" onClick={() => setCambiarCon(true)}>
+                                            Cambiar Contraseña
+                                        </Button>
+                                        <Button variant="secondary" onClick={() => setChangeQuestion(true)}>
+                                            Cambiar pregunta de seguridad
+                                        </Button>
+                                    </>
+                                )}
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
                 </Form>
                 <Modal
                     show={verEval}
@@ -388,7 +459,7 @@ function DatosUsuario() {
                                     onChange={(e) => setEvaluador(e.target.value)} defaultValue={""}>
                                     <option value="" disabled hidden></option>
                                     {evaluacion.map((item, index) =>
-                                        <option value={index}>{item.evaluador}</option>)}
+                                        <option value={index}>{item.evaluador + " (" + item.fecha.split('T')[0] + ")"}</option>)}
                                 </Form.Select>
                             </FloatingLabel>
 
@@ -458,17 +529,6 @@ function DatosUsuario() {
                         <Button variant="primary" onClick={() => borrar()}>Eliminar</Button>
                         <Button variant="secondary" onClick={handleClose}>
                             Cancelar
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-
-                <Modal show={borrado} onHide={() => setBorrado(false)}>
-                    <Modal.Body>
-                        <h2>Borrado con éxito</h2>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={() => navigate("/lista")}>
-                            Cerrar
                         </Button>
                     </Modal.Footer>
                 </Modal>

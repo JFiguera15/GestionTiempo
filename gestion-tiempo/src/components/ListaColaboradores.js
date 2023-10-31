@@ -61,7 +61,6 @@ function ListaColaboradores() {
             // split overflowing columns into pages
             horizontalPageBreak: true,
             tableWidth: 'wrap',
-            styles: { cellPadding: 0.5, fontSize: 8 },
         });
 
         doc.save("colaboradores.pdf");
@@ -85,12 +84,13 @@ function ListaColaboradores() {
         if (sessionStorage.getItem("rol") === "Administrador") {
             fetch("http://localhost:8000/colaboradores")
                 .then((res) => res.json())
-                .then((data) => { 
+                .then((data) => {
                     data.forEach(element => {
                         element.fecha_ingreso = element.fecha_ingreso.split('T')[0];
                         element.fecha_nacimiento = element.fecha_nacimiento.split('T')[0];
                     });
-                    setColaboradores(data) });
+                    setColaboradores(data)
+                });
         } else {
             fetch("http://localhost:8000/colaboradores_revision?id=" + sessionStorage.getItem("user"))
                 .then((res) => res.json())
@@ -113,19 +113,23 @@ function ListaColaboradores() {
                                     })} className="sm"></Form.Control>
                             </FloatingLabel>
                         </Col>
-                        <Col>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    Exportar datos
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => downloadCSV(colaboradores)}>CSV</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => exportToExcel(colaboradores)}>Excel</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => exportToPdf(colaboradores)}>PDF</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </Col>
+                        {sessionStorage.getItem("rol") === "Administrador" && (
+                            <>
+                                <Col sm={12} md={4}></Col>
+                                <Col sm={12} md={4}>
+                                    <Dropdown>
+                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                            Exportar datos
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => downloadCSV(colaboradores)}>CSV</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => exportToExcel(colaboradores)}>Excel</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => exportToPdf(colaboradores)}>PDF</Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Col>
+                            </>
+                        )}
                     </Row>
                     <Row style={{ marginTop: 25 + "px" }}>
                         <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
