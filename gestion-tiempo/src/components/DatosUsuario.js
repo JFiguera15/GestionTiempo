@@ -16,6 +16,8 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import DropdownItem from "react-bootstrap/esm/DropdownItem";
+import Table from 'react-bootstrap/Table';
+import Swal from 'sweetalert2'
 
 
 function DatosUsuario() {
@@ -46,7 +48,7 @@ function DatosUsuario() {
                 headers: { "Content-Type": "text/plain" }
             });
         handleClose();
-        alert("Borrado con éxito.")
+        Swal.fire("Borrado con éxito.")
     }
 
     function getUser() {
@@ -94,7 +96,7 @@ function DatosUsuario() {
                     headers: { "Content-Type": "application/json" }
                 }).then(window.location.reload());
         } else {
-            alert("Escriba una respuesta válida");
+            Swal.fire("Escriba una respuesta válida");
         }
 
     }
@@ -150,8 +152,8 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ password: newPassword, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(setCambiarCon(false)).then(alert("Contraseña cambiada con éxito"));
-        } else alert("Las contraseñas no coinciden");
+                }).then(setCambiarCon(false)).then(Swal.fire("Contraseña cambiada con éxito"));
+        } else Swal.fire("Las contraseñas no coinciden");
     }
 
     return (
@@ -366,6 +368,31 @@ function DatosUsuario() {
                     <Row>
                         <Col>
                             <ButtonGroup className="mb-3">
+                                {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
+                                    && (datos.evaluando === "Activo")
+                                    && !(evaluacion.some((e) => (new Date(e.fecha).getFullYear() === new Date().getFullYear() && e.evaluador === sessionStorage.getItem("user"))))
+                                    && (
+                                        <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
+                                    )}
+                                {(evaluacion.length > 0) && (
+                                    <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluaciones</Button>
+                                )}
+                                {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
+                                    <>
+                                        <Button variant="secondary" onClick={() => setCambiarCon(true)}>
+                                            Cambiar Contraseña
+                                        </Button>
+                                        <Button variant="secondary" onClick={() => setChangeQuestion(true)}>
+                                            Cambiar pregunta de seguridad
+                                        </Button>
+                                    </>
+                                )}
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <ButtonGroup className="mb-3">
                                 {!modificar && (
                                     <Button variant="primary" type="submit">
                                         Enviar
@@ -388,7 +415,7 @@ function DatosUsuario() {
                                                         .then((res) => res.json())
                                                         .then((data) => {
                                                             if (data.length === 0) {
-                                                                alert("No hay datos referentes a este usuario.");
+                                                                Swal.fire("No hay datos referentes a este usuario.");
                                                                 return;
                                                             }
                                                             data.forEach(element => {
@@ -403,7 +430,7 @@ function DatosUsuario() {
                                                         .then((res) => res.json())
                                                         .then((data) => {
                                                             if (data.length === 0) {
-                                                                alert("No hay datos referentes a este usuario.");
+                                                                Swal.fire("No hay datos referentes a este usuario.");
                                                                 return;
                                                             }
                                                             data.forEach(element => {
@@ -414,31 +441,6 @@ function DatosUsuario() {
                                                 }}>Excel</Dropdown.Item>
                                             </DropdownMenu>
                                         </Dropdown>
-                                    </>
-                                )}
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <ButtonGroup className="mb-3">
-                                {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                                    && (datos.evaluando === "Activo")
-                                    && !(evaluacion.some((e) => new Date(e.fecha).getFullYear() === new Date().getFullYear()))
-                                    && (
-                                        <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
-                                    )}
-                                {(evaluacion.length > 0) && (
-                                    <Button variant="primary" onClick={() => setVerEval(true)} disabled={!modificar}>Ver Evaluaciones</Button>
-                                )}
-                                {(sessionStorage.getItem("user") === datos.id) && (modificar) && (
-                                    <>
-                                        <Button variant="secondary" onClick={() => setCambiarCon(true)}>
-                                            Cambiar Contraseña
-                                        </Button>
-                                        <Button variant="secondary" onClick={() => setChangeQuestion(true)}>
-                                            Cambiar pregunta de seguridad
-                                        </Button>
                                     </>
                                 )}
                             </ButtonGroup>
@@ -460,11 +462,32 @@ function DatosUsuario() {
                                     <option value="" disabled hidden></option>
                                     {evaluacion.map((item, index) =>
                                         <option value={index}>{item.evaluador + " (" + item.fecha.split('T')[0] + ")"}</option>)}
+                                    <option value={"general"}>Vista general</option>
                                 </Form.Select>
                             </FloatingLabel>
 
-                            {evaluador && (
+                            {(evaluador && (evaluador !== "general")) && (
                                 <ResultadosEvaluacion resultados={evaluacion[evaluador]} />
+                            )}
+                            {(evaluador && (evaluador === "general")) && (
+                                <Table>
+                                    <thead>
+                                        <tr>
+                                            <th>Evaluado por:</th>
+                                            <th>Fecha</th>
+                                            <th>Puntuación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {evaluacion.map((item) =>
+                                            <tr>
+                                                <td>{item.evaluador}</td>
+                                                <td>{item.fecha.split("T")[0]}</td>
+                                                <td>{item.resultados}%</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </Table>
                             )}
                         </>
                     )}

@@ -54,7 +54,7 @@ function Navigation({ user }) {
                         <NavDropdown title="Desempeño">
                             <NavDropdown.Item href="/lista_evaluados">Lista de colaboradores evaluados</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/estado_evaluacion">Estado de evaluacion</NavDropdown.Item>
+                            <NavDropdown.Item href="/estado_evaluacion">Estado de evaluaciones</NavDropdown.Item>
                         </NavDropdown>
                         <Nav.Link href="/login">Salir</Nav.Link>
                     </Nav>

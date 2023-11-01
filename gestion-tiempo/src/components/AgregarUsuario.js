@@ -84,6 +84,7 @@ function AgregarUsuario() {
                 body: JSON.stringify(formJson),
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json());
+        Swal.fire("Agregado con exito");
         navigate("/datos", { state: { email: email } });
     }
 
@@ -172,7 +173,7 @@ function AgregarUsuario() {
                             <Col className="mb-3" xs={12} sm={6}>
                                 <InputGroup controlId="formGridTelefonoS">
                                     <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
-                                    <FloatingLabel label="Teléfono Secundario">
+                                    <FloatingLabel label="Teléfono Secundario (opcional)">
                                         <Form.Control name="telefonoS" />
                                     </FloatingLabel>
                                 </InputGroup>

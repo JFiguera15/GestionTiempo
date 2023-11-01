@@ -128,9 +128,18 @@ function Admin() {
 
   useEffect(() => {
     if (sessionStorage.getItem("rol") === "Administrador") {
+      let leidos = [];
       fetch("http://localhost:8000/colaboradores_aprobados")
         .then((res) => res.json())
-        .then((data) => setColaboradores(data));
+        .then((data) => {
+          leidos = data;
+        });
+      fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
+        .then((res) => res.json())
+        .then((data) => {
+          data.map((item) => (leidos.push(item)));
+          setColaboradores(leidos);
+        });
     } else {
       fetch("http://localhost:8000/colaboradores_que_reportan?id=" + sessionStorage.getItem("user"))
         .then((res) => res.json())

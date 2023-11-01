@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Container from "react-bootstrap/Container";
 import Navigation from "./Navigation";
+import Swal from 'sweetalert2'
 
 function Usuario() {
   const [fechasUsadas, setFechasUsadas] = useState([]);
@@ -117,7 +118,7 @@ function Usuario() {
       setDates();
       window.location.reload();
     } else {
-      alert("No tiene suficientes dias de vacaciones disponibles");
+      Swal.fire("No tiene suficientes dias de vacaciones disponibles");
     }
 
   }
@@ -185,7 +186,7 @@ function Usuario() {
       setDiasComp(0);
       window.location.reload();
     } else {
-      alert("No tiene suficientes dias de vacaciones disponibles");
+      Swal.fire("No tiene suficientes dias de vacaciones disponibles");
     }
   }
 

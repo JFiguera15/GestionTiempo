@@ -9,6 +9,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Modal from 'react-bootstrap/Modal';
+import Swal from 'sweetalert2'
 
 function Login() {
 
@@ -40,7 +41,7 @@ function Login() {
                 method: "POST",
                 body: JSON.stringify({ password: pass, id: id }),
                 headers: { "Content-Type": "application/json" }
-            }).then(setForgot(false)).then(alert("Contraseña cambiada con éxito"));
+            }).then(setForgot(false)).then(Swal.fire("Contraseña cambiada con éxito"));
     }
 
     function handleSubmit(e) {
@@ -57,9 +58,9 @@ function Login() {
             }).then((res) => res.json())
             .then((data) => {
                 if (data === "Contraseña incorrecta") {
-                    alert(data);
+                    Swal.fire(data);
                 } else if (data === "Usuario incorrecto") {
-                    alert(data);
+                    Swal.fire(data);
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
                     sessionStorage.setItem("rol", data[0].rol);
@@ -133,7 +134,7 @@ function Login() {
                                 if (document.getElementById("response").value === respuesta) {
                                     setVerified(true);
                                 } else {
-                                    alert("Respuesta incorrecta");
+                                    Swal.fire("Respuesta incorrecta");
                                 }
                             }}>Verificar</Button>
                         </>

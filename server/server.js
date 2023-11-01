@@ -202,12 +202,12 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, ""], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, "", "", ""], function (err, result) {
             if (err) throw err;
         });
 });
