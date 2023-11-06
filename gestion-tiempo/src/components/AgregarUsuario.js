@@ -155,7 +155,7 @@ function AgregarUsuario() {
                             <Col lg={3} md={6} sm={12} className="mb-3">
                                 <InputGroup controlId="formGridGenero">
                                     <InputGroup.Text id="basic-addon1"><i className="bi bi-gender-ambiguous"></i></InputGroup.Text>
-                                    <FloatingLabel label="Genero">
+                                    <FloatingLabel label="Género">
                                         <Form.Control name="genero" required />
                                     </FloatingLabel>
                                 </InputGroup>

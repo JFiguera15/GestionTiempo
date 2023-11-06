@@ -41,14 +41,24 @@ function DatosUsuario() {
     const navigate = useNavigate();
 
     function borrar() {
-        fetch("http://localhost:8000/eliminar_colaborador",
-            {
-                method: "POST",
-                body: datos.id,
-                headers: { "Content-Type": "text/plain" }
-            });
+
+        if (datos.activo === "Sí") {
+            fetch("http://localhost:8000/deshabilitar_colaborador",
+                {
+                    method: "POST",
+                    body: datos.id,
+                    headers: { "Content-Type": "text/plain" }
+                });
+        } else {
+            fetch("http://localhost:8000/rehabilitar_colaborador",
+                {
+                    method: "POST",
+                    body: datos.id,
+                    headers: { "Content-Type": "text/plain" }
+                });
+        }
         handleClose();
-        Swal.fire("Borrado con éxito.")
+        Swal.fire("Actualizado con éxito").then(() => window.location.reload())
     }
 
     function getUser() {
@@ -143,6 +153,7 @@ function DatosUsuario() {
             }).then((res) => res.json());
         setReload(!reload);
         setModificar(!modificar);
+        window.location.reload();
     }
 
     function cambiarContrasena() {
@@ -403,7 +414,7 @@ function DatosUsuario() {
                                         <Button variant="primary" onClick={() => estaModificando()}>
                                             {modificar ? "Modificar datos" : "Cancelar"}
                                         </Button>
-                                        <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>Eliminar</Button>
+                                        <Button variant="danger" onClick={() => setShow(true)} disabled={!modificar}>{datos?.activo === "Sí" ? "Deshabilitar" : "Rehabilitar"}</Button>
                                         <Dropdown>
                                             <Dropdown.Toggle variant="success" id="dropdown-basic">
                                                 Exportar datos de fechas
@@ -543,13 +554,13 @@ function DatosUsuario() {
                     keyboard={false}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>¿Eliminar usuario?</Modal.Title>
+                        <Modal.Title>{datos?.activo === "Sí" ? "¿Deshabilitar usuario?" : "¿Rehabilitar usuario?"}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        El usuario {datos.id} sera borrado de la base de datos.
+                        El usuario {datos.id} sera actualizado de manera acorde.
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={() => borrar()}>Eliminar</Button>
+                        <Button variant="primary" onClick={() => borrar()}>{datos?.activo === "Sí" ? "Deshabilitar" : "Rehabilitar"}</Button>
                         <Button variant="secondary" onClick={handleClose}>
                             Cancelar
                         </Button>

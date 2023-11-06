@@ -28,7 +28,7 @@ function ListaColaboradores() {
         const csvContent = "data:text/csv;charset=utf-8," + [["Id", "Nombre", "Empresa", "Nivel", "Tipo de horario", "Nacionalidad",
             "Teléfono primario", "Teléfono secundario", "Dirección", "Departamento",
             "Cargo", "Cédula", "Género", "Fecha de nacimiento",
-            "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional"], ...data.map(obj => headers.map(key => obj[key]))].map(e => e.join(",")).join("\n");
+            "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional", "¿Activo?"], ...data.map(obj => headers.map(key => obj[key]))].map(e => e.join(",")).join("\n");
         const encodedURI = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedURI);
@@ -56,7 +56,7 @@ function ListaColaboradores() {
             head: [["Id", "Nombre", "Empresa", "Nivel", "Tipo de horario", "Nacionalidad",
                 "Teléfono primario", "Teléfono secundario", "Dirección", "Departamento",
                 "Cargo", "Cédula", "Género", "Fecha de nacimiento",
-                "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional"]],
+                "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional", "¿Activo?"]],
             body: tableRows,
             // split overflowing columns into pages
             horizontalPageBreak: true,
@@ -73,7 +73,7 @@ function ListaColaboradores() {
             ["Id", "Nombre", "Empresa", "Nivel", "Tipo de horario", "Nacionalidad",
                 "Teléfono primario", "Teléfono secundario", "Dirección", "Departamento",
                 "Cargo", "Cédula", "Género", "Fecha de nacimiento",
-                "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional"]
+                "Fecha de ingreso", "Jefe Directo", "Supervisor Funcional", "¿Activo?"]
         ], { origin: "A1" });
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
         XLSX.writeFile(workbook, 'colaboradores.xlsx');
@@ -85,6 +85,7 @@ function ListaColaboradores() {
             fetch("http://localhost:8000/colaboradores")
                 .then((res) => res.json())
                 .then((data) => {
+                    console.log(data);
                     data.forEach(element => {
                         element.fecha_ingreso = element.fecha_ingreso.split('T')[0];
                         element.fecha_nacimiento = element.fecha_nacimiento.split('T')[0];
@@ -124,7 +125,6 @@ function ListaColaboradores() {
                                         <Dropdown.Menu>
                                             <Dropdown.Item onClick={() => downloadCSV(colaboradores)}>CSV</Dropdown.Item>
                                             <Dropdown.Item onClick={() => exportToExcel(colaboradores)}>Excel</Dropdown.Item>
-                                            <Dropdown.Item onClick={() => exportToPdf(colaboradores)}>PDF</Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Col>
@@ -139,6 +139,7 @@ function ListaColaboradores() {
                             <Column field="id" header="Correo" sortable />
                             <Column field="empresa" header="Empresa" sortable />
                             <Column field="cargo" header="Cargo" sortable />
+                            {sessionStorage.getItem("rol")  === "Administrador" ? <Column field="activo" header="¿Activo?" sortable /> : ""}
                         </DataTable>
                     </Row>
                 </>

@@ -35,7 +35,7 @@ app.get('/message', (req, res) => {
 });
 
 app.get('/colaboradores', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES"
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional, activo FROM COLABORADORES"
     connection.query(sql, function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -85,7 +85,7 @@ app.get('/usuarios_alto_nivel', (req, res) => {
 });
 
 app.get('/colaboradores_que_reportan', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE jefe_directo = ?"
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE jefe_directo = ? AND activo = 'Sí'"
     connection.query(sql, req.query.id, function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -93,7 +93,7 @@ app.get('/colaboradores_que_reportan', (req, res) => {
 });
 
 app.get('/colaboradores_revision', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE (jefe_directo = ?) OR (sup_funcional = ?)"
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional FROM COLABORADORES WHERE (jefe_directo = ? OR sup_funcional = ?) AND activo = 'Sí'"
     connection.query(sql, [req.query.id, req.query.id], function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -189,10 +189,12 @@ app.get('/pregunta_seguridad', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const sql = "SELECT id, password, rol FROM colaboradores WHERE id = ?";
+    const sql = "SELECT id, password, rol, activo FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
+        console.log(data[0].activo === 0);
         if (err) return res.json("Error al logear");
-        if (data.length === 0) return res.json("Usuario incorrecto")
+        if (data.length === 0) return res.json("Usuario incorrecto");
+        if (data[0].activo === "No") return res.json("Usuario no habilitado en sistema.");
         else if (bcrypt.compareSync(req.body.password, data[0].password)) return res.json(data);
         return res.json("Contraseña incorrecta");
     })
@@ -202,12 +204,12 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, "", "", ""], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, "Sí", "No", "", ""], function (err, result) {
             if (err) throw err;
         });
 });
@@ -273,6 +275,22 @@ app.post('/cambiar_respuesta_seguridad', (req, res) => {
 app.post('/eliminar_colaborador', (req, res) => {
     let data = req.body;
     const sql = "DELETE FROM colaboradores where id = ?";
+    connection.query(sql, data, function (err, result) {
+        if (err) throw err;
+    });
+});
+
+app.post('/deshabilitar_colaborador', (req, res) => {
+    let data = req.body;
+    const sql = "UPDATE colaboradores SET activo = 'No' where id = ?";
+    connection.query(sql, data, function (err, result) {
+        if (err) throw err;
+    });
+});
+
+app.post('/rehabilitar_colaborador', (req, res) => {
+    let data = req.body;
+    const sql = "UPDATE colaboradores SET activo = 'Sí' where id = ?";
     connection.query(sql, data, function (err, result) {
         if (err) throw err;
     });

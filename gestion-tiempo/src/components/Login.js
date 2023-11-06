@@ -41,7 +41,7 @@ function Login() {
                 method: "POST",
                 body: JSON.stringify({ password: pass, id: id }),
                 headers: { "Content-Type": "application/json" }
-            }).then(setForgot(false)).then(Swal.fire("Contraseña cambiada con éxito"));
+            }).then(setForgot(false)).then(Swal.fire("Contraseña cambiada con éxito")).then(setVerified(false));
     }
 
     function handleSubmit(e) {
@@ -57,9 +57,12 @@ function Login() {
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json())
             .then((data) => {
+                console.log(data)
                 if (data === "Contraseña incorrecta") {
                     Swal.fire(data);
                 } else if (data === "Usuario incorrecto") {
+                    Swal.fire(data);
+                } else if (data === "Usuario no habilitado en sistema.") {
                     Swal.fire(data);
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
