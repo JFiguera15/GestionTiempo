@@ -75,7 +75,6 @@ function DatosUsuario() {
     }
 
     function downloadCSV(data) {
-        console.log(data);
         const headers = Object.keys(data[0]);
         const csvContent = "data:text/csv;charset=utf-8," + [["Fecha", "Tipo", "¿Aprobada?", "Razón"], ...data.map(obj => headers.map(key => obj[key]))].map(e => e.join(",")).join("\n");
         const encodedURI = encodeURI(csvContent);

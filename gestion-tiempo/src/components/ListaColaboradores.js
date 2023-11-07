@@ -17,6 +17,7 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 function ListaColaboradores() {
 
     const [colaboradores, setColaboradores] = useState([]);
+    const [viewEval, setViewEval] = useState(false);
     const navigate = useNavigate();
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -93,57 +94,75 @@ function ListaColaboradores() {
                     setColaboradores(data)
                 });
         } else {
-            fetch("http://localhost:8000/colaboradores_revision?id=" + sessionStorage.getItem("user"))
-                .then((res) => res.json())
-                .then((data) => { setColaboradores(data) });
-        }
-    }, []);
+            if (viewEval) {
+                fetch("http://localhost:8000/colaboradores_evaluados_por?id=" + sessionStorage.getItem("user"))
+                    .then((res) => res.json())
+                    .then((data) => {
+                        setColaboradores(data)
+                    });
+            }
+            else {
+                fetch("http://localhost:8000/colaboradores_revision?id=" + sessionStorage.getItem("user"))
+                    .then((res) => res.json())
+                    .then((data) => {
+                        setColaboradores(data)
+                    });
+            }
 
+        }
+    }, [viewEval]);
 
     return (
         <div id="lista">
             <Navigation user={sessionStorage.getItem("rol")} />
+            <Row className="mx-3">
+                <Col sm={12} md={4}>
+                    <FloatingLabel label="Buscar:" style={{ maxWidth: 900 + "px" }}>
+                        <Form.Control onChange={(e) =>
+                            setFilters({
+                                global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS }
+                            })} className="sm" style={{border : "1px solid black"}}></Form.Control>
+                    </FloatingLabel>
+                </Col>
+                {sessionStorage.getItem("rol") === "Administrador" && (
+                    <>
+                        <Col sm={12} md={4}></Col>
+                        <Col sm={12} md={4}>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    Exportar datos
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={() => downloadCSV(colaboradores)}>CSV</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => exportToExcel(colaboradores)}>Excel</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Col>
+                    </>
+                )}
+                {sessionStorage.getItem("rol") === "Usuario" && (
+                    <>
+                        <Col>
+                            <Form.Check inline reverse type="switch" label="Mostrar solo colaboradores sin evaluar" style={{ fontWeight: "bolder" }} onChange={() => setViewEval(!viewEval)} />
+                        </Col>
+                    </>
+                )}
+            </Row>
             {colaboradores.length > 0 ? (
                 <>
-                    <Row className="mx-3">
-                        <Col sm={12} md={4}>
-                            <FloatingLabel label="Buscar:" style={{ maxWidth: 900 + "px" }}>
-                                <Form.Control onChange={(e) =>
-                                    setFilters({
-                                        global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS }
-                                    })} className="sm"></Form.Control>
-                            </FloatingLabel>
-                        </Col>
-                        {sessionStorage.getItem("rol") === "Administrador" && (
-                            <>
-                                <Col sm={12} md={4}></Col>
-                                <Col sm={12} md={4}>
-                                    <Dropdown>
-                                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                            Exportar datos
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item onClick={() => downloadCSV(colaboradores)}>CSV</Dropdown.Item>
-                                            <Dropdown.Item onClick={() => exportToExcel(colaboradores)}>Excel</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </Col>
-                            </>
-                        )}
-                    </Row>
                     <Row style={{ marginTop: 25 + "px" }}>
-                        <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
+                        <DataTable id="colaboradores" value={colaboradores} sortField="nombre" sortOrder={1} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
                             selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })} style={{ border: "2px solid black" }}>
                             <Column field="nombre" header="Nombre" sortable />
                             <Column field="id" header="Correo" sortable />
                             <Column field="empresa" header="Empresa" sortable />
                             <Column field="cargo" header="Cargo" sortable />
-                            {sessionStorage.getItem("rol")  === "Administrador" ? <Column field="activo" header="¿Activo?" sortable /> : ""}
+                            {sessionStorage.getItem("rol") === "Administrador" ? <Column field="activo" header="¿Activo?" sortable /> : ""}
                         </DataTable>
                     </Row>
                 </>
-            ) : (<h1>No hay colaboradores que usted pueda ver</h1>)}
+            ) : (<h1 className="mt-3">No hay colaboradores que usted pueda ver</h1>)}
         </div>
     );
 }

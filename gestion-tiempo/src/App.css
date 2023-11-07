@@ -15,7 +15,7 @@ a.nav-link {
   margin-bottom: auto;
 }
 
-button.btn.btn-info{
+button.btn.btn-info {
   background-color: #f8f9fa;
 }
 
@@ -43,7 +43,7 @@ table {
   margin: -0.5em;
 }
 
-.react-calendar--doubleView .react-calendar__viewContainer > * {
+.react-calendar--doubleView .react-calendar__viewContainer>* {
   width: 50%;
   margin: 0.5em;
 }
@@ -232,5 +232,3 @@ h1 {
   border: 5px solid black;
   border-radius: 25px;
 }
-
-

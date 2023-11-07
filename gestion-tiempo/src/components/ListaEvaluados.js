@@ -21,7 +21,7 @@ function ListaEvaluados() {
     });
 
     useEffect(() => {
-        fetch("http://localhost:8000/colaboradores_evaluados")
+        fetch("http://localhost:8000/colaboradores_evaluados_admin")
             .then((res) => res.json())
             .then((data) => {
                 data.forEach(element => {

@@ -450,7 +450,7 @@ function Evaluacion() {
                     </Form.Group>
                     <Pagination>{eje4}</Pagination>
                 </Container>
-                <Button onClick={() => setShow(true)}>Enviar</Button>
+                <Button onClick={() => setShow(true)} className="mt-3">Enviar</Button>
             </Form >
 
             <Modal

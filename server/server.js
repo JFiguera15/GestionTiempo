@@ -153,8 +153,16 @@ app.get('/colaboradores_por_evaluar', (req, res) => {
 });
 
 
-app.get('/colaboradores_evaluados', (req, res) => {
+app.get('/colaboradores_evaluados_admin', (req, res) => {
     connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador, evaluacion.resultados, evaluacion.fecha FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
+app.get('/colaboradores_evaluados_por', (req, res) => {
+    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluacion ON evaluacion.evaluado = id AND evaluacion.evaluador = ?)"
+    connection.query(sql, [req.query.id, req.query.id, req.query.id] ,function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -191,7 +199,6 @@ app.get('/pregunta_seguridad', (req, res) => {
 app.post('/login', (req, res) => {
     const sql = "SELECT id, password, rol, activo FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
-        console.log(data[0].activo === 0);
         if (err) return res.json("Error al logear");
         if (data.length === 0) return res.json("Usuario incorrecto");
         if (data[0].activo === "No") return res.json("Usuario no habilitado en sistema.");
