@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
-import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -48,7 +47,7 @@ function ListaEvaluados() {
                         </Col>
                     </Row>
                     <Row style={{ marginTop: 25 + "px" }}>
-                        <DataTable id="colaboradores" value={colaboradores} removableSort stripedRows filters={filters}
+                        <DataTable id="colaboradores" value={colaboradores} sortField="nombre" sortOrder={1} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
                             selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })}
                             style={{ border: "2px solid black" }}>

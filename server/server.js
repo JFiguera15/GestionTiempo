@@ -101,14 +101,14 @@ app.get('/colaboradores_revision', (req, res) => {
 });
 
 app.get('/evaluado_por', (req, res) => {
-    connection.query("SELECT * FROM evaluacion WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador], function (err, result) {
+    connection.query("SELECT * FROM evaluaciones WHERE evaluado = ? AND evaluador = ?", [req.query.evaluado, req.query.evaluador], function (err, result) {
         if (err) throw err;
         res.json(result);
     });
 });
 
 app.get('/evaluaciones_de', (req, res) => {
-    connection.query("SELECT * FROM evaluacion WHERE evaluado = ?", req.query.evaluado, function (err, result) {
+    connection.query("SELECT * FROM evaluaciones WHERE evaluado = ?", req.query.evaluado, function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -145,7 +145,7 @@ app.get('/colaboradores_por_aprobar_admin', (req, res) => {
 
 
 app.get('/colaboradores_por_evaluar', (req, res) => {
-    connection.query("SELECT COUNT(id) from colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND (id NOT IN (SELECT evaluado FROM evaluacion))",
+    connection.query("SELECT COUNT(id) from colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND (id NOT IN (SELECT evaluado FROM evaluaciones))",
     [req.query.id, req.query.id], function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -154,14 +154,14 @@ app.get('/colaboradores_por_evaluar', (req, res) => {
 
 
 app.get('/colaboradores_evaluados_admin', (req, res) => {
-    connection.query("SELECT id, nombre, empresa, cargo, evaluacion.evaluador, evaluacion.resultados, evaluacion.fecha FROM colaboradores INNER JOIN evaluacion ON colaboradores.id = evaluacion.evaluado", function (err, result) {
+    connection.query("SELECT id, nombre, empresa, cargo, evaluaciones.evaluador, evaluaciones.resultados, evaluaciones.fecha FROM colaboradores INNER JOIN evaluaciones ON colaboradores.id = evaluaciones.evaluado", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
 });
 
 app.get('/colaboradores_evaluados_por', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluacion ON evaluacion.evaluado = id AND evaluacion.evaluador = ?)"
+    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluaciones ON evaluaciones.evaluado = id AND evaluaciones.evaluador = ?)"
     connection.query(sql, [req.query.id, req.query.id, req.query.id] ,function (err, result) {
         if (err) throw err;
         res.json(result);
@@ -169,7 +169,7 @@ app.get('/colaboradores_evaluados_por', (req, res) => {
 });
 
 app.get('/estado_evaluacion', (req, res) => {
-    connection.query("SELECT evaluando FROM colaboradores", function (err, result) {
+    connection.query("SELECT estado_evaluacion, fin_evaluacion FROM configuracion", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -223,7 +223,7 @@ app.post('/agregar_colaborador', (req, res) => {
 
 app.post('/enviar_evaluacion', (req, res) => {
     let data = req.body;
-    const sql = "INSERT INTO evaluacion VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = "INSERT INTO evaluaciones VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql,
         [data.evaluado, data.total, data.evaluador, data.fecha,
         data.respuesta1, data.respuesta2, data.respuesta3, data.respuesta4, data.respuesta5,
@@ -233,13 +233,14 @@ app.post('/enviar_evaluacion', (req, res) => {
 });
 
 app.post('/iniciar_evaluacion', (req, res) => {
-    connection.query("UPDATE colaboradores SET evaluando = ?", "Activo", function (err, result) {
+    let data = req.body;
+    connection.query("UPDATE configuracion SET estado_evaluacion = ?, fin_evaluacion = ?", ["Activo" , data.fecha], function (err, result) {
             if (err) throw err;
         });
 });
 
 app.post('/terminar_evaluacion', (req, res) => {
-    connection.query("UPDATE colaboradores SET evaluando = ?", "Inactivo", function (err, result) {
+    connection.query("UPDATE configuracion SET estado_evaluacion = 'Inactivo', fin_evaluacion = '2120-12-31'", function (err, result) {
             if (err) throw err;
         });
 });

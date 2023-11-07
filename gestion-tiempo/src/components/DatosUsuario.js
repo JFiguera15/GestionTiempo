@@ -15,7 +15,6 @@ import Navigation from "./Navigation";
 import * as XLSX from 'xlsx/xlsx.mjs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
-import DropdownItem from "react-bootstrap/esm/DropdownItem";
 import Table from 'react-bootstrap/Table';
 import Swal from 'sweetalert2'
 
@@ -103,9 +102,9 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ pregunta: q, respuesta: a, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(window.location.reload());
+                }).then(Swal.fire({title: "Pregunta de seguridad cambiada exitosamente", icon: "success"}).then(() => window.location.reload()));
         } else {
-            Swal.fire("Escriba una respuesta válida");
+            Swal.fire({title: "Escriba una respuesta válida", icon: "error"});
         }
 
     }
@@ -152,7 +151,7 @@ function DatosUsuario() {
             }).then((res) => res.json());
         setReload(!reload);
         setModificar(!modificar);
-        window.location.reload();
+        Swal.fire({title: "Datos actualizados con éxito", icon : "success"});
     }
 
     function cambiarContrasena() {
@@ -162,8 +161,8 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ password: newPassword, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(setCambiarCon(false)).then(Swal.fire("Contraseña cambiada con éxito"));
-        } else Swal.fire("Las contraseñas no coinciden");
+                }).then(setCambiarCon(false)).then(Swal.fire({title: "Contraseña cambiada con éxito", icon : "success"}));
+        } else Swal.fire({title: "Las contraseñas no coinciden", icon:"error"});
     }
 
     return (

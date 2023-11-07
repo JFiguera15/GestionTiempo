@@ -84,7 +84,7 @@ function AgregarUsuario() {
                 body: JSON.stringify(formJson),
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json());
-        Swal.fire("Agregado con exito");
+        Swal.fire({title: "Agregado con exito", icon:"success"});
         navigate("/datos", { state: { email: email } });
     }
 
