@@ -17,6 +17,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import Table from 'react-bootstrap/Table';
 import Swal from 'sweetalert2'
+import ModalHeader from "react-bootstrap/esm/ModalHeader";
 
 
 function DatosUsuario() {
@@ -31,6 +32,8 @@ function DatosUsuario() {
     const [verEval, setVerEval] = useState(false);
     const [cambiarCon, setCambiarCon] = useState(false);
     const [highUsers, setHighUsers] = useState([]);
+    const [verifiedPass, setVerifiedPass] = useState(false);
+    const [evaluando, setEvaluando] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const [evaluacion, setEvaluacion] = useState([]);
@@ -57,7 +60,7 @@ function DatosUsuario() {
                 });
         }
         handleClose();
-        Swal.fire("Actualizado con éxito").then(() => window.location.reload())
+        Swal.fire({title: "Actualizado con éxito", icon: "success"}).then(() => window.location.reload())
     }
 
     function getUser() {
@@ -67,6 +70,28 @@ function DatosUsuario() {
 
     function estaModificando() {
         setModificar(!modificar);
+    }
+
+    function checkPassword(pass) {
+        console.log(pass);
+        const body = {
+            id: getUser(),
+            password: pass,
+        }
+
+        fetch("http://localhost:8000/check_password",
+            {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: { "Content-Type": "application/json" }
+            }).then((res) => res.json())
+            .then((data) => {
+                if (!data) {
+                    Swal.fire({ title: "Contraseña incorrecta", icon: "error" });
+                }
+                setVerifiedPass(data);
+                setView(true);
+            });
     }
 
     function evaluar() {
@@ -102,14 +127,17 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ pregunta: q, respuesta: a, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(Swal.fire({title: "Pregunta de seguridad cambiada exitosamente", icon: "success"}).then(() => window.location.reload()));
+                }).then(setChangeQuestion(false)).then(Swal.fire({ title: "Pregunta de seguridad cambiada exitosamente", icon: "success" }).then(() => window.location.reload()));
         } else {
-            Swal.fire({title: "Escriba una respuesta válida", icon: "error"});
+            Swal.fire({ title: "Escriba una respuesta válida", icon: "error" });
         }
 
     }
 
     useEffect(() => {
+        fetch("http://localhost:8000/estado_evaluacion")
+            .then((res) => res.json())
+            .then((data) => setEvaluando(data[0].estado_evaluacion));
         fetch("http://localhost:8000/datos_usuario?id=" + getUser())
             .then((res) => res.json())
             .then((data) => {
@@ -151,7 +179,7 @@ function DatosUsuario() {
             }).then((res) => res.json());
         setReload(!reload);
         setModificar(!modificar);
-        Swal.fire({title: "Datos actualizados con éxito", icon : "success"});
+        Swal.fire({ title: "Datos actualizados con éxito", icon: "success" });
     }
 
     function cambiarContrasena() {
@@ -161,8 +189,8 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ password: newPassword, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(setCambiarCon(false)).then(Swal.fire({title: "Contraseña cambiada con éxito", icon : "success"}));
-        } else Swal.fire({title: "Las contraseñas no coinciden", icon:"error"});
+                }).then(setCambiarCon(false)).then(Swal.fire({ title: "Contraseña cambiada con éxito", icon: "success" })).then(setVerifiedPass(false));
+        } else Swal.fire({ title: "Las contraseñas no coinciden", icon: "error" });
     }
 
     return (
@@ -378,7 +406,7 @@ function DatosUsuario() {
                         <Col>
                             <ButtonGroup className="mb-3">
                                 {(datos.jefe_directo === sessionStorage.getItem("user") || datos.sup_funcional === sessionStorage.getItem("user"))
-                                    && (datos.evaluando === "Activo")
+                                    && (evaluando === "Activo")
                                     && !(evaluacion.some((e) => (new Date(e.fecha).getFullYear() === new Date().getFullYear() && e.evaluador === sessionStorage.getItem("user"))))
                                     && (
                                         <Button variant="primary" onClick={() => evaluar()} disabled={!modificar}>Evaluar</Button>
@@ -424,7 +452,7 @@ function DatosUsuario() {
                                                         .then((res) => res.json())
                                                         .then((data) => {
                                                             if (data.length === 0) {
-                                                                Swal.fire("No hay datos referentes a este usuario.");
+                                                                Swal.fire({title: "No hay datos referentes a este usuario.", icon: "error"});
                                                                 return;
                                                             }
                                                             data.forEach(element => {
@@ -439,7 +467,7 @@ function DatosUsuario() {
                                                         .then((res) => res.json())
                                                         .then((data) => {
                                                             if (data.length === 0) {
-                                                                Swal.fire("No hay datos referentes a este usuario.");
+                                                                Swal.fire({title: "No hay datos referentes a este usuario.", icon: "error"});
                                                                 return;
                                                             }
                                                             data.forEach(element => {
@@ -566,28 +594,51 @@ function DatosUsuario() {
                 </Modal>
 
                 <Modal show={cambiarCon} onHide={() => setCambiarCon(false)}>
+                    <Modal.Header>
+                        <Modal.Title>Cambiar contraseña</Modal.Title>
+                    </Modal.Header>
                     <Modal.Body>
-                        <InputGroup as={Col} controlId="formGridNewPassword">
-                            <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Contraseña nueva">
-                                <Form.Control type={view ? "password" : "text"} name="newPassword"
-                                    onChange={(e) => setNewPassword(e.target.value)} />
-                            </FloatingLabel>
-                            <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
-                        </InputGroup>
-                        <InputGroup as={Col} controlId="formGridConfirmPassword">
-                            <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
-                            <FloatingLabel label="Confirmar contraseña nueva">
-                                <Form.Control type={view ? "password" : "text"} name="confirmPassword"
-                                    onChange={(e) => setConfirmPass(e.target.value)} />
-                            </FloatingLabel>
-                            <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
-                        </InputGroup>
+                        {!verifiedPass && (
+                            <>
+                                <InputGroup>
+                                    <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Contraseña actual">
+                                        <Form.Control type={view ? "password" : "text"} id="oldPass"></Form.Control>
+                                    </FloatingLabel>
+                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                </InputGroup>
+                            </>
+                        )}
+                        {verifiedPass && (
+                            <>
+                                <InputGroup as={Col} controlId="formGridNewPassword">
+                                    <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Contraseña nueva">
+                                        <Form.Control type={view ? "password" : "text"} name="newPassword"
+                                            onChange={(e) => setNewPassword(e.target.value)} />
+                                    </FloatingLabel>
+                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                </InputGroup>
+                                <InputGroup as={Col} controlId="formGridConfirmPassword">
+                                    <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
+                                    <FloatingLabel label="Confirmar contraseña nueva">
+                                        <Form.Control type={view ? "password" : "text"} name="confirmPassword"
+                                            onChange={(e) => setConfirmPass(e.target.value)} />
+                                    </FloatingLabel>
+                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                </InputGroup>
+                            </>
+                        )}
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={() => cambiarContrasena()} disabled={!confirmPass}>
-                            Cambiar
-                        </Button>
+                        {!verifiedPass && (
+                            <Button onClick={() => checkPassword(document.getElementById("oldPass").value)}>Verificar</Button>
+                        )}
+                        {verifiedPass && (
+                            <Button variant="primary" onClick={() => cambiarContrasena()} disabled={!confirmPass}>
+                                Cambiar
+                            </Button>
+                        )}
                         <Button variant="secondary" onClick={() => setCambiarCon(false)}>
                             Cerrar
                         </Button>

@@ -129,11 +129,11 @@ app.get('/colaboradores_aprobados', (req, res) => {
 });
 
 app.get('/colaboradores_por_aprobar', (req, res) => {
-    connection.query("SELECT COUNT(DISTINCT id) FROM fechas WHERE aprobada = 'Pendiente' AND id IN (SELECT id FROM colaboradores WHERE jefe_directo = ?)", 
-    req.query.id, function (err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+    connection.query("SELECT COUNT(DISTINCT id) FROM fechas WHERE aprobada = 'Pendiente' AND id IN (SELECT id FROM colaboradores WHERE jefe_directo = ?)",
+        req.query.id, function (err, result) {
+            if (err) throw err;
+            res.json(result);
+        });
 });
 
 app.get('/colaboradores_por_aprobar_admin', (req, res) => {
@@ -146,10 +146,10 @@ app.get('/colaboradores_por_aprobar_admin', (req, res) => {
 
 app.get('/colaboradores_por_evaluar', (req, res) => {
     connection.query("SELECT COUNT(id) from colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND (id NOT IN (SELECT evaluado FROM evaluaciones))",
-    [req.query.id, req.query.id], function (err, result) {
-        if (err) throw err;
-        res.json(result);
-    });
+        [req.query.id, req.query.id], function (err, result) {
+            if (err) throw err;
+            res.json(result);
+        });
 });
 
 
@@ -161,8 +161,8 @@ app.get('/colaboradores_evaluados_admin', (req, res) => {
 });
 
 app.get('/colaboradores_evaluados_por', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluaciones ON evaluaciones.evaluado = id AND evaluaciones.evaluador = ?)"
-    connection.query(sql, [req.query.id, req.query.id, req.query.id] ,function (err, result) {
+    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND activo = 'Sí' AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluaciones ON evaluaciones.evaluado = id AND evaluaciones.evaluador = ?)"
+    connection.query(sql, [req.query.id, req.query.id, req.query.id], function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -196,6 +196,15 @@ app.get('/pregunta_seguridad', (req, res) => {
     });
 });
 
+app.post('/check_password', (req, res) => {
+    const sql = "SELECT password FROM colaboradores WHERE id = ?";
+    connection.query(sql, req.body.id, (err, data) => {
+        if (err) return res.json("Error al logear");
+        else if (bcrypt.compareSync(req.body.password, data[0].password)) return res.json(true);
+        return res.json(false);
+    })
+});
+
 app.post('/login', (req, res) => {
     const sql = "SELECT id, password, rol, activo FROM colaboradores WHERE id = ?";
     connection.query(sql, req.body.id, (err, data) => {
@@ -211,19 +220,19 @@ app.post('/agregar_colaborador', (req, res) => {
     let data = req.body;
     let salt = bcrypt.genSaltSync(10);
     const password = bcrypt.hashSync(data.password, salt);
-    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = "INSERT INTO colaboradores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql,
         [data.id, password, data.nombre, data.empresa, data.nivel,
         data.horario, data.nacionalidad, data.telefonoP, data.telefonoS,
         data.direccion, data.departamento, data.cargo, data.cedula,
-        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, "Sí", "No", "", ""], function (err, result) {
+        data.genero, data.fechaN, data.fechaI, data.jefeD, data.supervisor, data.rol, "Sí", "", ""], function (err, result) {
             if (err) throw err;
         });
 });
 
 app.post('/enviar_evaluacion', (req, res) => {
     let data = req.body;
-    const sql = "INSERT INTO evaluaciones VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = "INSERT INTO evaluaciones (evaluado, resultados, evaluador, fecha, respuesta1, respuesta2, respuesta3, respuesta4, respuesta5, respuesta6, respuesta7, respuesta8, respuesta9, respuesta10) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql,
         [data.evaluado, data.total, data.evaluador, data.fecha,
         data.respuesta1, data.respuesta2, data.respuesta3, data.respuesta4, data.respuesta5,
@@ -234,15 +243,15 @@ app.post('/enviar_evaluacion', (req, res) => {
 
 app.post('/iniciar_evaluacion', (req, res) => {
     let data = req.body;
-    connection.query("UPDATE configuracion SET estado_evaluacion = ?, fin_evaluacion = ?", ["Activo" , data.fecha], function (err, result) {
-            if (err) throw err;
-        });
+    connection.query("UPDATE configuracion SET estado_evaluacion = ?, fin_evaluacion = ?", ["Activo", data.fecha], function (err, result) {
+        if (err) throw err;
+    });
 });
 
 app.post('/terminar_evaluacion', (req, res) => {
     connection.query("UPDATE configuracion SET estado_evaluacion = 'Inactivo', fin_evaluacion = '2120-12-31'", function (err, result) {
-            if (err) throw err;
-        });
+        if (err) throw err;
+    });
 });
 
 app.post('/actualizar_colaborador', (req, res) => {
@@ -307,7 +316,7 @@ app.post('/rehabilitar_colaborador', (req, res) => {
 app.post('/enviar', (req, res) => {
     let data = req.body;
     for (let i = 0; i < data.fechas.length; i++) {
-        connection.query("INSERT INTO FECHAS VALUES (\""
+        connection.query("INSERT INTO FECHAS (fecha, id, tipo, aprobada, razon) VALUES (\""
             + data.fechas[i] + "\", \"" + data.id + "\", \"" + data.tipo + "\", \'" + data.estado + "\', \'" + data.razon + "\')", function (err, result) {
                 if (err) throw err;
             });

@@ -24,14 +24,27 @@ function Login() {
 
     useEffect(() => {
         sessionStorage.clear();
+        fetch("http://localhost:8000/estado_evaluacion")
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data[0].fin_evaluacion.split("T")[0]);
+                if (data[0].estado_evaluacion === "Activo" && data[0].fin_evaluacion.split("T")[0] === new Date().toISOString().split("T")[0]) {
+                    fetch("http://localhost:8000/terminar_evaluacion", {
+                        method: "POST",
+                    });
+                }
+            });
     }, []);
 
     function forgotPass(id) {
         fetch("http://localhost:8000/pregunta_seguridad?id=" + id)
             .then((res) => res.json())
             .then((data) => {
-                setPregunta(data[0]?.pregunta_seguridad);
-                setRespuesta(data[0]?.respuesta_seguridad);
+                if (data.length === 0) Swal.fire({ title: "Usuario incorrecto", icon: "error" })
+                else {
+                    setPregunta(data[0]?.pregunta_seguridad);
+                    setRespuesta(data[0]?.respuesta_seguridad);
+                }
             });
     }
 
@@ -41,7 +54,7 @@ function Login() {
                 method: "POST",
                 body: JSON.stringify({ password: pass, id: id }),
                 headers: { "Content-Type": "application/json" }
-            }).then(setForgot(false)).then(Swal.fire("Contraseña cambiada con éxito")).then(setVerified(false));
+            }).then(setForgot(false)).then(setPregunta("")).then(Swal.fire({ title: "Contraseña cambiada con éxito", icon: "success" })).then(setVerified(false));
     }
 
     function handleSubmit(e) {
@@ -59,11 +72,11 @@ function Login() {
             .then((data) => {
                 console.log(data)
                 if (data === "Contraseña incorrecta") {
-                    Swal.fire(data);
+                    Swal.fire({ title: data, icon: "error" });
                 } else if (data === "Usuario incorrecto") {
-                    Swal.fire(data);
+                    Swal.fire({ title: data, icon: "error" });
                 } else if (data === "Usuario no habilitado en sistema.") {
-                    Swal.fire(data);
+                    Swal.fire({ title: data, icon: "error" });
                 } else if (data.length !== 0) {
                     sessionStorage.setItem("user", data[0].id);
                     sessionStorage.setItem("rol", data[0].rol);
@@ -112,7 +125,11 @@ function Login() {
                 </Col>
             </Row>
 
-            <Modal show={forgot} onHide={() => setForgot(false)}>
+            <Modal show={forgot} onHide={() => {
+                setForgot(false) 
+                setPregunta("")
+                setRespuesta("")
+                setVerified(false)}}>
                 <Modal.Header>
                     <Modal.Title>Recuperar contraseña</Modal.Title>
                 </Modal.Header>

@@ -55,17 +55,17 @@ function AgregarUsuario() {
     function check() {
         if (password && confirmPass && email && validateEmail(email.trim())) {
             if (datos?.some((e) => e.id === email)) {
-                Swal.fire("Ya existe usuario con este correo.");
+                Swal.fire({title: "Ya existe usuario con este correo.", icon: "error"});
                 return;
             } else if (password === confirmPass) {
                 setConfirmar(true);
                 return;
             } else {
-                Swal.fire("Las contraseñas no son iguales");
+                Swal.fire({title: "Las contraseñas no son iguales", icon: "error"});
                 return;
             }
         } else {
-            Swal.fire("Por favor escribir datos válidos");
+            Swal.fire({title: "Por favor escribir datos válidos", icon: "error"});
             return;
         }
     }

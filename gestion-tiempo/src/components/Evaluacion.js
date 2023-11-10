@@ -101,7 +101,8 @@ function Evaluacion() {
                 body: JSON.stringify(respuestas),
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json());
-        navigate("/datos", { state: { email: location.state.id } })
+        setShow(false)
+        Swal.fire({title:"Evaluación enviada con éxito", icon: "success"}).then(navigate("/datos", { state: { email: location.state.id } }));
     }
 
     function rowPicker(x) {
