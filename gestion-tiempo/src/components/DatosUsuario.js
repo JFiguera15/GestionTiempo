@@ -127,7 +127,7 @@ function DatosUsuario() {
                     method: "POST",
                     body: JSON.stringify({ pregunta: q, respuesta: a, id: datos.id }),
                     headers: { "Content-Type": "application/json" }
-                }).then(setChangeQuestion(false)).then(Swal.fire({ title: "Pregunta de seguridad cambiada exitosamente", icon: "success" }).then(() => window.location.reload()));
+                }).then(setChangeQuestion(false)).then(Swal.fire({ title: "Pregunta de seguridad seleccionada correctamente", icon: "success" }).then(() => window.location.reload()));
         } else {
             Swal.fire({ title: "Escriba una respuesta válida", icon: "error" });
         }

@@ -42,6 +42,14 @@ app.get('/colaboradores', (req, res) => {
     });
 });
 
+app.get('/colaboradores_activos', (req, res) => {
+    const sql = "SELECT id, nombre, empresa, nivel, tipo_horario, nacionalidad, telefono_p, telefono_s, direccion, departamento, cargo, cedula, genero, fecha_nacimiento, fecha_ingreso, jefe_directo, sup_funcional, activo FROM COLABORADORES WHERE activo = 'Sí'"
+    connection.query(sql, function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/colaboradores_nombre_correo', (req, res) => {
     connection.query("SELECT nombre, id FROM COLABORADORES", function (err, result) {
         if (err) throw err;

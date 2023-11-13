@@ -18,6 +18,7 @@ function ListaColaboradores() {
 
     const [colaboradores, setColaboradores] = useState([]);
     const [viewEval, setViewEval] = useState(false);
+    const [viewActive, setViewActive] = useState(false);
     const navigate = useNavigate();
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -83,16 +84,27 @@ function ListaColaboradores() {
 
     useEffect(() => {
         if (sessionStorage.getItem("rol") === "Administrador") {
-            fetch("http://localhost:8000/colaboradores")
-                .then((res) => res.json())
-                .then((data) => {
-                    console.log(data);
-                    data.forEach(element => {
-                        element.fecha_ingreso = element.fecha_ingreso.split('T')[0];
-                        element.fecha_nacimiento = element.fecha_nacimiento.split('T')[0];
+            if (viewActive) {
+                fetch("http://localhost:8000/colaboradores_activos")
+                    .then((res) => res.json())
+                    .then((data) => {
+                        data.forEach(element => {
+                            element.fecha_ingreso = element.fecha_ingreso.split('T')[0];
+                            element.fecha_nacimiento = element.fecha_nacimiento.split('T')[0];
+                        });
+                        setColaboradores(data)
                     });
-                    setColaboradores(data)
-                });
+            } else {
+                fetch("http://localhost:8000/colaboradores")
+                    .then((res) => res.json())
+                    .then((data) => {
+                        data.forEach(element => {
+                            element.fecha_ingreso = element.fecha_ingreso.split('T')[0];
+                            element.fecha_nacimiento = element.fecha_nacimiento.split('T')[0];
+                        });
+                        setColaboradores(data)
+                    });
+            }
         } else {
             if (viewEval) {
                 fetch("http://localhost:8000/colaboradores_evaluados_por?id=" + sessionStorage.getItem("user"))
@@ -110,7 +122,7 @@ function ListaColaboradores() {
             }
 
         }
-    }, [viewEval]);
+    }, [viewEval, viewActive]);
 
     return (
         <div id="lista">
@@ -121,12 +133,14 @@ function ListaColaboradores() {
                         <Form.Control onChange={(e) =>
                             setFilters({
                                 global: { value: e.target.value, matchMode: FilterMatchMode.CONTAINS }
-                            })} className="sm" style={{border : "1px solid black"}}></Form.Control>
+                            })} className="sm" style={{ border: "1px solid black" }}></Form.Control>
                     </FloatingLabel>
                 </Col>
                 {sessionStorage.getItem("rol") === "Administrador" && (
                     <>
-                        <Col sm={12} md={4}></Col>
+                        <Col sm={12} md={4}>
+                            <Form.Check inline reverse type="switch" label="Mostrar solo colaboradores activos" style={{ fontWeight: "bolder" }} onChange={() => setViewActive(!viewActive)} />
+                        </Col>
                         <Col sm={12} md={4}>
                             <Dropdown>
                                 <Dropdown.Toggle variant="success" id="dropdown-basic">
