@@ -58,7 +58,7 @@ app.get('/colaboradores_nombre_correo', (req, res) => {
 });
 
 app.get('/colaboradores_menos', (req, res) => {
-    connection.query("SELECT nombre, id FROM colaboradores WHERE NOT id = \'" + req.query.id + "\'", function (err, result) {
+    connection.query("SELECT nombre, id FROM colaboradores WHERE NOT id = \'" + req.query.id + "\' AND activo = 'Sí'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -169,7 +169,7 @@ app.get('/colaboradores_evaluados_admin', (req, res) => {
 });
 
 app.get('/colaboradores_evaluados_por', (req, res) => {
-    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND activo = 'Sí' AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluaciones ON evaluaciones.evaluado = id AND evaluaciones.evaluador = ?)"
+    const sql = "SELECT id, nombre, empresa, cargo FROM colaboradores WHERE (jefe_directo = ? OR sup_funcional = ?) AND activo = 'Sí' AND id NOT IN (SELECT id FROM colaboradores INNER JOIN evaluaciones ON evaluaciones.evaluado = id AND evaluaciones.evaluador = ? AND YEAR(evaluaciones.fecha) = YEAR(CURRENT_DATE()))"
     connection.query(sql, [req.query.id, req.query.id, req.query.id], function (err, result) {
         if (err) throw err;
         res.json(result);

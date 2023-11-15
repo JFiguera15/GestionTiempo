@@ -220,11 +220,11 @@ function Usuario() {
       <Toaster />
       <Navigation user={sessionStorage.getItem("rol")} />
       <Container fluid="sm" style={{
-                height: 100 + "%",
-                backgroundColor: "#3258B6",
-                paddingTop: 10 + "px",
-                border: 5 + "px solid black",
-            }}>
+        height: 100 + "%",
+        backgroundColor: "#3258B6",
+        paddingTop: 10 + "px",
+        border: 5 + "px solid black",
+      }}>
         <Row>
           <Col>
             {fechasUsadas && (
@@ -303,14 +303,17 @@ function Usuario() {
         </Row>
         <Row>
           <Col md sm={12} className="mb-1">
-            <Form.Select
-              value={select}
-              onChange={e => setSelect(e.target.value)}
-              style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }}>
-              <option value="Trabajado">Trabajado</option>
-              <option value="Libre">Libre</option>
-              <option value="Reposo">Reposo</option>
-            </Form.Select>
+            <FloatingLabel label="Tipo de día:"
+              style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }} >
+              <Form.Select
+                value={select}
+                onChange={e => setSelect(e.target.value)}
+                style={{ width: 300 + "px", marginLeft: "auto", marginRight: "auto" }}>
+                <option value="Trabajado">Trabajado</option>
+                <option value="Libre">Libre</option>
+                <option value="Reposo">Reposo</option>
+              </Form.Select>
+            </FloatingLabel>
           </Col>
           {select === "Reposo" && (
             <>
