@@ -162,7 +162,7 @@ app.get('/colaboradores_por_evaluar', (req, res) => {
 
 
 app.get('/colaboradores_evaluados_admin', (req, res) => {
-    connection.query("SELECT id, nombre, empresa, cargo, evaluaciones.evaluador, evaluaciones.resultados, evaluaciones.fecha FROM colaboradores INNER JOIN evaluaciones ON colaboradores.id = evaluaciones.evaluado", function (err, result) {
+    connection.query("SELECT id, nombre, empresa, cargo, evaluaciones.evaluador, evaluaciones.resultados, evaluaciones.fecha FROM colaboradores INNER JOIN evaluaciones ON colaboradores.id = evaluaciones.evaluado WHERE YEAR(evaluaciones.fecha) = ?", req.query.year,function (err, result) {
         if (err) throw err;
         res.json(result);
     });
@@ -190,12 +190,27 @@ app.get('/correos', (req, res) => {
     });
 });
 
+app.get('/anios_evaluados', (req, res) => {
+    connection.query("SELECT YEAR(fecha) FROM evaluaciones", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 app.get('/departamentos', (req, res) => {
     connection.query("SELECT * FROM departamentos", function (err, result) {
         if (err) throw err;
         res.json(result);
     });
 });
+
+app.get('/numero_colaboradores', (req, res) => {
+    connection.query("SELECT COUNT(id) FROM colaboradores", function (err, result) {
+        if (err) throw err;
+        res.json(result);
+    });
+});
+
 
 app.get('/pregunta_seguridad', (req, res) => {
     connection.query("SELECT pregunta_seguridad, respuesta_seguridad FROM colaboradores WHERE id = ?", req.query.id, function (err, result) {

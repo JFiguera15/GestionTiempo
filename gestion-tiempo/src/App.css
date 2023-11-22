@@ -19,8 +19,32 @@ button.btn.btn-info {
   background-color: #f8f9fa;
 }
 
+.form-check-input[type=radio] {
+  border: solid 1px gray;
+}
+
 table {
   border: "2px solid black";
+}
+
+.puntos-100 {
+  background-color: #2fb9c9;
+  color: black;
+}
+
+.puntos-75 {
+  background-color: #2ad827;
+  color: black;
+}
+
+.puntos-50 {
+  background-color: #f4fa3b;
+  color: black;
+}
+
+.puntos-25 {
+  background-color: #f73c3c;
+  color: black;
 }
 
 .react-calendar {

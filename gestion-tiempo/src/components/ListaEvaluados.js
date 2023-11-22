@@ -13,14 +13,16 @@ import Navigation from "./Navigation";
 function ListaEvaluados() {
 
     const [colaboradores, setColaboradores] = useState([]);
-    const [show, setShow] = useState(false);
+    const [year, setYear] = useState(new Date().getFullYear());
+    const [evaluatedYears, setEvaluatedYears] = useState([]);
+    const [numeroColaboradores, setNumeroColaboradores] = useState(0);
     const navigate = useNavigate();
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
 
     useEffect(() => {
-        fetch("http://localhost:8000/colaboradores_evaluados_admin")
+        fetch("http://localhost:8000/colaboradores_evaluados_admin?year=" + year)
             .then((res) => res.json())
             .then((data) => {
                 data.forEach(element => {
@@ -28,8 +30,33 @@ function ListaEvaluados() {
                 });
                 setColaboradores(data);
             });
-    }, []);
 
+        fetch("http://localhost:8000/anios_evaluados")
+            .then((res) => res.json())
+            .then((data) => {
+                let years = []
+                data.forEach(element => {
+                    years.push(Object.values(element)[0])
+                });
+                years = [...new Set(years)];
+                setEvaluatedYears(years);
+            });
+
+        fetch("http://localhost:8000/numero_colaboradores")
+            .then((res) => res.json())
+            .then((data) => {
+                setNumeroColaboradores(Object.values(data[0])[0]);
+            });
+    }, [year]);
+
+    const rowClass = (colaboradores) => {
+        return {
+            'puntos-100': colaboradores.resultados > 90,
+            'puntos-75': colaboradores.resultados <= 90,
+            'puntos-50': colaboradores.resultados <= 50,
+            'puntos-25': colaboradores.resultados <= 25
+        };
+    };
 
     return (
         <div id="lista">
@@ -45,10 +72,23 @@ function ListaEvaluados() {
                                     })} className="sm"></Form.Control>
                             </FloatingLabel>
                         </Col>
+                        <Col sm={12} md={4}>
+                            <FloatingLabel label="Seleccionar año:" style={{ maxWidth: 900 + "px" }}>
+                                <Form.Select className="sm" defaultValue={year} onChange={(e) => setYear(e.target.value)}>
+                                    <option hidden selected>{year}</option>
+                                    {evaluatedYears.map((item) =>
+                                        <option>{item}</option>)}
+                                </Form.Select>
+                            </FloatingLabel>
+                        </Col>
+                        <Col>
+                            <h5>Evaluaciones realizadas: {colaboradores.length} de {numeroColaboradores * 2}</h5>
+                        </Col>
                     </Row>
                     <Row style={{ marginTop: 25 + "px" }}>
                         <DataTable id="colaboradores" value={colaboradores} sortField="nombre" sortOrder={1} removableSort stripedRows filters={filters}
                             paginator rows={5} rowsPerPageOptions={[5, 10, 15]}
+                            rowClassName={rowClass}
                             selectionMode="single" onRowSelect={(e) => navigate("/datos", { state: { email: e.data.id } })}
                             style={{ border: "2px solid black" }}>
                             <Column field="nombre" header="Nombre" sortable />

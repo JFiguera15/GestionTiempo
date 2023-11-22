@@ -14,14 +14,12 @@ function Navigation({ user }) {
             .then((res) => res.json())
             .then((data) => {
                 setPorAprobar(Object.values(data[0])[0]);
-                console.log(Object.values(data[0])[0]);
             });
         } else {
             fetch("http://localhost:8000/colaboradores_por_aprobar?id=" + sessionStorage.getItem("user"))
             .then((res) => res.json())
             .then((data) => {
                 setPorAprobar(Object.values(data[0])[0]);
-                console.log(Object.values(data[0])[0]);
             });
         }
         
