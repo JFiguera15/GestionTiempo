@@ -205,7 +205,7 @@ app.get('/departamentos', (req, res) => {
 });
 
 app.get('/numero_colaboradores', (req, res) => {
-    connection.query("SELECT COUNT(id) FROM colaboradores", function (err, result) {
+    connection.query("SELECT COUNT(id) FROM colaboradores where activo = 'Sí'", function (err, result) {
         if (err) throw err;
         res.json(result);
     });

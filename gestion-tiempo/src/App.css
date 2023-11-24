@@ -32,8 +32,18 @@ table {
   color: black;
 }
 
+.puntos-100 :hover {
+  background-color: #00b0c4;
+  color: black;
+}
+
 .puntos-75 {
   background-color: #2ad827;
+  color: black;
+}
+
+.puntos-75 :hover {
+  background-color: #09d406;
   color: black;
 }
 
@@ -42,8 +52,18 @@ table {
   color: black;
 }
 
+.puntos-50 :hover {
+  background-color: #f4fc10;
+  color: black;
+}
+
 .puntos-25 {
   background-color: #f73c3c;
+  color: black;
+}
+
+.puntos-25 :hover {
+  background-color: #f72828;
   color: black;
 }
 
