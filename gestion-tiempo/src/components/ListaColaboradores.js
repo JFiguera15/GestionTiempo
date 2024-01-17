@@ -25,7 +25,6 @@ function ListaColaboradores() {
     });
 
     function downloadCSV(data) {
-        console.log(data);
         const headers = Object.keys(data[0]);
         const csvContent = "data:text/csv;charset=utf-8," + [["Id", "Nombre", "Empresa", "Nivel", "Tipo de horario", "Nacionalidad",
             "Teléfono primario", "Teléfono secundario", "Dirección", "Departamento",

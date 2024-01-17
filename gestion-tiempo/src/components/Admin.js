@@ -207,7 +207,7 @@ function Admin() {
                 </thead>
                 <tbody>
                   {colaboradores.filter(e => e.id === reviewedUser).map(e =>
-                    <tr>
+                    <tr key={e.id}>
                       <td>{e.nombre}</td>
                       <td>{e.id}</td>
                       <td>{e.empresa}</td>
@@ -299,7 +299,6 @@ function Admin() {
               </Col>
               {dates && (
                 <Col md sm={12}>
-                  {console.log(fechasUsadas)}
                   <Table bordered striped size="sm">
                     <thead>
                       <tr>

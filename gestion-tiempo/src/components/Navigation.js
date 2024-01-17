@@ -77,7 +77,7 @@ function Navigation({ user }) {
                         <NavDropdown title="Colaboradores">
                             <NavDropdown.Item href="/lista">Lista de colaboradores</NavDropdown.Item>
                         </NavDropdown>
-                        <NavDropdown NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
+                        <NavDropdown title= {porAprobar ? ("Gestión de tiempo (" + porAprobar + ")") : "Gestión de tiempo"}>
                             <NavDropdown.Item href="/usuario">Personal</NavDropdown.Item>
                             <NavDropdown.Item href="/admin">{porAprobar ? "De otros colaboradores (" + porAprobar + ")" : "De otros colaboradores"}</NavDropdown.Item>
                         </NavDropdown>

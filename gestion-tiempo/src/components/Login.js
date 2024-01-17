@@ -27,7 +27,6 @@ function Login() {
         fetch("http://localhost:8000/estado_evaluacion")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data[0].fin_evaluacion.split("T")[0]);
                 if (data[0].estado_evaluacion === "Activo" && data[0].fin_evaluacion.split("T")[0] === new Date().toISOString().split("T")[0]) {
                     fetch("http://localhost:8000/terminar_evaluacion", {
                         method: "POST",
@@ -70,7 +69,6 @@ function Login() {
                 headers: { "Content-Type": "application/json" }
             }).then((res) => res.json())
             .then((data) => {
-                console.log(data)
                 if (data === "Contraseña incorrecta") {
                     Swal.fire({ title: data, icon: "error" });
                 } else if (data === "Usuario incorrecto") {
@@ -100,18 +98,18 @@ function Login() {
                 </Col>
                 <Col lg={6}>
                     <Form onSubmit={handleSubmit}>
-                        <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
+                        <InputGroup className="mb-3" as={Col} id="formGridEmail">
                             <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                             <FloatingLabel label="Correo">
                                 <Form.Control type="email" name="email" onChange={(e) => setEmail(e.target.value)} />
                             </FloatingLabel>
                         </InputGroup>
-                        <InputGroup className="mb-3" as={Col} controlId="formGridPassword">
+                        <InputGroup className="mb-3" as={Col} id="formGridPassword">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Contraseña">
                                 <Form.Control type={view ? "password" : "text"} name="password" onChange={(e) => setPassword(e.target.value)} />
                             </FloatingLabel>
-                            <Button variant="info" onClick={() => setView(!view)}>{view ? <i class="bi bi-eye"></i> : <i class="bi bi-eye-slash"></i>}</Button>
+                            <Button variant="info" onClick={() => setView(!view)}>{view ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
                         </InputGroup>
                         <ButtonGroup>
                             <Button variant="success" type="submit">
@@ -136,7 +134,7 @@ function Login() {
                 <Modal.Body>
                     <>
                         <h4>Correo:</h4>
-                        <InputGroup className="mb-3" as={Col} controlId="formGridEmail">
+                        <InputGroup className="mb-3" as={Col} id="formGridEmail">
                             <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                             <FloatingLabel label="Correo">
                                 <Form.Control type="email" id="recover_email" readOnly={pregunta} />
@@ -161,19 +159,19 @@ function Login() {
                     )}
                     {verified && (
                         <>
-                            <InputGroup as={Col} controlId="formGridNewPassword">
+                            <InputGroup as={Col} id="formGridNewPassword">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Contraseña nueva">
                                     <Form.Control type={view ? "password" : "text"} id="newPassword" />
                                 </FloatingLabel>
-                                <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                <Button variant="info" onClick={() => setView(!view)}><i className="bi bi-eye"></i></Button>
                             </InputGroup>
-                            <InputGroup as={Col} controlId="formGridConfirmPassword" className="mb-3">
+                            <InputGroup as={Col} id="formGridConfirmPassword" className="mb-3">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Confirmar contraseña nueva">
                                     <Form.Control type={view ? "password" : "text"} id="confirmPassword" />
                                 </FloatingLabel>
-                                <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                <Button variant="info" onClick={() => setView(!view)}><i className="bi bi-eye"></i></Button>
                             </InputGroup>
                             <Button onClick={() => {
                                 if (document.getElementById("newPassword").value === document.getElementById("confirmPassword").value) {

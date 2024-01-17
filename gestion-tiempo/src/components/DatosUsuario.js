@@ -73,7 +73,6 @@ function DatosUsuario() {
     }
 
     function checkPassword(pass) {
-        console.log(pass);
         const body = {
             id: getUser(),
             password: pass,
@@ -204,7 +203,7 @@ function DatosUsuario() {
             }}>
                 <Form onSubmit={handleSubmit}>
                     <Row className="mb-3" >
-                        <InputGroup as={Col} controlId="formGridEmail">
+                        <InputGroup as={Col} id="formGridEmail">
                             <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                             <FloatingLabel label="Correo">
                                 <Form.Control defaultValue={datos.id} name="email" disabled />
@@ -213,7 +212,7 @@ function DatosUsuario() {
                     </Row>
                     <Row>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridNombre">
+                            <InputGroup id="formGridNombre">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Nombre">
                                     <Form.Control defaultValue={datos?.nombre} name="nombre" disabled={modificar} required />
@@ -221,7 +220,7 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridCedula">
+                            <InputGroup id="formGridCedula">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Cedula de Identidad">
                                     <Form.Control defaultValue={datos.cedula} name="cedula" disabled={modificar} required />
@@ -229,7 +228,7 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridNacionalidad">
+                            <InputGroup id="formGridNacionalidad">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-flag-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Nacionalidad">
                                     <Form.Control defaultValue={datos.nacionalidad} name="nacionalidad" disabled={modificar} required />
@@ -237,7 +236,7 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridGenero">
+                            <InputGroup id="formGridGenero">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-gender-ambiguous"></i></InputGroup.Text>
                                 <FloatingLabel label="Genero">
                                     <Form.Control defaultValue={datos.genero} name="genero" disabled={modificar} required />
@@ -247,16 +246,16 @@ function DatosUsuario() {
                     </Row>
                     <Row >
                         <Col className="mb-3" xs={12} sm={6}>
-                            <InputGroup controlId="formGridTelefonoP">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                            <InputGroup id="formGridTelefonoP">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-telephone-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Teléfono principal">
                                     <Form.Control defaultValue={datos.telefono_p} name="telefonoP" disabled={modificar} required />
                                 </FloatingLabel>
                             </InputGroup>
                         </Col>
                         <Col className="mb-3" xs={12} sm={6}>
-                            <InputGroup controlId="formGridTelefonoS">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-telephone-fill"></i></InputGroup.Text>
+                            <InputGroup id="formGridTelefonoS">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-telephone-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Teléfono Secundario">
                                     <Form.Control defaultValue={datos.telefono_s} name="telefonoS" disabled={modificar} />
                                 </FloatingLabel>
@@ -265,7 +264,7 @@ function DatosUsuario() {
                     </Row>
                     <Row >
                         <Col className="mb-3" xs={12} sm={6}>
-                            <InputGroup controlId="formGridFechaN">
+                            <InputGroup id="formGridFechaN">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Fecha de Nacimiento">
                                     <Form.Control
@@ -275,7 +274,7 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col className="mb-3" xs={12} sm={6}>
-                            <InputGroup controlId="formGridFechaI">
+                            <InputGroup id="formGridFechaI">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-event-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Fecha de Ingreso">
                                     <Form.Control
@@ -286,7 +285,7 @@ function DatosUsuario() {
                         </Col>
                     </Row>
                     <Row className="mb-3">
-                        <InputGroup as={Col} controlId="formGridDireccion">
+                        <InputGroup as={Col} id="formGridDireccion">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-geo-alt-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Dirección">
                                 <Form.Control defaultValue={datos.direccion} name="direccion" disabled={modificar} />
@@ -295,7 +294,7 @@ function DatosUsuario() {
                     </Row>
 
                     <Row className="mb-3">
-                        <InputGroup as={Col} controlId="formGridEmpresa">
+                        <InputGroup as={Col} id="formGridEmpresa">
                             <InputGroup.Text id="basic-addon1"><i className="bi bi-building-fill"></i></InputGroup.Text>
                             <FloatingLabel label="Empresa">
                                 <Form.Select name="empresa" required disabled={modificar}>
@@ -319,19 +318,19 @@ function DatosUsuario() {
                     </Row>
                     <Row>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridDepartamento">
+                            <InputGroup id="formGridDepartamento">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-building"></i></InputGroup.Text>
                                 <FloatingLabel label="Departamento">
                                     <Form.Select defaultValue={datos.departamento} name="departamento" disabled={modificar}>
                                         <option hidden>{datos.departamento}</option>
                                         {departamentos.map((item) =>
-                                            <option>{item.nombre}</option>)}
+                                            <option key={item.nombre}>{item.nombre}</option>)}
                                     </Form.Select>
                                 </FloatingLabel>
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridCargo">
+                            <InputGroup id="formGridCargo">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-person-badge-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Cargo">
                                     <Form.Control defaultValue={datos.cargo} name="cargo" disabled={modificar} />
@@ -339,7 +338,7 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridNivel">
+                            <InputGroup id="formGridNivel">
                                 <InputGroup.Text id="basic-addon1"><i className="bi bi-person-badge-fill"></i></InputGroup.Text>
                                 <FloatingLabel label="Nivel">
                                     <Form.Select name="nivel" required disabled={modificar}>
@@ -352,8 +351,8 @@ function DatosUsuario() {
                             </InputGroup>
                         </Col>
                         <Col lg={3} md={6} sm={12} className="mb-3">
-                            <InputGroup controlId="formGridHorario">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-calendar-check"></i></InputGroup.Text>
+                            <InputGroup id="formGridHorario">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-calendar-check"></i></InputGroup.Text>
                                 <FloatingLabel label="Tipo de horario">
                                     <Form.Select name="horario" defaultValue="" required disabled={modificar}>
                                         <option hidden>{datos.tipo_horario}</option>
@@ -366,32 +365,32 @@ function DatosUsuario() {
                     </Row>
                     <Row className="mb-3">
                         <Col lg={4} md={12} className="mb-3">
-                            <InputGroup controlId="formGridJefeD">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <InputGroup id="formGridJefeD">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill-up"></i></InputGroup.Text>
                                 <FloatingLabel label="Jefe Directo">
                                     <Form.Select name="jefeD" required disabled={modificar}>
                                         <option hidden>{datos.jefe_directo}</option>
                                         {highUsers.map((item) =>
-                                            <option value={item.id}>{item.nombre}</option>)}
+                                            <option value={item.id} key={item.id}>{item.nombre}</option>)}
                                     </Form.Select>
                                 </FloatingLabel>
                             </InputGroup>
                         </Col>
                         <Col lg={4} md={12} className="mb-3">
-                            <InputGroup controlId="formGridSupervisor">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <InputGroup id="formGridSupervisor">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill-up"></i></InputGroup.Text>
                                 <FloatingLabel label="Supervisor Funcional">
                                     <Form.Select name="supervisor" required disabled={modificar}>
                                         <option hidden>{datos.sup_funcional}</option>
                                         {highUsers.map((item) =>
-                                            <option value={item.id}>{item.nombre}</option>)}
+                                            <option value={item.id} key={item.id}>{item.nombre}</option>)}
                                     </Form.Select>
                                 </FloatingLabel>
                             </InputGroup>
                         </Col>
                         <Col lg={4} md={12} className="mb-3">
-                            <InputGroup controlId="formGridRol">
-                                <InputGroup.Text id="basic-addon1"><i class="bi bi-person-fill-up"></i></InputGroup.Text>
+                            <InputGroup id="formGridRol">
+                                <InputGroup.Text id="basic-addon1"><i className="bi bi-person-fill-up"></i></InputGroup.Text>
                                 <FloatingLabel label="Rol">
                                     <Form.Select name="rol" required disabled={modificar}>
                                         <option hidden>{datos.rol}</option>
@@ -498,7 +497,7 @@ function DatosUsuario() {
                                     onChange={(e) => setEvaluador(e.target.value)} defaultValue={""}>
                                     <option value="" disabled hidden></option>
                                     {evaluacion.map((item, index) =>
-                                        <option value={index}>{item.evaluador + " (" + item.fecha.split('T')[0] + ")"}</option>)}
+                                        <option value={index} key={index}>{item.evaluador + " (" + item.fecha.split('T')[0] + ")"}</option>)}
                                     <option value={"general"}>Vista general</option>
                                 </Form.Select>
                             </FloatingLabel>
@@ -517,7 +516,7 @@ function DatosUsuario() {
                                     </thead>
                                     <tbody>
                                         {evaluacion.map((item) =>
-                                            <tr>
+                                            <tr key={item.evaluador}>
                                                 <td>{item.evaluador}</td>
                                                 <td>{item.fecha.split("T")[0]}</td>
                                                 <td>{item.resultados}%</td>
@@ -605,27 +604,27 @@ function DatosUsuario() {
                                     <FloatingLabel label="Contraseña actual">
                                         <Form.Control type={view ? "password" : "text"} id="oldPass"></Form.Control>
                                     </FloatingLabel>
-                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                    <Button variant="info" onClick={() => setView(!view)}><i className="bi bi-eye"></i></Button>
                                 </InputGroup>
                             </>
                         )}
                         {verifiedPass && (
                             <>
-                                <InputGroup as={Col} controlId="formGridNewPassword">
+                                <InputGroup as={Col} id="formGridNewPassword">
                                     <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
                                     <FloatingLabel label="Contraseña nueva">
                                         <Form.Control type={view ? "password" : "text"} name="newPassword"
                                             onChange={(e) => setNewPassword(e.target.value)} />
                                     </FloatingLabel>
-                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                    <Button variant="info" onClick={() => setView(!view)}><i className="bi bi-eye"></i></Button>
                                 </InputGroup>
-                                <InputGroup as={Col} controlId="formGridConfirmPassword">
+                                <InputGroup as={Col} id="formGridConfirmPassword">
                                     <InputGroup.Text id="basic-addon1"><i className="bi bi-lock-fill"></i></InputGroup.Text>
                                     <FloatingLabel label="Confirmar contraseña nueva">
                                         <Form.Control type={view ? "password" : "text"} name="confirmPassword"
                                             onChange={(e) => setConfirmPass(e.target.value)} />
                                     </FloatingLabel>
-                                    <Button variant="info" onClick={() => setView(!view)}><i class="bi bi-eye"></i></Button>
+                                    <Button variant="info" onClick={() => setView(!view)}><i className="bi bi-eye"></i></Button>
                                 </InputGroup>
                             </>
                         )}

@@ -160,7 +160,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[0].map((item, index) =>
-                                <tr><td><Form.Check required type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr key={index}><td><Form.Check required type="radio" label={item} name="pregunta1" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
                     <Table striped hidden={pageEje1 - 1 !== 1}>
@@ -171,7 +171,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[1].map((item, index) =>
-                                <tr><td><Form.Check required type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr key={index}><td><Form.Check required type="radio" label={item} name="pregunta2" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
 
@@ -183,7 +183,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[2].map((item, index) =>
-                                <tr><td><Form.Check required type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr key={index}><td><Form.Check required type="radio" label={item} name="pregunta3" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
 
@@ -195,7 +195,7 @@ function Evaluacion() {
                         </thead>
                         <tbody>
                             {preguntas[3].map((item, index) =>
-                                <tr><td><Form.Check required type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
+                                <tr key={index}><td><Form.Check required type="radio" label={item} name="pregunta4" value={1.875 * (index + 1)} /></td></tr>)}
                         </tbody>
                     </Table>
                     <Pagination>{eje1}</Pagination>

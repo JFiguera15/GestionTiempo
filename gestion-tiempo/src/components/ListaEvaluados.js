@@ -75,9 +75,9 @@ function ListaEvaluados() {
                         <Col sm={12} md={4}>
                             <FloatingLabel label="Seleccionar año:" style={{ maxWidth: 900 + "px" }}>
                                 <Form.Select className="sm" defaultValue={year} onChange={(e) => setYear(e.target.value)}>
-                                    <option hidden selected>{year}</option>
-                                    {evaluatedYears.map((item) =>
-                                        <option>{item}</option>)}
+                                    <option hidden defaultValue={year}>{year}</option>
+                                    {evaluatedYears.map((item, index) =>
+                                        <option key={index}>{item}</option>)}
                                 </Form.Select>
                             </FloatingLabel>
                         </Col>
